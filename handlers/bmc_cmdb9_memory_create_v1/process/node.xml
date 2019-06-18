@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_cmdb9_memory_create" name="BMC CMDB9 Memory Create" schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>
+        Creates a memory record in the specified dataset.
+    </description>
+    <helpurl></helpurl>
+    <visible>false</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="error_handling" label="Error Handling" required="true"
+          tooltip="Determine what to return if an error is encountered." menu="Error Message,Raise Error">Error Message</parameter>
+		<parameter id="dataset" label="Dataset" required="true"
+          tooltip="The dataset to create the record in.">BMC.ASSET.SANDBOX</parameter>
+        <parameter id="namespace" label="Namespace" required="true"
+            tooltip="Namespace.">BMC.CORE</parameter>
+		<parameter id="name" label="Name" required="false"
+          tooltip="Name of the Memory record to create."/>
+    </parameters>
+    <handler name="bmc_cmdb9_memory_create" version="1">
+        <infos>
+            <info name="api_password">&lt;%= @info['api_password'] %&gt;</info>
+            <info name="api_server">&lt;%= @info['api_server'] %&gt;</info>
+            <info name="api_username">&lt;%= @info['api_username'] %&gt;</info>
+			<info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name="error_handling">&lt;%= @parameters.has_key?("error_handling") ? @parameters["error_handling"] : "Raise" %&gt;</parameter>
+			<parameter name="dataset">&lt;%= @parameters['dataset'] %&gt;</parameter>
+            <parameter name="namespace">&lt;%= @parameters['namespace'] %&gt;</parameter>
+			<parameter name="name">&lt;%= @parameters['name'] %&gt;</parameter>
+        </parameters>
+    </handler>
+    <results format="xml">
+        <result name="Instance ID"/>
+    </results>
+</taskDefinition>

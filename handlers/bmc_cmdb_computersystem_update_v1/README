@@ -1,0 +1,50 @@
+== BMC_CMDB_Computer_System_Update
+Updates BMC CMDB Computer System record.
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Instance ID]
+	The ID of the Computer System to update
+[Name]
+	The Name of the Computer System to update
+[Description]
+	The Description of the Computer System to update
+[Serial Number]
+	The Serial Number of the Computer System to update 
+[Status]
+	The Status of the Computer System to update
+			Valid Values: null, Ordered, Received, Being Assembled, Deployed, 
+			In Repair, Down, End of Life, Transferred, Delete, On Loan, Disposed, 
+			Reserved, Return to Vendor 
+[Model]
+	The Model of the Computer System to update 
+[Version]
+	The Version of the Computer System to update 
+[Category]
+	The Category of the Computer System to update 
+[Type]
+	The Type of the Computer System to update 
+[Item]
+	The Item of the Computer System to update 
+[Company]
+	The Company of the Computer System to update 
+[Region]
+	The Region of the Computer System to update 
+[Site]
+	The Site of the Computer System to update 
+[Site Group]
+	The Site Group of the Computer System to update 
+
+==== Sample Configuration
+Instance ID::      <%=@answers['Asset Instance ID']%>
+Status::               Deployed
+
+=== Results
+
+=== Detailed Description
+This handler updates the BMC Computer System matching the Instance ID provided.
+This handler will not update the status of a computer system that
+has a status of In Inventory because does not do the other actions to take an item
+out of inventory successfully.  This handler will update any information provided
+by parameters, but will leave the fields/parameters left blank unchanged.

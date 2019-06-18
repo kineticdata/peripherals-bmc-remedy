@@ -1,0 +1,26 @@
+== BMC CMDB9 Memory Create
+Creates a CMDB BMC_Memory record in the dataset and namespace provided.
+
+=== Parameters
+[Error Handling]
+  Determine what to return if an error is encountered. valid values: Error Message, Raise Error
+[Dataset]
+  The dataset to create the record in. Defaults to: BMC.ASSET.SANDBOX
+[Namespace]
+    Namespace for the asset/asset type. Defaults to: BMC.CORE
+[Name]
+   Name to give the memory asset when it is created.
+
+=== Sample Configuration
+Error Handling::			Error Message
+Dataset::				BMC.ASSET.SANDBOX
+Namespace::				BMC.CORE
+Name::					HPUX 64G
+
+=== Results
+[XML of results]
+<results format="xml">
+        <result name="Instance ID"/>
+</results>
+This provides the instance ID of the created asset.
+

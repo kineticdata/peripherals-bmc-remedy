@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_cmdb_computersystem_update" name="BMC CMDB Computer System Update" schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>Updates select attributes of a computer instance in BMC Remedy CMDB</description>
+    <helpurl>http://ktc.kineticdata.com/handler/bmc_cmdb_instance_create/1</helpurl>
+    <visible>false</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+			<parameter id="Instance ID" required="true" label="Instance ID"
+            tooltip="The ID of the Computer System to update"></parameter>
+			<parameter id="Name" required="false" label="Name"
+            tooltip="The Name of the Computer System to update"></parameter>
+			<parameter id="Description" required="false" label="Description"
+            tooltip="The Description of the Computer System to update"></parameter>
+			<parameter id="Serial Number" required="false" label="Serial Number"
+            tooltip="The Serial Number of the Computer System to update"></parameter>
+			<parameter id="Status" required="false" label="Status"
+            tooltip="The Status of the Computer System to update"
+			menu=" , Ordered, Received, Being Assembled, Deployed, In Repair, Down, End of Life, Transferred, Delete, On Loan, Disposed, Reserved, Return to Vendor"></parameter>
+			<parameter id="Model" required="false" label="Model"
+            tooltip="The Model of the Computer System to update"></parameter>
+			<parameter id="Version" required="false" label="Version"
+            tooltip="The Version of the Computer System to update"></parameter>
+			<parameter id="Category" required="false" label="Category"
+            tooltip="The Category of the Computer System to update"></parameter>
+			<parameter id="Type" required="false" label="Type"
+            tooltip="The Type of the Computer System to update"></parameter>
+			<parameter id="Item" required="false" label="Item"
+            tooltip="The Item of the Computer System to update"></parameter>
+			<parameter id="Company" required="false" label="Company"
+            tooltip="The Company of the Computer System to update"></parameter>
+			<parameter id="Region" required="false" label="Region"
+            tooltip="The Region of the Computer System to update"></parameter>
+			<parameter id="Site" required="false" label="Site"
+            tooltip="The Site of the Computer System to update"></parameter>
+			<parameter id="Site Group" required="false" label="Site Group"
+            tooltip="The Site Group of the Computer System to update"></parameter>
+        </parameters>
+    <handler name="bmc_cmdb_computersystem_update" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <base_element_parameters>
+            <parameter name='InstanceId'>&lt;%= @parameters['Instance ID'] %&gt;</parameter>
+			<parameter name='Name'>&lt;%= @parameters['Name'] %&gt;</parameter>
+			<parameter name='Description'>&lt;%= @parameters['Description'] %&gt;</parameter>
+			<parameter name='SerialNumber'>&lt;%= @parameters['Serial Number'] %&gt;</parameter>
+			<parameter name='AssetLifecycleStatus'>&lt;%= @parameters['Status'] %&gt;</parameter> 
+            <parameter name='Model'>&lt;%= @parameters['Model'] %&gt;</parameter>
+			<parameter name='VersionNumber'>&lt;%= @parameters['Version'] %&gt;</parameter>
+			<parameter name='Category'>&lt;%= @parameters['Category'] %&gt;</parameter>            
+            <parameter name='Type'>&lt;%= @parameters['Type'] %&gt;</parameter>            
+            <parameter name='Item'>&lt;%= @parameters['Item'] %&gt;</parameter>                        
+			<parameter name='Company'>&lt;%= @parameters['Company'] %&gt;</parameter>
+			<parameter name='Region'>&lt;%= @parameters['Region'] %&gt;</parameter>
+			<parameter name='Site'>&lt;%= @parameters['Site'] %&gt;</parameter>
+			<parameter name='SiteGroup'>&lt;%= @parameters['Site Group'] %&gt;</parameter>
+        </base_element_parameters>
+		<computer_system_parameters>
+			<parameter name='InstanceId'>&lt;%= @parameters['Instance ID'] %&gt;</parameter>
+			<parameter name='AssetLifecycleStatus'>&lt;%= @parameters['Status'] %&gt;</parameter>            
+        </computer_system_parameters>
+    </handler>
+    <results format="xml">
+    </results>
+</taskDefinition>
