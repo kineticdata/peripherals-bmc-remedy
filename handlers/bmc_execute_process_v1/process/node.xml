@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_execute_process" name="BMC Execute Process"
+                schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>
+        Submits an Execute Process command to the server
+    </description>
+    <helpurl></helpurl>
+    <visible>true</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="command" required="true" label="Command:"
+                   tooltip="The full text of the command (including any parameters) to be sent to the server" />
+        <parameter id="await_server_response" required="true" label="Wait for server response:"
+                   tooltip="Do you want to wait for the server's response -- Yes or No" />
+    </parameters>
+    <handler name="bmc_execute_process" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <fields>
+            <field name="Command">&lt;%= @parameters['command'] %&gt;</field>
+            <field name="Wait for server result">&lt;%= @parameters['await_server_response'] %&gt;</field>
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="Return Value" />
+    </results>
+</taskDefinition>

@@ -1,0 +1,5 @@
+<results>
+    <result name="RequestIdList" type="Regexp">.+</result>
+	<result name="InstanceIdList" type="Regexp">.+</result>
+<result name="Count" type="Regexp">.+</result>
+</results>

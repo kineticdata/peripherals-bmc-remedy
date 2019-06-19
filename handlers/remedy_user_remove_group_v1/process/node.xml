@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="remedy_user_remove_group" name="Remedy User Remove Group" schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>
+        Rmoves a group from an existing user. Throws exception if User does not exist, also if group does not exist.
+    </description>
+    <helpurl>http://ktc.kineticdata.com/handler/remedy_user_remove_group/1</helpurl>
+    <visible>true</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="login_name" label="Login Name:" required="true"
+            tooltip="The lookup value that identifies which User record should be updated.">
+        </parameter>
+        <parameter id="group_name" label="Group Name:" required="true"
+            tooltip="The group to remove." menu="">
+        </parameter>
+    </parameters>
+    <handler name="remedy_user_remove_group" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name="login_name">&lt;%= @parameters['login_name'] %&gt;</parameter>
+            <parameter name="group_name">&lt;%= @parameters['group_name'] %&gt;</parameter>
+        </parameters>
+    </handler>
+    <results format="xml">
+    </results>
+</taskDefinition>

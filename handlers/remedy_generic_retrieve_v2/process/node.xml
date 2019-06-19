@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="remedy_generic_retrieve" name="Remedy Generic Retrieve" schema_version="1.0" version="2">
+    <author>anne.ramey@kineticdata.com</author>
+    <description>
+	    Retrieves a single Remedy entry related to the form entered with
+		the Request ID specified.
+	</description>
+    <helpurl>http://ktc.kineticdata.com/handler/remedy_generic_find_single</helpurl>
+    <visible>true</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="form" label="Remedy Form:" required="true" 
+		  tooltip="Remedy Form Name (not display name), eg. People is CTM:People"/>
+        <parameter id="request_id" label="Request ID:" required="true" 
+		  tooltip="Request ID (Field 1) of record to retrieve"/>
+    </parameters>
+    <handler name="remedy_generic_retrieve" version="2">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+			<info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name="form">&lt;%= @parameters['form'] %&gt;</parameter>
+			<parameter name="request_id">&lt;%= @parameters['request_id'] %&gt;</parameter>
+        </parameters>
+    </handler>
+    <results format="xml">
+        <result name="field_list"/>
+    </results>
+</taskDefinition>

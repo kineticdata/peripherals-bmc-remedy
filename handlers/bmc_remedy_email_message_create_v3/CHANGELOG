@@ -1,0 +1,9 @@
+BMC_Remedy_EmailMessage_Create_V3 (2014-12-10)
+* Updated so it will work in Task 4 or 3
+
+BMC_Remedy_EmailMessage_Create_V2 (2014-03-06)
+* This handler is safe to use in a subtree because it does not rely on any @base 
+information to process. All data is passed into the handler as parameters.
+
+BMC_Remedy_EmailMessage_Create_V1 (2010-04-19)
+* Initial version.

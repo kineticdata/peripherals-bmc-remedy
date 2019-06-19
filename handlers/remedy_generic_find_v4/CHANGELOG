@@ -1,0 +1,24 @@
+Remedy Generic Find V4 (2019-04-22)
+* Updated readme and changelog
+
+Remedy Generic Find V4 (2019-03-25)
+* Added ability to disable caching
+* Added error message/raise error error handling
+
+Remedy Generic Find V4 (2019-03-25)
+* Added NDNF to handler
+
+Remedy Generic Find (2012-05-29)
+ * Initial version.  See README for details.
+
+V2
+ *Added instance ID list to returned values.
+ 
+V3
+ *Generic Handler could not use the preinitialize_on_first_load method.  Instead get_remedy_form is used to load the form and add it to the cache
+
+ V4
+  *Added a count to the returned values.
+  
+ V4 Update (2017-Jun-27)
+ *Made it possible to return 0 values without causing/raising error.

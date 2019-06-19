@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="remedy_user_create" name="Remedy User Create" schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>Creates a User in the User form - Login Name must be unique.</description>
+    <helpurl>http://ktc.kineticdata.com/handler/remedy_user_create_v1</helpurl>
+    <visible>true</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+
+
+        <parameter id="Login Name" required="true" label="Login Name" tooltip="Login Name of User" />
+        <parameter id="Full Name"  required="true" label="Full Name"  tooltip="Full Name of User" />
+        <parameter id="Password" required="true" label="Password" tooltip="Login Name of User" />
+        <parameter id="License Type" required="false" label="License Type" tooltip="License Type of User: Read, Fixed, Floating, Restricted Read" />
+        <parameter id="Email Address" required="false" label="Email Address" tooltip="Email Address of User" />
+        
+
+    </parameters>
+    <handler name="remedy_user_create" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <fields>
+            <field name='Login Name'>&lt;%= @parameters['Login Name'] %&gt;</field>
+            <field name='Full Name'>&lt;%= @parameters['Full Name'] %&gt;</field>
+            <field name='Password'>&lt;%= @parameters['Password'] %&gt;</field>
+            <field name='License Type'>&lt;%= @parameters['License Type'] %&gt;</field>
+            <field name='Email Address'>&lt;%= @parameters['Email Address'] %&gt;</field>
+            <field name='Creator'>&lt;%= @parameters['Login Name'] %&gt;</field>
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="Entry Id"/>
+    </results>
+</taskDefinition>

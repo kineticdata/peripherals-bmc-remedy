@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="ars9_generic_query_retrieve" name="ARS9 Generic Query Retrieve" schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>
+	    Retrieves a single ARS v9.x entry related to the Remedy Form specified.
+	</description>
+    <helpurl></helpurl>
+    <visible>false</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="error_handling" label="Error Handling" required="true"
+          tooltip="Determine what to return if an error is encountered." menu="Error Message,Raise Error">Error Message</parameter>
+		<parameter id="form" label="Remedy Form:" required="true" 
+		  tooltip="Remedy Form Name (not display name), eg. People is CTM:People"/>
+        <parameter id="request_query" label="Query:" required="true" 
+		  tooltip="Advanced Search Query of the record to retrieve"/>
+    </parameters>
+    <handler name="ars9_generic_query_retrieve" version="1">
+        <infos>
+            <info name="api_password">&lt;%= @info['api_password'] %&gt;</info>
+            <info name="api_server">&lt;%= @info['api_server'] %&gt;</info>
+            <info name="api_username">&lt;%= @info['api_username'] %&gt;</info>
+			<info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name="form">&lt;%= @parameters['form'] %&gt;</parameter>
+			<parameter name="request_query">&lt;%= @parameters['request_query'] %&gt;</parameter>
+			<parameter name="error_handling">&lt;%= @parameters.has_key?("error_handling") ? @parameters["error_handling"] : "Raise Error" %&gt;</parameter>
+        </parameters>
+    </handler>
+    <results format="xml">
+        <result name="Handler Error Message"/>
+        <result name="#FIELD NAME PLACE HOLDER#"/>
+    </results>
+</taskDefinition>

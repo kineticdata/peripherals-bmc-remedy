@@ -1,0 +1,48 @@
+== BMC Remedy User Update
+Updates an entry in the User form based on the Remedy Login ID
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Error Handling]
+	Determine what to return if an error is encountered. Error Message, Raise Error
+[Login ID]
+	The Remedy Login ID associated to the user record to update
+[Full Name]
+	Full Name
+[Group List]
+	Group List - used for access
+[License Type]
+	Read,Fixed,Floating, or Restricted Read
+[Login Alias]
+	Login Alias
+[Status]
+	Current, Disabled
+[Default Notify Mechanism]
+	Default Notify Mechanism, None,Alert, or Email
+
+
+=== Sample Configuration
+Error Handling::        Error Message
+Login ID::				<%=@answers['ReqFor Login']%>	
+Full Name::			    <%=@answers['ReqFor Name']%>
+Group List::			<%=@answers['ReqFor Grps']%> 100009345
+License Type::			Read
+Login Alias::			<%=@answers['ReqFor Login Alias']%>
+Status::				Current
+Default Notify Mechanism::		Alert
+
+=== Results
+[Handler Error Message]
+   Error, if one is found
+[Result]
+   Json result of the update
+
+=== Detailed Description
+Updates a single Remedy User entry related to the 
+Remedy Login specified.
+
+Note: This uses the REST API available in Remedy/ITSM 9+
+
+
+

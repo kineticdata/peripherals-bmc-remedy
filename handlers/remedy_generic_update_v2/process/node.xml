@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="remedy_generic_update" name="Remedy Generic Update" schema_version="1.0" version="2">
+    <author>anne.ramey@kineticdata.com</author>
+    <description>
+	    Updates a single Remedy entry related to the form entered with
+		the Request ID specified. Updates field specified to value specified.
+	</description>
+    <helpurl>http://ktc.kineticdata.com/handler/remedy_generic_find_single</helpurl>
+    <visible>true</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="form" label="Remedy Form:" required="true" 
+		  tooltip="Remedy Form Name (not display name), eg. People is CTM:People"/>
+        <parameter id="request_id" label="Request ID:" required="true" 
+		  tooltip="Request ID (Field 1) of record to update"/>
+		<parameter id="field_name" label="Field Name:" required="true" 
+		  tooltip="Field Name (Database Name) to update"/>
+		<parameter id="new_field_value" label="New Value:" required="true" 
+		  tooltip="Value to place in specified field"/>
+    </parameters>
+    <handler name="remedy_generic_update" version="2">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+			<info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name="form">&lt;%= @parameters['form'] %&gt;</parameter>
+			<parameter name="request_id">&lt;%= @parameters['request_id'] %&gt;</parameter>
+			<parameter name="field_name">&lt;%= @parameters['field_name'] %&gt;</parameter>
+			<parameter name="new_field_value">&lt;%= @parameters['new_field_value'] %&gt;</parameter>
+        </parameters>
+    </handler>
+    <results format="xml">
+        <result name="request_id"/>
+    </results>
+</taskDefinition>

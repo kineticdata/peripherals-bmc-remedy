@@ -1,0 +1,3 @@
+Template Identifier,Template Name,Status Template,Template Category Tier 1,Description,Detailed Decription,Reported Source,Service Type,Status,Impact,Urgency,Assigned Support Company,Assigned Support Organization,Assigned Group,Authoring Company,Authoring Organization,Authoring Group
+ABC,ABC,Enabled,123,This is a test,lalala,Web,User Service Restoration,Assigned,3-Moderate/Limited,3-Medium,Calbro Service,IT Support,Service Desk,Calbro Service,IT Support,Service Desk
+DEF,DEF,Enabled,123,Another Test,doreme,Web,User Service Restoration,Assigned,3-Moderate/Limited,3-Medium,Calbro Service,IT Support,Service Desk,Calbro Service,IT Support,Service Desk

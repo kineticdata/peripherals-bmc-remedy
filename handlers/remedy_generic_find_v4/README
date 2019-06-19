@@ -1,0 +1,50 @@
+== Remedy Generic Find
+Returns the request ids (field 1) and instance ids (field 179)
+for all records in the specified form that match the provided query.
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Error Handling]
+  Determines what to return if an error is encountered (Error Message or Raise
+  Error).
+[Remedy Form]
+	Remedy Form Name (not display name), eg. People is CTM:People
+[Query]
+	The query to search by
+
+=== Sample Configuration
+Error Handling:         Error Message
+Remedy Form:	       		User
+Query:									'Group List' LIKE "%<%=@answers['Group']%>%"
+
+=== Results
+[Handler Error Message]
+  Error message if an error was encountered and Error Handling is set to "Error Message".
+[List]
+  The request ids (field 1) of the updated record.
+
+=== Detailed Description
+This handler has the ability to have form caching disabled.  To disable form caching set
+disable_caching to "Yes".  Note that this should not be done in production as it can cause
+preformance loss.
+This handler returns the request ids (field 1) for all records in 
+the specified form that match the provided query.  This is returned
+in XML format (like below) for use in loops.
+
+<Request_Ids>
+	<RequestId>000000000000013</RequestId>
+	<RequestId>000000000000381</RequestId>
+	<RequestId>000000000002582</RequestId>
+</Request_Ids>
+
+It also returns the instance ids (field 179) in a similar format:
+
+<Instance_Ids>
+	<InstanceId>AG0050569A648CU5tSUAUcZMAgc8AC</InstanceId>
+	<InstanceId>AG0050569A648ClZtSUAkMVNAgVcYC</InstanceId>
+	<InstanceId>AG0050569A648CMZtSUAKUBMAgMrkC</InstanceId>
+</Instance_Ids>
+
+It also returns a count of the number of records found. It returns 
+zero if there were no matches (not nil).

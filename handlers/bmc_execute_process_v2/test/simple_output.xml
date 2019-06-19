@@ -1,0 +1,4 @@
+<results>
+    <result name="Return Value" type="Regexp">.+</result>
+    <result name="Return Status" type="Regexp">.+</result>
+</results>

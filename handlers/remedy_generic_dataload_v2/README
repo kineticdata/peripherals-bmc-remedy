@@ -1,0 +1,20 @@
+== Remedy Generic Dataload
+Takes CSV input and loads it into the specified form.
+
+
+=== Parameters
+[Remedy Form]
+  Name of Remedy form to load data into
+[CSV File]
+  Menu label of the attachment field containing csv file with header row.
+[Submission ID]
+  Instance ID of submitted item containing the attachment
+
+==== Sample Configuration
+Submission ID::               <%=@base['CustomerSurveyInstanceId']%>
+Remedy Form::                 HPD:LoadTemplate
+CSV File::						Attachment
+
+==Detailed Description
+This handler takes a CSV file with Remedy form DB field names in the first row and loads
+the data into the specified Remedy form.

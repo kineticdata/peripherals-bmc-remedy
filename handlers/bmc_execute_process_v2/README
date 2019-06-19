@@ -1,0 +1,36 @@
+== BMC_Execute_Process_V2
+Runs a BMC Execute Process command
+
+
+
+=== Parameters
+[Command]
+  The command and its parameters
+[Wait for Server Response]
+  Indicates whether the handler should wait for a server response or not
+
+
+==== Sample Configuration
+Command::                                Application-Command Approval "Add-Sig"  -s "CHG:Infrastructure Change" -e CRQ000000001031 -t "Change Level CI - Business" -o "tiggebk" -1 1  -2 999
+Wait for Server Response::               Yes
+
+Command::                                Application-Generate-GUID KR
+Wait for Server Response::               Yes
+
+=== Results
+[Return Value]
+  The value returned by the server after executing the command.  The value will 
+  be blank if the 'Wait for Server Response' field is set to "No".  It will 
+  also be empty if the command returns no values (e.g., commands to delete
+  entries from forms).
+
+[Return Status]
+  The exit code returned by the process. Zero means success.
+
+=== Detailed Description
+Executes the command on the server exactly as submitted.  The command string 
+can use results of other actions, such as ticket numbers, in its call.  The 
+first example above adds an approver to a change request, using very specific 
+parameters.  Refer to BMC's documentation for paramters that may require 
+wrapping in quotation marks.
+

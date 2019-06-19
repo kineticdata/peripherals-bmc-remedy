@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_remedy_email_message_create" name="BMC Remedy Email Message Create" schema_version="1.0" version="3">
+    <author>support@kineticdata.com</author>
+    <description>Creates an email message on the AR System Email Messages form</description>
+    <helpurl>http://ktc.kineticdata.com/handler/bmc_remedy_email_message_create</helpurl>
+    <visible>true</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="to" required="true" label="To"
+            tooltip="The address the email message will be sent to" />
+        <parameter id="subject" required="true" label="Subject"
+            tooltip="The subject of the email message" />
+        <parameter id="body" required="false" label="Body"
+            tooltip="The body of the email message" />
+        <parameter id="priority" required="false" label="Priority"
+            tooltip="The priority associated with the email message" />
+		<parameter id="submitter" required="true" label="Submitter"
+            tooltip="Remedy User ID to be listed as the submitter of the email message" />
+    </parameters>
+    <handler name="bmc_remedy_email_message_create" version="3">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+            <info name="mailbox_name">&lt;%= @info['mailbox_name'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name='priority'>&lt;%= @parameters['priority'] %&gt;</parameter>
+        </parameters>
+        <fields>
+            <field name='To'>&lt;%= @parameters['to'] %&gt;</field>
+            <field name='Subject'>&lt;%= @parameters['subject'] %&gt;</field>
+            <field name='Plain Text Body'>&lt;%= @parameters['body'] %&gt;</field>
+            <field name='Submitter'>&lt;%= @parameters['submitter'] %&gt;</field>
+            <field name='Short Description'>Email from Kinetic Task</field>
+            <field name='Send Message'>Yes</field>
+            <field name='Message Type'>Outgoing</field>
+            <field name='Status'>New</field>
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="Entry Id"/>
+    </results>
+</taskDefinition>

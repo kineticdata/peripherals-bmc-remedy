@@ -1,0 +1,6 @@
+Remedy Generic Dataload V2 (2016-08-30)
+* updated file processing to be able to handle
+a csv with a return character
+
+Remedy Generic Dataload V1 (2016-08-25)
+* Initial version.  See README for details.

@@ -1,0 +1,6 @@
+V2 (2013-07-16)
+ * Fixed a bug to allow this to be used for
+   multiple forms in one task engine instance.
+Remedy Generic Update (2012-05-29)
+ * Initial version.  See README for details.
+

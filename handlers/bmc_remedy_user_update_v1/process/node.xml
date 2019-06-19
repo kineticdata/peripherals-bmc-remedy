@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_remedy_user_update" name="BMC Remedy User Update" schema_version="1.0" version="1">
+    <author></author>
+    <description>
+        Updates an entry in the User form based on the Remedy Login ID
+    </description>
+    <helpurl></helpurl>
+    <visible>true</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+	    <parameter id="error_handling" label="Error Handling" required="true" tooltip="Determine what to return if an error is encountered." menu="Error Message,Raise Error">Error Message</parameter>
+        <parameter id="login_id" label="Login ID" required="true" tooltip="Remedy Login ID of the user to update."></parameter>
+        <parameter id="full_name" label="Full Name" required="false" tooltip=""></parameter>
+		<parameter id="group_list" label="Group List" required="false" tooltip=""></parameter>
+        <parameter id="license_type" label="License Type" required="false" tooltip="Read,Fixed,Floating, or Restricted Read"></parameter>
+		<parameter id="login_alias" label="Login Alias" required="false" tooltip=""></parameter>
+		<parameter id="status" label="Status" required="false" tooltip="Current or Disabled"></parameter>
+		<parameter id="default_notify_mechanism" label="Default Notify Mechanism" required="false" tooltip="None,Alert, or Email"></parameter>
+		
+    </parameters>
+    <handler name="bmc_remedy_user_update" version="1">
+        <infos>
+            <info name="api_password">&lt;%= @info['api_password'] %&gt;</info>
+            <info name="api_server">&lt;%= @info['api_server'] %&gt;</info>
+            <info name="api_username">&lt;%= @info['api_username'] %&gt;</info>
+			<info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+		 <parameters>
+            <parameter name="login_id">&lt;%= @parameters['login_id'] %&gt;</parameter>
+			<parameter name='Password'>&lt;%=@parameters['password']%&gt;</parameter>
+			<parameter name="error_handling">&lt;%= @parameters.has_key?("error_handling") ? @parameters["error_handling"] : "Raise Error" %&gt;</parameter>
+			</parameters>
+        <fields>
+        <field name='Full Name'>&lt;%=@parameters['full_name']%&gt;</field>
+        <field name='License Type'>&lt;%=@parameters['license_type']%&gt;</field>
+		<field name='Group List'>&lt;%=@parameters['group_list']%&gt;</field>
+		<field name='Login Alias'>&lt;%=@parameters['login_alias']%&gt;</field>
+		<field name='Status'>&lt;%=@parameters['status']%&gt;</field>
+		<field name='Default Notify Mechanism'>&lt;%=@parameters['default_notify_mechanism']%&gt;</field>
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="Handler Error Message"></result>
+		<result name="Result"></result>
+    </results>
+</taskDefinition>

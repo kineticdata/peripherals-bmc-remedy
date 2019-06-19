@@ -1,0 +1,46 @@
+== BMC_Remedy_User_Update_V1
+Updates an entry in the User form based on a key of the Login Name (Remedy
+User ID). The following fields are available to update; Full Name, License
+Type, Full Text License Type, Default Notify Mechanism, and
+Email Address.
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Login Name]
+  Value used to identify correct User record.
+[Full Name]
+  Full Name value to be modified on the User record
+[Full Text License Type]
+  Seting of Full Text License Type radio button field with following options;
+  Read, Fixed, Floating
+[License Type]
+  Seting of License Type - radio button field with following options;
+  Read, Fixed, Floating, Resticted Read
+[Default Notify Mechanism]
+  Setting for how customers are notified from within Remedy with the 
+  following options; None, alert, Email
+[Email Address]
+  Email address value to be modified on the User record
+
+
+==== Sample Configuration
+Change Name::       		<%=@answers['Customer ID']%>
+Full Name::                     <%=@answers['New Full Name']%>
+Full Text License Type:: 	Read
+License Type::       		<%=@answers['License Type']%>
+Default Notify Mechanism::      <%=@answers['New Default Notify Mechanism']%>
+Email Address::        		<%=@answers['Updated Email']%>
+
+
+=== Results
+none
+
+=== Detailed Description
+The User form in Remedy is used to track all Users and their permissions. This 
+handler allows you to update the fields listed above with new values, blank 
+values (represented by the keyword 'nil') or to leave the values alone (no
+answer passed as a parameter). Radio button options are validated in the
+handler before being applied. It is intended that the service item will
+limit the choices poosible. If an invalid choice is passed, an exception
+is raised.

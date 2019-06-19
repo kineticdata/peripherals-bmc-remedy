@@ -1,0 +1,25 @@
+== BMC_Remedy_Email HTML Message_Create
+Creates an email message on the AR System Email Messages form
+
+=== Parameters
+[To]
+  The address the email message will be sent to.
+[Subject]
+  The subject of the email message.
+[Body]
+  The HTML body of the email message.
+[Priority]
+  The priority associated with the email message.
+[Submitter]
+  Remedy User ID to be listed as the submitter of the email message.
+
+==== Sample Configuration
+To::                            <%= @answers['Recipient'] %>
+Subject::                       <%= @answers['Message Subject'] %>
+Body::                          <%= @answers['Message Body'] %>
+Priority::                      3
+Submitter::						KD_WEBUSER
+
+=== Results
+[Entry Id]
+  The Entry Id of the Email Message record that was created.
