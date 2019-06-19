@@ -1,0 +1,38 @@
+== BMC_ITSM7_Support Group Add V1
+Adds the given user (indicated by Login ID) to the specified
+ITSM Support Group.
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[New Member Login Id]
+   The new member login id
+[Assignment Availability]
+   The new member Assignment Availability, Yes or No
+[Role]
+   The new member login id, Member or Associate Member
+[ITSM Support Company]
+   The ITSM Support Company to Add person to
+[ITSM Support Org]
+   The ITSM Support Org to Add person to
+[ITSM Support Group Name]
+   The ITSM Support Group name to Add person to
+
+==== Sample Configuration
+New Member Login Id:: <%=@answer['Remedy Login ID']%>
+Assignment Availability:: Yes
+Role:: Member 
+ITSM Support Company::  My Company
+ITSM Support Org:: This Org
+ITSM Support Group Name:: My Group
+
+=== Results
+[Support Group Association ID]
+  Field 1 from the created record.
+  
+== Detailed Description
+
+Adds the given user (indicated by Login ID) to the specified
+ITSM Support Group. The person must be a Support Staff (indicated
+on the CTM:People record) already. The Association record is 
+created as NOT the default group for the individual.

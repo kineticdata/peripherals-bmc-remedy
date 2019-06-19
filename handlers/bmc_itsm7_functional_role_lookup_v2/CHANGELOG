@@ -1,0 +1,4 @@
+BMC ITSM7 Functional Role Lookup (2012-11-29)
+V2 - primary change to the names used in the XML
+string returned to make them more in line with the
+data returned.

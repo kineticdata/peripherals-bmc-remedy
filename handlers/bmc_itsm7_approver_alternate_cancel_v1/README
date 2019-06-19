@@ -1,0 +1,19 @@
+== BMC ITSM7 Approver Alternate Cancel
+Changes the status to Cancelled for an existing AP:Alternate record.
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Alternate Record ID]
+  The unique ID (field 1) for the record to be cancelled
+  
+==== Sample Configuration
+Alternate Record ID::     <%=@results['cancel_alternate']['Entry Id']%>
+
+=== Results
+[UpdatedRecord]
+  The unique ID (field 1) for the record that has been cancelled
+
+=== Detailed Description
+This handler updates the status for an existing AP:Alternate record
+to Cancelled. 

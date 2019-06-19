@@ -1,0 +1,7 @@
+BMC_ITSM7_Approver_Lookup_V2 (2010-12-13)
+* Refactored the handler.
+* The get_approver() helper now checks for loops in approver chains and will raise
+  an exception if a loop is detected.
+
+BMC_ITSM7_Approver_Lookup_V1
+* Initial version.

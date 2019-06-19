@@ -1,0 +1,5 @@
+<results>
+	<result name="Change Number" type="Regexp">.+</result>
+    <result name="Change Instance Id" type="Regexp">.+</result>
+	<result name="Deferral Token" type="Regexp">.*</result>
+</results>

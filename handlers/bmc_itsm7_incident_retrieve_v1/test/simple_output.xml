@@ -1,0 +1,34 @@
+<results>
+      <result name="Remedy Login ID"></result>
+      <result name="Email"></result>
+      <result name="First Name"></result>
+      <result name="Middle Initial"></result>
+      <result name="Last Name"></result>
+      <result name="Job Title"></result>
+      <result name="Nick Name"></result>
+      <result name="Corporate ID"></result>
+      <result name="Profile Status"></result>
+      <result name="Contact Type"></result>
+      <result name="Client Sensitivity"></result>
+      <result name="VIP"></result>
+      <result name="Support Staff"></result>
+      <result name="Assignment Availability"></result>
+      <result name="Company"></result>
+      <result name="Organization"></result>
+      <result name="Department"></result>
+      <result name="Region"></result>
+      <result name="Site Group"></result>
+      <result name="Site"></result>
+      <result name="Desk Location"></result>
+      <result name="Mail Station"></result>
+      <result name="Phone Number Business"></result>
+      <result name="Phone Number Mobile"></result>
+      <result name="Phone Number Fax"></result>
+      <result name="Phone Number Pager"></result>
+      <result name="ACD Phone Num"></result>
+      <result name="Corporate E-Mail"></result>
+      <result name="Accounting Number"></result>
+      <result name="ManagersName"></result>
+      <result name="ManagerLoginID"></result>
+      <result name="Cost Center Code"></result>
+</results>

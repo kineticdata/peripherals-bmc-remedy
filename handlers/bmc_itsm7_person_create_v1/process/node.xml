@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_person_create" name="BMC ITSM7 Person Create" schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>Creates an ITSM v7.x CTM People entry with the Remedy Login Id. </description>
+    <helpurl/>
+    <visible>false</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="remedy_login_id" label="Remedy Login ID:" required="true" 
+            tooltip="The Remedy Login ID associated to the CTM People record to create."/>
+		<parameter id="firstName" label="First Name:" required="true" 
+            tooltip="The First Name to set"/>
+		<parameter id="lastName" label="Last Name:" required="true" 
+            tooltip="The Last Name to set"/>
+		<parameter id="middleName" label="Middle Name:" required="false" 
+            tooltip="The Middle Name/Initial to set, Optional"/>
+		<parameter id="clientType" label="Client Type:" required="true" 
+            tooltip="The Client Type to set, often 'Office-Based Employee' or 'Contractor' or 'Customer'. Must be valid option of menu."/>
+		<parameter id="sensitivity" label="Client Sensitivity:" required="false" 
+            tooltip="The Client Sensitivity to set. Either Standard or Sensitive.">Standard</parameter>
+		<parameter id="vip" label="VIP:" required="false" 
+            tooltip="The VIP value to set. Yes or No">No</parameter>
+        <parameter id="author" label="Author:" required="true" 
+            tooltip="The author of the creation to the person record."/>
+		<parameter id="company" label="Company:" required="true" 
+            tooltip="The Company to set"/>
+		<parameter id="organization" label="Organization:" required="false" 
+            tooltip="The Organization to set"/>
+		<parameter id="department" label="Department:" required="false" 
+            tooltip="The Department to set"/>
+        <parameter id="email_address" label="Email Address:" required="false" 
+            tooltip="The email address to set"/>
+		<parameter id="region" label="Region:" required="false" 
+            tooltip="The region to set"/>
+		<parameter id="site_group" label="Site Group:" required="false" 
+            tooltip="The site group to set"/>
+		<parameter id="site" label="Site:" required="true" 
+            tooltip="The site to set"/>
+        <parameter id="cc_business" label="CC Business:" required="false" 
+            tooltip="The phone number country code to set"/>
+		<parameter id="area_business" label="Area Code Business:" required="false" 
+            tooltip="The phone number area code to set"/>
+		<parameter id="local_business" label="Local Part Business Phone:" required="false" 
+            tooltip="The phone number local part to set"/>
+		<parameter id="phone_business" label="Business Phone:" required="false" 
+            tooltip="The phone number (put together) to set"/>
+		<parameter id="locale2" label="Language" required="false" 
+            tooltip="The language to set (ex. en_US, fr_FR)"/>
+    </parameters>
+    <handler name="bmc_itsm7_person_create" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name="remedy_login_id">&lt;%= @parameters['remedy_login_id'] %&gt;</parameter>
+            <parameter name="author">&lt;%= @parameters['author'] %&gt;</parameter>
+			<parameter name="site">&lt;%= @parameters['site'] %&gt;</parameter>
+        </parameters>
+        <field_values>
+            <field_value name="Internet E-mail">&lt;%= @parameters['email_address'] %&gt;</field_value>
+			<field_value name="Remedy Login ID">&lt;%= @parameters['remedy_login_id'] %&gt;</field_value>
+			<field_value name="First Name">&lt;%= @parameters['firstName'] %&gt;</field_value>
+			<field_value name="Last Name">&lt;%= @parameters['lastName'] %&gt;</field_value>
+			<field_value name="Middle Initial">&lt;%= @parameters['middleName'] %&gt;</field_value>
+			<field_value name="Client Type">&lt;%= @parameters['clientType'] %&gt;</field_value>
+			<field_value name="Client Sensitivity">&lt;%= @parameters['sensitivity'] %&gt;</field_value>
+			<field_value name="VIP">&lt;%= @parameters['vip'] %&gt;</field_value>
+			<field_value name="Company">&lt;%= @parameters['company'] %&gt;</field_value>
+			<field_value name="Organization">&lt;%= @parameters['organization'] %&gt;</field_value>
+			<field_value name="Department">&lt;%= @parameters['department'] %&gt;</field_value>
+			<field_value name="Region">&lt;%= @parameters['region'] %&gt;</field_value>
+			<field_value name="Site">&lt;%= @parameters['site'] %&gt;</field_value>
+			<field_value name="Site Group">&lt;%= @parameters['site_group'] %&gt;</field_value>
+			<field_value name="CC Business">&lt;%= @parameters['cc_business'] %&gt;</field_value>
+			<field_value name="Area Business">&lt;%= @parameters['area_business'] %&gt;</field_value>
+			<field_value name="Local Business">&lt;%= @parameters['local_business'] %&gt;</field_value>
+			<field_value name="Phone Number Business">&lt;%= @parameters['phone_business'] %&gt;</field_value>
+			<field_value name="Locale2">&lt;%= @parameters['locale2'] %&gt;</field_value>
+        </field_values>
+    </handler>
+    <results format="xml">
+	<result name="Person ID"/>
+	</results>
+</taskDefinition>

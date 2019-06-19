@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_approver_alternate_add" name="BMC ITSM7 Approver Alternate Add" schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>
+        Adds an alternate approver.
+    </description>
+    <helpurl></helpurl>
+    <visible>true</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="alternate" label="Alternate" required="true"
+            tooltip="The Remedy ID of the new Alternate Approver" />
+		<parameter id="for" label="For" required="true"
+            tooltip="The Remedy ID of the person this is an alternate for" />
+		<parameter id="startdate" label="Start Date" required="true"
+            tooltip="The start of this alternate approver" />
+		<parameter id="enddate" label="End Date" required="true"
+            tooltip="The end of this alternate approver" />
+		<parameter id="notify" label="Notify Alternate" required="true" menu="Yes,No"
+            tooltip="Should the Alternate be notified" />
+    </parameters>
+    <handler name="bmc_itsm7_approver_alternate_add" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name="Alternate" description="alternate">&lt;%= @parameters['alternate'] %&gt;</parameter>
+			<parameter name="For" description="for">&lt;%= @parameters['for'] %&gt;</parameter>
+			<parameter name="Start Date" description="startdate">&lt;%= @parameters['startdate'] %&gt;</parameter>
+			<parameter name="End Date" description="enddate">&lt;%= @parameters['enddate'] %&gt;</parameter>
+			<parameter name="Covering" description="covering">All</parameter>
+			<parameter name="Notify Alternate?" description="notifyalternate">&lt;%= @parameters['notify'] %&gt;</parameter>
+        </parameters>
+
+    </handler>
+    <results format="xml">
+        <result name="AlternateID"/>
+    </results>
+</taskDefinition>

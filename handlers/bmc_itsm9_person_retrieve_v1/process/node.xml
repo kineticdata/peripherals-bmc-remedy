@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm9_person_retrieve" name="BMC ITSM9 Person Retrieve" schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>
+	    Retrieves a single ITSM v9.x CTM People entry related to the 
+		Remedy Login specified.
+	</description>
+    <helpurl>http://ktc.kineticdata.com/handler/bmc_itsm7_person_retrieve</helpurl>
+    <visible>false</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="error_handling" label="Error Handling" required="true"
+          tooltip="Determine what to return if an error is encountered." menu="Error Message,Raise Error">Error Message</parameter>
+		<parameter id="remedy_login_id" label="Remedy Login ID:" required="true" 
+		  tooltip="The Remedy Login ID associated to the CTM People record to retrieve"/>
+    </parameters>
+    <handler name="bmc_itsm9_person_retrieve" version="1">
+        <infos>
+            <info name="api_password">&lt;%= @info['api_password'] %&gt;</info>
+            <info name="api_server">&lt;%= @info['api_server'] %&gt;</info>
+            <info name="api_username">&lt;%= @info['api_username'] %&gt;</info>
+			<info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name="remedy_login_id">&lt;%= @parameters['remedy_login_id'] %&gt;</parameter>
+			<parameter name="error_handling">&lt;%= @parameters.has_key?("error_handling") ? @parameters["error_handling"] : "Raise" %&gt;</parameter>
+        </parameters>
+    </handler>
+    <results format="xml">
+        <result name="Remedy Login ID"/>
+        <result name="Email"/>
+        <result name="First Name"/>
+        <result name="Middle Initial"/>
+        <result name="Last Name"/>
+        <result name="Job Title"/>
+        <result name="Nick Name"/>
+        <result name="Corporate ID"/>
+        <result name="Profile Status"/>
+        <result name="Contact Type"/>
+        <result name="Client Sensitivity"/>
+        <result name="VIP"/>
+        <result name="Support Staff"/>
+        <result name="Assignment Availability"/>
+        <result name="Company"/>
+        <result name="Organization"/>
+        <result name="Department"/>
+        <result name="Region"/>
+        <result name="Site Group"/>
+        <result name="Site"/>
+        <result name="Desk Location"/>
+        <result name="Mail Station"/>
+        <result name="Phone Number Business"/>
+        <result name="Phone Number Mobile"/>
+        <result name="Phone Number Fax"/>
+        <result name="Phone Number Pager"/>
+        <result name="ACD Phone Num"/>
+        <result name="Corporate E-Mail"/>
+        <result name="Accounting Number"/>
+        <result name="ManagersName"/>
+        <result name="ManagerLoginID"/>
+        <result name="Cost Center Code"/>
+    </results>
+</taskDefinition>

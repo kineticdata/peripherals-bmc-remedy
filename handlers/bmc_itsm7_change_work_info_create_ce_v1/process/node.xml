@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_change_work_info_create_ce" name="BMC ITSM7 Change Work CE"
+                schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>
+        Creates a BMC ITSM7 Infrastructure Change Work Info record based upon
+        the parameters provided.
+    </description>
+    <helpurl></helpurl>
+    <visible>false</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="change_number" required="true" label="Change Number:"
+                   tooltip="The change number of the Change to associate the Change Work Info entry with." />
+        <parameter id="include_review_request" required="true" label="Include Review Request:"
+                   tooltip="Option to prepend the review request URL to the Notes of the Change Work Info entry." menu="Yes,No" />
+        <parameter id="include_question_answers" required="true" label="Include Question Answers:"
+                   tooltip="Option to append the question answer pairs to the Notes of the Change Work Info entry." menu="Yes,No" />
+        <parameter id="work_info_type" required="true" label="Work Info Type:"
+                   tooltip="Work Info Type.">General Information</parameter>
+		<parameter id="work_info_summary" required="true" label="Work Info Summary:"
+                   tooltip="Sets the Summary of the Change Work Info entry." />
+        <parameter id="work_info_notes" required="false" label="Work Info Notes:"
+                   tooltip="Sets the Notes of the Change Work Info entry." />
+        <parameter id="work_info_submit_date" required="false" label="Work Info Submit Date:"
+                   tooltip="Sets the Date of the Change Work Info entry." />
+       <parameter id="attachment_input_type" label="Attachment Input Type" required="true"
+  tooltip="Choose Field if the input for the attachment info as a Field Name or choose JSON if the input is an attachment's JSON from the Get Attachment Info handler. Note that if Field is specified, the fields entered should only allow one attachment." menu="Field,JSON">Field</parameter>
+        <parameter id="attachment_field_1" required="false" label="Attachment Field 1:"
+                   tooltip="The Field Name of an attachment question to retrieve an attachment from." dependsOnId="attachment_input_type" dependsOnValue="Field"/>
+        <parameter id="attachment_field_2" required="false" label="Attachment Field 2:"
+                   tooltip="The Field Name of an attachment question to retrieve an attachment from." dependsOnId="attachment_input_type" dependsOnValue="Field"/>
+        <parameter id="attachment_field_3" required="false" label="Attachment Field 3:"
+                   tooltip="The Field Name of an attachment question to retrieve an attachment from." dependsOnId="attachment_input_type" dependsOnValue="Field"/> 
+        <parameter id="attachment_json_1" required="false" label="Attachment JSON 1:"
+                   tooltip="The Field Name of an attachment question to retrieve an attachment from." dependsOnId="attachment_input_type" dependsOnValue="JSON"/>
+        <parameter id="attachment_json_2" required="false" label="Attachment JSON 2:"
+                   tooltip="The Field Name of an attachment question to retrieve an attachment from." dependsOnId="attachment_input_type" dependsOnValue="JSON"/>
+        <parameter id="attachment_json_3" required="false" label="Attachment JSON 3:"
+                   tooltip="The Field Name of an attachment question to retrieve an attachment from." dependsOnId="attachment_input_type" dependsOnValue="JSON"/>
+        <parameter id="submitter" required="false" label="Submitter:"
+                   tooltip="Sets the Submitter of the Change Work Info entry." />
+		<parameter id="secure_work_log" required="true" label="Locked:"
+                   tooltip="Sets the Incident Work Info entry Locked status." menu="Yes,No" />				   
+        <parameter id="view_access" required="true" label="View Access:"
+                   tooltip="Sets the Incident Work Info entry to Public or Internal.">Public</parameter>
+		<parameter id="submission_id" label="Submission ID:" required="true"
+            tooltip="The id of the CE submission to retrieve answers for."/>
+		<parameter id="space_slug" required="false" label="Space Slug:"
+                   tooltip="Can be used to override the info parameter provided."></parameter>
+    </parameters>
+    <handler name="bmc_itsm7_change_work_info_create_ce" version="1">
+        <infos>
+            <info name="api_password">&lt;%= @info['api_password'] %&gt;</info>
+            <info name="api_server">&lt;%= @info['api_server'] %&gt;</info>
+            <info name="api_username">&lt;%= @info['api_username'] %&gt;</info>
+            <info name="space_slug">&lt;%= @info['space_slug'] %&gt;</info>
+			<info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+			
+			<info name="ars_server">&lt;%= @info['ars_server'] %&gt;</info>
+            <info name="ars_username">&lt;%= @info['ars_username'] %&gt;</info>
+            <info name="ars_password">&lt;%= @info['ars_password'] %&gt;</info>
+            <info name="ars_port">&lt;%= @info['ars_port'] %&gt;</info>
+            <info name="ars_prognum">&lt;%= @info['ars_prognum'] %&gt;</info>
+            <info name="ars_authentication">&lt;%= @info['ars_authentication'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name='submission_id'>&lt;%= @parameters['submission_id'] %&gt;</parameter>
+            <parameter name='space_slug'>&lt;%= @parameters['space_slug'] %&gt;</parameter>
+            <parameter name='change_number'>&lt;%= @parameters['change_number'] %&gt;</parameter>
+            <parameter name='include_review_request'>&lt;%= @parameters['include_review_request'] %&gt;</parameter>
+            <parameter name='include_question_answers'>&lt;%= @parameters['include_question_answers'] %&gt;</parameter>
+            <parameter name='attachment_input_type'>&lt;%= @parameters['attachment_input_type'] %&gt;</parameter>
+            <parameter name='attachment_field_1'>&lt;%= @parameters['attachment_field_1'] %&gt;</parameter>
+            <parameter name='attachment_field_2'>&lt;%= @parameters['attachment_field_2'] %&gt;</parameter>
+			<parameter name='attachment_field_3'>&lt;%= @parameters['attachment_field_3'] %&gt;</parameter>
+			<parameter name='attachment_json_1'>&lt;%= @parameters['attachment_json_1'] %&gt;</parameter>
+            <parameter name='attachment_json_2'>&lt;%= @parameters['attachment_json_2'] %&gt;</parameter>
+			<parameter name='attachment_json_3'>&lt;%= @parameters['attachment_json_3'] %&gt;</parameter>
+			<parameter name='secure_work_log'>&lt;%= @parameters['secure_work_log'] %&gt;</parameter>
+            <parameter name='view_access'>&lt;%= @parameters['view_access'] %&gt;</parameter>
+        </parameters>
+        <fields>
+            <!-- CHG:WorkLog -->
+            <field name='Secure Work Log'>&lt;%= @parameters['secure_work_log'] %&gt;</field>
+            <field name='View Access'>&lt;%= @parameters['view_access'] %&gt;</field>
+            <field name='Communication Source'>Web</field>
+            <field name='z1D Previous Operation'>SET</field>
+            <field name='Status'>Enabled</field>
+            <field name='Work Log Type'>&lt;%= @parameters['work_info_type'] %&gt;</field>
+            <field name='Infra. Change Entry ID'>&lt;%= @parameters['change_number'] %&gt;</field>
+            <field name='Infrastructure Change ID'>&lt;%= @parameters['change_number'] %&gt;</field>
+            <field name='Description'>&lt;%= @parameters['work_info_summary'] %&gt;</field>
+            <field name='Detailed Description'>&lt;%= @parameters['work_info_notes'] %&gt; </field>
+            <field name='Work Log Date'>&lt;%= @parameters['work_info_submit_date'] %&gt;</field>
+            <field name='Work Log Submitter'>&lt;%= @parameters['submitter'] %&gt;</field>
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="Entry Id"/>
+    </results>
+</taskDefinition>

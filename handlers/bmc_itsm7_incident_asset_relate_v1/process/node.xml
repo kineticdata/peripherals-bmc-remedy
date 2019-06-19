@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_incident_asset_relate" name="Bmc Itsm7 Incident Asset Relate" schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <!--
+    <contributors>
+      <contributor>anne.ramey@kineticdata.com</contributor>
+    </contributors>
+    -->
+    <description>
+        Creates an HPD:Associations record to relate a CI to a Incident.
+    </description>
+    <helpurl></helpurl>
+    <visible>false</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="incident_number" label="Incident Number:" required="true" tooltip="Incident Number of Incident to relate to CI."/>
+	    <parameter id="reconciliation_identity" label="Reconciliation Identity:" required="true" tooltip="CI Reconciliation Identity"/>
+    </parameters>
+    <handler name="bmc_itsm7_incident_asset_relate" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name='incident_number'>&lt;%= @parameters['incident_number'] %&gt;</parameter>
+            <parameter name='reconciliation_identity'>&lt;%= @parameters['reconciliation_identity'] %&gt;</parameter>
+        </parameters>
+		<bmc_core_base_element_fields>
+			<field name='reconciliation_identity'>&lt;%= @parameters['reconciliation_identity'] %&gt;</field>
+			<field name='class_id'></field>
+		</bmc_core_base_element_fields>
+		<shr_schemaname_fields>
+			<field name='lookup_keyword'></field>
+			<field name='schema_name'></field>
+		</shr_schemaname_fields>
+        <hpd_associations_fields>
+			<field name='Form Name01'></field>
+			<field name='Lookup Keyword'></field>				
+			<field name='Request ID01'>&lt;%= @parameters['reconciliation_identity'] %&gt;</field>
+			<field name='Request Type01'>Configuration Item</field>	
+			<field name='Request Description01'></field>			
+			<field name='Status'>Enabled</field>
+			<field name='Form Name02'>HPD:Help Desk</field>
+			<field name='Request ID02'>&lt;%= @parameters['incident_number'] %&gt;</field>
+			<field name='Association Type01'>Related to</field>	
+        </hpd_associations_fields>
+    </handler>
+    <results format="xml">
+        <result name="Associations ID"/>
+    </results>
+</taskDefinition>

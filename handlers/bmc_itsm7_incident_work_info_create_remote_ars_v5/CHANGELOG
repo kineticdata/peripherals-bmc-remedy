@@ -1,0 +1,11 @@
+BMC_ITSM7_IncidentWorkInfo_Create_V2 (2010-12-22)
+* Initial version.  See README for details.
+
+BMC_ITSM7_IncidentWorkInfo_Create_V3 (2010-1-11)
+* Updated to set the 'Incident Entry ID' field in the created incident work info
+  entry.  The value for 'Incident Entry ID' is automatically set by using the
+  incident number to retrieve the request id of the incident entry.
+  
+BMC_ITSM7_IncidentWorkInfo_Create_Remote_ARS_V5 (2014-02-01)
+* Initial version.  Allows for a configuration where the ARS system used for 
+Kinetic and the ARS system used for BMC Remedy ITSM7 are different.

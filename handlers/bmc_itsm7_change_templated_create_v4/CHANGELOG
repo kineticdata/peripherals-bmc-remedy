@@ -1,0 +1,10 @@
+BMC_ITSM7_Change_Templated_Create_V4 (2015-08-04)
+* Added Login ID as option for searching for Requested For.
+
+BMC_ITSM7_Change_Templated_Create_V3 (2014-03-07)
+* This handler is safe to use in a subtree because it does not rely on any @base 
+information to process. All data is passed into the handler as parameters.
+* Updated template search to only include Enabled templates
+
+BMC_ITSM7_Change_Templated_Create_V2 (2010-12-22)
+* Initial version.  See README for details.

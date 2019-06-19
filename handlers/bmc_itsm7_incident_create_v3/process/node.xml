@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_incident_create" name="BMC ITSM7 Incident Create"
+                schema_version="1.0" version="3">
+    <author>support@kineticdata.com</author>
+    <description>
+        Creates a BMC ITSM7 Incident (Help Desk) record that contains the Id of
+        the triggering Kinetic Request submission and the task instance deferral
+        token using the parameters provided.
+    </description>
+    <helpurl></helpurl>
+    <visible>true</visible>
+    <deferrable>true</deferrable>
+    <parameters>
+        <parameter id="requester_first_name" required="true" label="Requester First Name:"
+                   tooltip="The value placed in the First Name field on the Incident form." />
+        <parameter id="requester_last_name" required="true" label="Requester Last Name:"
+                   tooltip="The value placed in the Last Name field on the Incident form." />
+        <parameter id="submitter_login_id" required="true" label="Submitter Login Id:"
+                   tooltip="The value placed in the Submitter field on the Incident form." />
+        <parameter id="incident_summary" required="true" label="Incident Summary:"
+                   tooltip="The value placed in the Summary field on the Incident form." />
+        <parameter id="impact" required="true" label="Impact:"
+                   tooltip="The value placed in the Impact field on the Incident form." />
+        <parameter id="urgency" required="true" label="Urgency:"
+                   tooltip="The value placed in the Urgency field on the Incident form." />
+        <parameter id="assigned_support_company" required="true" label="Assigned Support Company:"
+                   tooltip="The value placed in the Assigned Support Company field on the Incident form." />
+        <parameter id="assigned_support_organization" required="true" label="Assigned Support Organization:"
+                   tooltip="The value placed in the  Assigned Support Organization field on the Incident form." />
+        <parameter id="assigned_support_group" required="true" label="Assigned Support Group:"
+                   tooltip="The value placed in the Assigned Support Group field on the Incident form." />
+        <parameter id="surveyid" required="true" label="Survey ID (KSR #):"
+                   tooltip="The value placed in the SRID field on the Incident form." />
+        <parameter id="srinstanceid" required="true" label="Survey Instance ID:"
+                   tooltip="The value placed in the SRInstanceID field on the Incident form." />
+    </parameters>
+    <handler name="bmc_itsm7_incident_create" version="3">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <fields>
+            <!-- HPD:IncidentInterface_Create -->
+            <field name='z1D_Action'>CREATE</field>
+            <field name='Status'>New</field>
+            <field name='Reported Source'>Web</field>
+            <field name='Service_Type'>User Service Request</field>
+            <field name='Impact'>&lt;%= @parameters['impact'] %&gt;</field>
+            <field name='Urgency'>&lt;%= @parameters['urgency'] %&gt;</field>
+            <field name='Description'>&lt;%= @parameters['incident_summary'] %&gt;</field>
+            <field name='Assigned Support Company'>&lt;%= @parameters['assigned_support_company'] %&gt;</field>
+            <field name='Assigned Support Organization'>&lt;%= @parameters['assigned_support_organization'] %&gt;</field>
+            <field name='Assigned Group'>&lt;%= @parameters['assigned_support_group'] %&gt;</field>
+            <field name='First_Name'>&lt;%= @parameters['requester_first_name'] %&gt;</field>
+            <field name='Last_Name'>&lt;%= @parameters['requester_last_name'] %&gt;</field>
+            <field name='Submitter'>&lt;%= @parameters['submitter_login_id'] %&gt;</field>
+            <field name='SRID'>&lt;%= @parameters['surveyid'] %&gt;</field>
+            <field name='SRInstanceID'>&lt;%= @parameters['srinstanceid'] %&gt;</field>
+            <field name='SRMSAOIGuid'>&lt;%= @task['Deferral Token'] %&gt;</field>
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="Incident Number" />
+        <result name="Incident Instance Id" />
+		<result name="Deferral Token" />
+    </results>
+</taskDefinition>

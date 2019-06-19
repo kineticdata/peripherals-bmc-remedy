@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_alternate_approver_lookup" name="BMC ITSM7 Alternate Approver Lookup" schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <!--
+    <contributors>
+	  <contributor>anne.ramey@kineticdata.com</contributor>
+    </contributors>
+    -->
+    <description>
+        Retrieves the Login IDs for the current alternates for a Login ID
+    </description>
+    <helpurl>http://community.kineticdata.com/20_Kinetic_Task/Task_Handlers/</helpurl>
+    <visible>false</visible>
+    <deferrable>false</deferrable>
+     <parameters>
+	    <parameter id="approver_id" label="Approver ID:" required="true" tooltip="Approver's Login ID"/>
+ 	 </parameters>
+    <handler name="bmc_itsm7_alternate_approver_lookup" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name='approver_id'>&lt;%= @parameters['approver_id'] %&gt;</parameter>
+		</parameters>
+    </handler>
+    <results format="xml">
+		<result name="Alternate Exists"/>
+        <result name="Login IDs"/>		
+    </results>
+</taskDefinition>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition 
+  id="bmc_itsm7_work_order_status_update" name="BMC ITSM7 Work Order Status Update"
+  schema_version="1.0" version="1">
+  <author>support@kineticdata.com</author>
+  <description>
+    Updates the status and status reason if needed for a specific BMC ITSM7 Work Order (WOI:WorkOrder) request.
+  </description>
+  <helpurl></helpurl>
+  <visible>true</visible>
+  <deferrable>false</deferrable>
+
+  <parameters>
+    <!-- Required Parameters -->
+	<parameter id="work_order_id" required="true" label="Work Order ID:"
+      tooltip="The work order id of the record to be updated." />
+    <parameter id="status" required="true" label="Status:"
+      tooltip="The status that the work order will be changed to." />
+    <!-- Optional Parameters -->
+	<parameter id="status_reason" required="false" label="Status Reason:"
+      tooltip="The status reason that the work order will be changed to.  This is required if going to a completed status." />
+  </parameters>
+
+  <handler name="bmc_itsm7_work_order_status_update" version="1">
+    <infos>
+	<!-- Server configuration -->
+	  <info name="server1.hostname"><![CDATA[<%= @info['server1.hostname'] %>]]></info>
+      <info name="server1.username"><![CDATA[<%= @info['server1.username'] %>]]></info>
+      <info name="server1.password"><![CDATA[<%= @info['server1.password'] %>]]></info>
+      <info name="server1.port"><![CDATA[<%= @info['server1.port'] %>]]></info>
+      <info name="server1.prognum"><![CDATA[<%= @info['server1.prognum'] %>]]></info>
+      <info name="server1.authentication"><![CDATA[<%= @info['server1.authentication'] %>]]></info>
+      <!-- Logging configuration -->
+      <info name="enable_debug_logging"><![CDATA[<%= @info['enable_debug_logging'] %>]]></info>
+      <info name="enable_filter_logging"><![CDATA[<%= @info['enable_filter_logging'] %>]]></info>
+    </infos>
+    <actions>
+      <action sequence="0" type="modify" server_marker="server1" form_name="WOI:WorkOrderInterface">
+        <qualification><![CDATA[" 'Work Order ID' = \"<%= @parameters['work_order_id'] %>\" "]]></qualification>
+		<fields>
+          <field type="input" required="false" name="z1D_Action">MODIFY</field>
+          <field type="input" required="false" name="Status"><![CDATA[<%= @parameters['status'] %>]]></field>
+          <field type="input" required="false" name="Status Reason"><![CDATA[<%= @parameters['status_reason'] %>]]></field>
+        </fields>
+	  </action>	
+    </actions>
+  </handler>
+    <results format="xml">
+        <result name="Work Order ID" />
+    </results>
+</taskDefinition>

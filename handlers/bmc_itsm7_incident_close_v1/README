@@ -1,0 +1,22 @@
+== BMC_ITSM7_Incident_Close
+Closes a BMC ITSM7 Incident (Help Desk) record
+The BMC ITSM7 Incident (Help Desk) entry is modified in the 'HPD:Help Desk' form
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Incident Number]
+  The Indident ID to close
+[Status Reason]
+  The status reason used.
+
+=== Sample Configuration
+Incident Number::	<%=@results['Create_Incident']['Incident ID']%>
+Status Reason::         Automated Resolution Reported
+
+=== Results
+Support Company
+
+=== Detailed Description
+Incident (HPD:Help Desk form) is set to a Status of Closed with the
+Status Reason provided.

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_change_retrieve" name="BMC ITSM7 Change Retrieve" schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>
+        Retrieves a single ITSM Change entry.
+    </description>
+    <helpurl>http://ktc.kineticdata.com/handler/bmc_itsm7_change_retrieve/1</helpurl>
+    <visible>false</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="search_by" label="Search By:" required="true" 
+			menu="Infrastructure Change ID,Instance ID"
+			tooltip="The Search By parameter has two options, and configures which field the handler will use in its search qualification"/>
+        <parameter id="search_value" label="Search Value" required="true"
+            tooltip="The Search Value parameter is the value of the Search By field on the record  that will be retrieved" />
+    </parameters>
+    <handler name="bmc_itsm7_change_retrieve" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <parameters>
+			<parameter name="search_by" description="search by">&lt;%= @parameters['search_by'] %&gt;</parameter>
+            <parameter name="search_value" description="search value">&lt;%= @parameters['search_value'] %&gt;</parameter>
+        </parameters>
+    </handler>
+    <results format="xml">
+		<result name="Actual Start Date" />
+		<result name="Actual End Date" />
+		<result name="Change Timing" />
+		<result name="Change Type" />
+		<result name="Company" />
+		<result name="Company3" />
+		<result name="Completed Date" />
+		<result name="Description" />
+		<result name="Detailed Description" />
+		<result name="Earliest Start Date" />
+		<result name="First Name" />
+		<result name="Impact" />
+		<result name="Last Name" />
+		<result name="Location Company" />
+		<result name="Risk Level" />
+		<result name="Scheduled End Date" />
+		<result name="Scheduled Start Date" />
+		<result name="Status" />
+		<result name="SRID" />
+		<result name="SRInstanceID" />
+		<result name="SRMSAOIGuid" />
+		<result name="Submitter" />
+		<result name="Support Group Name" />
+		<result name="Support Organization" />
+		<result name="Urgency" />
+    </results>
+</taskDefinition>

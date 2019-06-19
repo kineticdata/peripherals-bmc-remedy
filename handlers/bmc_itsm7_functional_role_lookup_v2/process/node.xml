@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_functional_role_lookup" name="BMC ITSM7 Functional Role Lookup" schema_version="1.0" version="2">
+    <author>support@kineticdata.com</author>
+    <!--
+    <contributors>
+      <contributor>chris.woyton@kineticdata.com</contributor>
+	  <contributor>anne.ramey@kineticdata.com</contributor>
+    </contributors>
+    -->
+    <description>
+        Retrieves the Login IDs associated with a particular Functional Role and Group ID
+    </description>
+    <helpurl>http://community.kineticdata.com/20_Kinetic_Task/Task_Handlers/</helpurl>
+    <visible>false</visible>
+    <deferrable>false</deferrable>
+     <parameters>
+	    <parameter id="group_id" label="Group ID:" required="true" tooltip="Group ID"/>
+	    <parameter id="functional_role" label="Functional Role:" required="true" tooltip="Name of the Functional Role to retrieve"/>		
+      </parameters>
+    <handler name="bmc_itsm7_functional_role_lookup" version="2">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name='group_id'>&lt;%= @parameters['group_id'] %&gt;</parameter>
+            <parameter name='functional_role'>&lt;%= @parameters['functional_role'] %&gt;</parameter>
+		</parameters>
+    </handler>
+    <results format="xml">
+        <result name="Login IDs"/>		
+    </results>
+</taskDefinition>

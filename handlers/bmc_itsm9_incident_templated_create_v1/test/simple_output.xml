@@ -1,0 +1,5 @@
+<results>
+	<result name="Incident Number" type="Regexp">.*</result>
+	<result name="Incident Instance Id" type="Regexp">.*</result>
+	<result name="Deferral Token" type="Regexp">.*</result>
+</results>

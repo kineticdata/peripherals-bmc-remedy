@@ -1,0 +1,44 @@
+== bmc_itsm7_notification_events_find
+Returns an XML listing (enabled) record ids found in the NTE:CFG-Notification Events form.
+
+
+=== Parameters
+[Notification Event Type]
+   This rule is for Notification Event Type (valid values: User, System Default)
+[Module Name]
+   This rule is for Module Name (example values: Broadcast, Incident, Infrastructure Change, Request Management)
+[Notification Event]
+   This rule is for Notification Event (example values: Assignment, Approval, Broadcast Notification)
+[Support Group ID]
+   This rule is for this Support Group ID
+[Remedy Login ID]
+   This rule is for this Remedy Login ID
+[Remedy Notification Method]
+   Use Remedy Notification Method (valid values: None, Alert, Email)
+[Pager Notification]
+   Send Pager Notification (valid values: Yes, No)
+[Individual Notification]
+   Send Individual Notification (valid values: Yes, No)
+[Group Notification]
+   Send Group Notification (valid values: Yes, No)
+
+
+==== Results
+
+Returns an XML listing of enabled record ids found in the NTE:CFG-Notification Events form
+for the provided query.
+
+ex.
+<Request_Ids>
+   <RequestId>NTE000000001221</RequestId>
+   <RequestId>NTE000000001523</RequestId>
+</Request_Ids>
+
+Also provides a count of record ids returned.
+
+If no matching notification events are found, the returned XML looks like this:
+
+ex.
+<Request_Ids></Request_Ids>
+
+And the returned count is zero.

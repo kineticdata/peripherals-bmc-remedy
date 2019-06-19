@@ -1,0 +1,47 @@
+== BMC ITSM8 Assoc to Change Request Create
+Attaches an item to a Change Request.  (A second handler is needed to attach 
+the change request to related item.)
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Dataset ID]
+	The Dataset ID, usually BMC.ASSET. default: BMC.ASSET
+[Lookup Keyword]
+	The lookup keyword the item (for CMDB relationships, the ClassID ex: BMC_COMPUTERSYSTEM). default: BMC_COMPUTERSYSTEM 
+[Form Name 01]
+	Form Name 01 (for CMDB relationships, the Asset form name, ex: AST:ComputerSystem. default: AST:ComputerSystem 
+[Form Name 02]
+	Form Name 02 (the change form name, ex: CHG:Infrastructure Change). default: CHG:Infrastructure Change 
+[Related Item ReconID]
+	Reconciliation ID of the item being related 
+[Change Request Number]
+	CRQ Number 
+[Related Item Name]
+	Related item name (i.e., server name) 
+[Association Type]
+	Association type (ex: 'Related to'). default: Related to 
+[Request Type]
+	Request Type (ex: 'Configuration Item'). default: Configuration Item 
+  
+==== Sample Configuration
+Dataset ID ::			 BMC.ASSET
+Lookup Keyword ::  		 BMC_COMPUTERSYSTEM 
+Form Name 01 ::			 AST:ComputerSystem 
+Form Name 02 ::			 CHG:Infrastructure Change 
+Related Item ReconID ::	 RE005054661F4Us1NYA8XgpDab 
+Change Request Number :: CRQ000000012352
+Related Item Name ::	 WinBlade123 
+Association Type :: 	 Related to 
+Request Type ::			 Configuration Item 
+
+=== Results
+[CHG:Associations Entry ID]
+  The Request ID of the CHG:Associations record that was created.
+
+
+=== Detailed Description
+This handler creates a record in the CHG:Associations form based on the
+information input by the end user, and returns the Request ID of the record 
+created.  The handler is just half of the equation. It should be used in
+conjunction with bmc_itsm8_assoc_to_asset_create handler.

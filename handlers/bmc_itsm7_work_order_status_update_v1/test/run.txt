@@ -1,0 +1,29 @@
+:: run.bat 
+::
+:: Simple task runner. Execute from a command shell in the test 
+:: directory of the task.
+@ECHO OFF
+
+:: Make the variables available only for this session
+SETLOCAL
+
+:: You can set the environment variable KINETIC_TASK_HOME, or you can
+:: just accept the default, C:\kineticTask
+IF "%KINETIC_TASK_HOME%" == "" (SET KINETIC_TASK_HOME=C:\kineticTask)
+
+SET CLASSPATH=%KINETIC_TASK_HOME%
+SET PATH=%KINETIC_TASK_HOME%;%path%
+SET ORIGINAL_DIR=%CD%
+SET JAVA_CMD="C:\Program Files (x86)\Java\jre7\bin\java.exe"
+
+:: Go up one directory to get the root path name.
+CD ..
+SET TASK_PATH=%CD%
+CD %ORIGINAL_DIR%
+
+%JAVA_CMD% -Djava.library.path=%KINETIC_TASK_HOME% -jar %KINETIC_TASK_HOME%\kinetic-task.jar -test-handler=%TASK_PATH%
+
+:: In case you ran the batch file from Windows Explorer, you might 
+:: want to pause to look at the results.
+PAUSE
+

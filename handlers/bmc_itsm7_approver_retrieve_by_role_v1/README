@@ -1,0 +1,33 @@
+== Bmc_Itsm7_Approver_Retrieve_By_Role_V1
+Retrieves a list (xml) of all the approvers listed for the specified role. Also 
+returns whether one or all approvers must approve if there are multiple approvers.
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Role Name]
+  This should be the name of the role being used for approval.
+
+  
+==== Sample Configuration
+Role Name::        Role Name
+
+=== Results
+[userIdList]
+  The user Ids of the records being retrieved.
+[ifMultiple]
+  The 'First Name' field data of the record being retrieved.
+
+=== Detailed Description
+AP:Role is an ITSM 7 form that stores the approvers for Roles defined.  This 
+handler retrieves the approvers (Member List) for the specified role in XML
+format so this data can be used in a loop to generate approvals. Note that this
+handler will only return data for active roles. It also returns either "One 
+Must Sign" or "All Must Sign" to indicate the appropriate action if there are
+multiple approvers.
+
+The user IDs are reutrned in the following format:
+<userIds>
+	<userId>Demo</userId>
+	<userId>Mary Manager</userId>
+</userIds>

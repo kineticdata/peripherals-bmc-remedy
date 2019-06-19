@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_person_update" name="BMC ITSM7 Person Update" schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>Updates an ITSM v7.x CTM People entry given the Remedy Login Id.  It only updates the record with the given values if those values are provided (will not null out values).  It also creates a WorkLog entry to audit the modification.</description>
+    <helpurl/>
+    <visible>false</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="remedy_login_id" label="Remedy Login ID:" required="true" 
+            tooltip="The Remedy Login ID associated to the CTM People record to update."/>
+        <parameter id="author" label="Author:" required="true" 
+            tooltip="The author of the modifications to the person record."/>
+        <parameter id="email_address" label="Email Address:" required="false" 
+            tooltip="The email address to set"/>
+		<parameter id="region" label="Region:" required="false" 
+            tooltip="The region to set"/>
+		<parameter id="site_group" label="Site Group:" required="false" 
+            tooltip="The site group to set"/>
+		<parameter id="site" label="Site:" required="false" 
+            tooltip="The site to set"/>
+		<parameter id="site_id" label="Site ID:" required="false" 
+            tooltip="The site id to set - required if setting site"/>
+		<parameter id="site_city" label="Site City:" required="false" 
+            tooltip="The site city to set - required if setting site (to correctly populate address)"/>
+		<parameter id="site_country" label="Site Country:" required="false" 
+            tooltip="The site county to set - required if setting site (to correctly populate address)"/>
+		<parameter id="site_state" label="Site State/Province:" required="false" 
+            tooltip="The site state/province to set - required if setting site (to correctly populate address)"/>
+		<parameter id="site_street" label="Site Street:" required="false" 
+            tooltip="The site street to set - required if setting site (to correctly populate address)"/>
+		<parameter id="site_postal_code" label="Site Zip/Postal Code:" required="false" 
+            tooltip="The site zip/postal code to set - required if setting site (to correctly populate address)"/>
+		<parameter id="site_timezone" label="Site Time Zone:" required="false" 
+            tooltip="The site time zone to set - required if setting site (to correctly populate address)"/>
+        <parameter id="cc_business" label="CC Business:" required="false" 
+            tooltip="The phone number country code to set"/>
+		<parameter id="area_business" label="Area Code Business:" required="false" 
+            tooltip="The phone number area code to set"/>
+		<parameter id="local_business" label="Local Part Business Phone:" required="false" 
+            tooltip="The phone number local part to set"/>
+		<parameter id="phone_business" label="Business Phone:" required="false" 
+            tooltip="The phone number (put together) to set"/>
+		<parameter id="locale2" label="Language" required="false" 
+            tooltip="The language to set (ex. en_US, fr_FR)"/>
+    </parameters>
+    <handler name="bmc_itsm7_person_update" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name="remedy_login_id">&lt;%= @parameters['remedy_login_id'] %&gt;</parameter>
+            <parameter name="author">&lt;%= @parameters['author'] %&gt;</parameter>
+        </parameters>
+        <field_values>
+            <field_value name="Internet E-mail">&lt;%= @parameters['email_address'] %&gt;</field_value>
+			<field_value name="Region">&lt;%= @parameters['region'] %&gt;</field_value>
+			<field_value name="Site">&lt;%= @parameters['site'] %&gt;</field_value>
+			<field_value name="Site ID">&lt;%= @parameters['site_id'] %&gt;</field_value>
+			<field_value name="Site City">&lt;%= @parameters['site_city'] %&gt;</field_value>
+			<field_value name="Site Country">&lt;%= @parameters['site_country'] %&gt;</field_value>
+			<field_value name="Site State Province">&lt;%= @parameters['site_state'] %&gt;</field_value>
+			<field_value name="Site Street">&lt;%= @parameters['site_street'] %&gt;</field_value>
+			<field_value name="Site Zip/Postal Code">&lt;%= @parameters['site_postal_code'] %&gt;</field_value>
+			<field_value name="Time Zone">&lt;%= @parameters['site_timezone'] %&gt;</field_value>
+			<field_value name="Site Group">&lt;%= @parameters['site_group'] %&gt;</field_value>
+			<field_value name="CC Business">&lt;%= @parameters['cc_business'] %&gt;</field_value>
+			<field_value name="Area Business">&lt;%= @parameters['area_business'] %&gt;</field_value>
+			<field_value name="Local Business">&lt;%= @parameters['local_business'] %&gt;</field_value>
+			<field_value name="Phone Number Business">&lt;%= @parameters['phone_business'] %&gt;</field_value>
+			<field_value name="Locale2">&lt;%= @parameters['locale2'] %&gt;</field_value>
+        </field_values>
+    </handler>
+    <results format="xml"></results>
+</taskDefinition>

@@ -1,0 +1,4 @@
+<results>
+    <result name="Alternate Exists" type="Regexp">.+</result>
+	<result name="Login IDs" type="Regexp">.+</result>
+</results>

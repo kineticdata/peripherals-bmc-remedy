@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_approver_alternate_cancel" name="BMC ITSM7 Approver Alternate Cancel" schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>
+        Cancels an alternate approver.
+    </description>
+    <helpurl></helpurl>
+    <visible>true</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="alternateid" label="Alternate Record ID" required="true"
+            tooltip="The unique ID (field 1) for the Record to be cancelled" />
+    </parameters>
+    <handler name="bmc_itsm7_approver_alternate_cancel" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name="Alternate ID" description="alternate">&lt;%= @parameters['alternateid'] %&gt;</parameter>
+        </parameters>
+
+    </handler>
+    <results format="xml">
+        <result name="UpdatedRecord"/>
+    </results>
+</taskDefinition>

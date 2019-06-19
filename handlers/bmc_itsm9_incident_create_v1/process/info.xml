@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file contains a list of all configurable values used by the task node.
+
+The name of the parameter is defined by applying the 'name' attribute to the
+info tag.  For example, to define a parameter named 'username' add the
+following line:
+<info name="username" description="The username used to login"></info>
+
+Default values may be defined by placing the value of the parameter
+within the info tags.  For example, to define a parameter named 'username'
+with a default value of 'KD_WEBUSER' add the following line:
+<info name="username">KD_WEBUSER</info>
+-->
+<taskInfo version="1.0">
+<info name="kapi_server" description="The Kinetic ARS API application, if running task locally could be http://localhost:8008/">http://server:port/api</info>
+  <info name="kapi_username" description="Name of user account that has permission to use the Kinetic API"></info>
+  <info name="kapi_password" description="Password for the Kinetic API user" type="encrypted"></info>
+  <info name="api_server" description="The ITSM ARS API application, if running task locally could be http://localhost:8008/">http://server:port/api</info>
+  <info name="api_username" description="Name of user account that has permission to use the ITSM API"></info>
+  <info name="api_password" description="Password for the ITSM API user" type="encrypted"></info>
+  <info name="enable_debug_logging" description="Enable debug logging if the value is set to 'Yes'.">No</info>
+</taskInfo>

@@ -1,0 +1,4 @@
+<results>
+    <result name="List" type="Regexp">.+</result>
+	<result name="Count" type="Regexp">[0-9]+</result>
+</results>

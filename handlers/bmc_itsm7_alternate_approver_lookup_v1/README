@@ -1,0 +1,29 @@
+== BMC ITSM7 Alternate Approver Lookup
+Returns the Login IDs for all current AP:Alternate records 
+for the specified Login ID
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Approver ID]
+	Remedy Login ID of the individual to find alternates for
+
+=== Sample Configuration
+Approver ID::       Allen
+
+=== Results
+[Alternate Exists]
+  Returns a Yes if current alternates are found and a No if no
+  current alternates are found
+[Login IDs]
+  The login ids of the alternates found
+
+=== Detailed Description
+This handler returns the login ids for all alternates found.  
+This is returned in XML format (like below) for use in loops.
+
+<Login_Ids>
+	<LoginId>Mary</LoginId>
+	<LoginId>John</LoginId>
+	<LoginId>Frank</LoginId>
+</Login_Ids>

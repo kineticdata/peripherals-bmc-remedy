@@ -1,0 +1,34 @@
+== BMC ITSM7 Approval Approve
+Approves a specific AP:Detail-Signature record.
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Approver]
+  The approver the handler should log in as. This should be the approver for approvers 
+  and the alternate if an alternate is approving.
+[Approval Record ID]
+  The unique ID (field 1) for the Approval Detail-Signatre Record to be approved.
+[Approval Status]
+  Whether the approval was approved or rejected. Valid Values: Approved, Rejected, Hold, More Information, Cancelled 
+[Approval Comments]
+  Any comments provided.
+  
+==== Sample Configuration
+Approver   :: 				Demo
+Approval Record ID    :: 	000000000000025|000000000000023
+Approval Status    	  ::	Approved
+Approval Comments     :: 
+
+=== Results
+[Date Approved]
+  The Date/Time that the Approval was submitted.
+
+=== Detailed Description
+This handler approves a specific AP:Detail-Signature record. If the approver specified
+is actually an alternate, the approval will note the approver they are an alternate for
+as the approver and them as the alternate. If the approver specified is not a valid 
+approver or alternate, the handler will error.
+
+Note that the record ID is a join form record ID and is the two 15 digit numbers separated
+by a pipe character. 

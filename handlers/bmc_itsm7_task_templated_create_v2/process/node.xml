@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_task_templated_create" name="BMC ITSM7 Task Templated Create"
+                schema_version="1.0" version="2">
+    <author>support@kineticdata.com</author>
+    <description>
+		Creates a TMS:Task entry that belongs to either a Change or Incident record.
+    </description>
+    <helpurl>http://ktc.kineticdata.com/handler/bmc_itsm7_task_templated_create/2</helpurl>
+    <visible>true</visible>
+    <deferrable>true</deferrable>
+    <parameters>
+        <parameter id="task_name" required="true" label="Task Name"
+            tooltip="Sets the 'Name' field of the TMS:Task record" />
+        <parameter id="location_company" required="true" label="Task Location Company"
+            tooltip="Sets the 'Location Company' field of the TMS:Task entry" />
+        <parameter id="parent_form_name" required="true" label="Parent Form Name"
+            menu="CHG:Infrastructure Change,HPD:Help Desk, KS_SRV_CustomerSurvey"
+            tooltip="The form of the parent record, either CHG:Infrastructure Change or HPD:Help Desk or Kinetic Request" />
+        <parameter id="parent_id" required="true" label="Parent Id"
+            tooltip="The display id of the parent record, which is either a Change or an Incident record" />
+        <parameter id="parent_instance_id" required="true" label="ParentInstance Id"
+            tooltip="The instance id of the parent record, which is either a Change or an Incident record" />
+    </parameters>
+    <handler name="bmc_itsm7_task_templated_create" version="2">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name="task_name">&lt;%= @parameters['task_name'] %&gt;</parameter>
+            <parameter name="location_company">&lt;%= @parameters['location_company'] %&gt;</parameter>
+        </parameters>
+        <task_fields>
+            <!-- TMS:Task -->
+            <field name="Location Company">&lt;%= @parameters['location_company'] %&gt;</field>
+            <field name="RootRequestFormName">&lt;%= @parameters['parent_form_name'] %&gt;</field>
+            <field name="RootRequestInstanceID">&lt;%= @parameters['parent_instance_id'] %&gt;</field>
+            <field name="RootRequestMode">Real</field>
+            <field name="RootRequestName">&lt;%= @parameters['parent_id'] %&gt;</field>
+            <field name="Summary">Default to be replaced</field>
+            <field name="TaskName">&lt;%= @parameters['task_name'] %&gt;</field>
+            <field name="TemplateID"></field>
+            <field name="zTmpInternalCommand">CREATE</field>
+            <field name='Character 01'>&lt;%= @task['Deferral Token'] %&gt;</field>
+        </task_fields>
+        <flow_builder_fields>
+            <!-- TMS:FlowBuilder -->
+            <field name='ParentID'>&lt;%= @parameters['parent_instance_id'] %&gt;</field>
+            <field name='Parent Name'>&lt;%= @parameters['parent_id'] %&gt;</field>
+            <field name='Parent Type'>Root Request</field>
+            <field name='RootRequestFormName'>&lt;%= @parameters['parent_form_name'] %&gt;</field>
+            <field name='RootRequestInstanceID'>&lt;%= @parameters['parent_instance_id'] %&gt;</field>
+            <field name='RootRequestName'>&lt;%= @parameters['parent_id'] %&gt;</field>
+            <field name='zTmpInternalCommand'>CREATE_TASK_FLOW</field>
+			
+        </flow_builder_fields>
+    </handler>
+    <results format="xml">
+        <result name="Task Id"></result>
+    </results>
+</taskDefinition>

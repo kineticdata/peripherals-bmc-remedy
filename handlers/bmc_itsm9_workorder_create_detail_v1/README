@@ -1,0 +1,180 @@
+== BMC ITSM9 Work Order Create Detail
+Creates a BMC ITSM9 SRM Work Order record that contains the Id of
+the triggering Kinetic Request submission and the task instance deferral
+token using the parameters provided.
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[KSR Request ID]
+	The KSR base record relating to this work order.
+[KSR Instance ID]
+	The KSR base record instance ID relating to this work order.
+
+[Status]
+	The value placed in the Status field on the Work Order form (default: Assigned)
+[Status Reason]
+	The value placed in the Status Reason field on the Work Order form.		
+		
+[Company]
+	The value placed in the Company field on the Work Order form.
+[Location Company]
+	The value placed in the Location Company field on the Work Order form.
+		
+[Requester Region]
+	The value placed in the Region field on the Work Order form.
+[Requester Site Group]
+	The value placed in the Site Group field on the Work Order form.
+[Requester Site]
+	The value placed in the Site field on the Work Order form.	  
+[Requester First Name]
+	The value placed in the Requester First Name field on the Work Order form.
+[Requester Last Name]
+	The value placed in the Requester Last Name field on the Work Order form.
+
+[Customer Company]
+	The value placed in the Customer Company field on the Work Order form.
+[Customer First Name]
+	The value placed in the Customer First Name field on the Work Order form.
+[Customer Last Name]
+	The value placed in the Customer Last Name field on the Work Order form.
+[Customer Person ID]
+	The value placed in the Customer Person ID field on the Work Order form.
+		
+[Submitter First Name]
+	Will be used to populate the Contact field.
+[Submitter Last Name]
+	Will be used to populate the Contact field.
+[Submitter EMail Address]
+	Will be used to populate the Contact field.		
+[Submitter Person Id]
+	Will be used to populate the Contact field.
+[Requested By Person Id]
+	Will be used to populate the Contact field.
+[Submitter Login Id]
+	The value placed in the Submitter field on the Work Order form.
+		
+[Priority]
+	The value placed in the Priority field on the Work Order form.
+[Work Order Type]
+	The value placed in the Work Order Type field on the Work Order form.		  
+[Work Order Summary]
+	The value placed in the Summary field on the Work Order form.
+[Work Order Detailed Description]
+	The value placed in the Descripiton field on the Work Order form.
+
+[Template Name]
+	The value placed in the Template Name field on the Work Order form.
+		  
+[Operational Categorization Tier1]
+	The value placed in the Categorization Tier 1 field on the Work Order form.
+[Operational Categorization Tier2]
+	The value placed in the Categorization Tier 2 field on the Work Order form.
+[Operational Categorization Tier3]
+	The value placed in the Categorization Tier 3 field on the Work Order form.
+
+[Product Cat Tier 1]
+	The value placed in the Product Cat Tier 1 field on the Work Order form.
+[Product Cat Tier 2]
+	The value placed in the Product Cat Tier 2 field on the Work Order form.
+[Product Cat Tier 3]
+	The value placed in the Product Cat Tier 3 field on the Work Order form.
+[Product Name]
+	The value placed in the Product Name field on the Work Order form.
+[Product Manufacturer]
+	The value placed in the Manufacturer field on the Work Order form.
+		  
+[Assignee Support Company]
+	The value placed in the Request Assignee Support Company field on the Work Order form.
+[Assignee Support Organization]
+	The value placed in the Request Assignee Support Organization field on the Work Order form.
+[Assignee Support Group Name]
+	The value placed in the Request Assignee Support Group Name field on the Work Order form.	  
+[Request Assignee]
+	The value placed in the Request Assignee field on the Work Order form.
+		  
+[Manager Support Company]
+	The value placed in the Request Manager Support Company field on the Work Order form.
+[Manager Support Organization]
+	The value placed in the Request Manager Support Organization field on the Work Order form.
+[Manager Support Group Name]
+	The value placed in the Request Manager Support Group Name field on the Work Order form.	  
+[Request Manager]
+	The value placed in the Request Manager field on the Work Order form.
+
+=== Sample Configuration
+KSR Request ID::
+KSR Instance ID::
+
+Status::
+Status Reason::	
+		
+Company::
+Location Company::
+		
+Requester Region::
+Requester Site Group::
+Requester Site::
+Requester First Name::
+Requester Last Name::
+
+Customer Company::
+Customer First Name::
+Customer Last Name::
+Customer Person ID::
+		
+Submitter First Name::
+Submitter Last Name::
+Submitter EMail Address::
+Submitter Person Id::
+Requested By Person Id::
+Submitter Login Id::
+		
+Priority::
+Work Order Type::
+Work Order Summary::
+Work Order Detailed Description::
+
+Template Name::
+		  
+Operational Categorization Tier1::
+Operational Categorization Tier2::
+Operational Categorization Tier3::
+
+Product Cat Tier 1::
+Product Cat Tier 2::
+Product Cat Tier 3::
+Product Name::
+Product Manufacturer::
+		  
+Assignee Support Company::
+Assignee Support Organization::
+Assignee Support Group Name::
+Request Assignee::
+		  
+Manager Support Company::
+Manager Support Organization::
+Manager Support Group Name::
+Request Manager::
+
+=== Results
+[Work Order ID]
+  The ID of the work order created (WOI##########)
+[Work Order Instance Id]
+  The Instance ID of the work order created.
+
+=== Detailed Description
+This handler uses the WOI:WorkOrderInterface_Create form &
+functionality in ITSM to create work orders. This handler 
+allows for creation of a work order without a template. 
+
+Please be cautious hard coding shifting/frequently changing data
+like Remedy Group names into task trees. It is a better strategy
+to look up this data from somewhere (eg. a dataset in the 
+Data Manageement Console or the Remedy Assignment Engine).
+
+Note that in 7.6.X version of ITSM, there have been issues 
+reported with using WOI:WorkOrderInterface_Create to create 
+work orders. This may need to be repaired in ITSM before this 
+can effectively be used, but no changes are necessary in the 
+handler.

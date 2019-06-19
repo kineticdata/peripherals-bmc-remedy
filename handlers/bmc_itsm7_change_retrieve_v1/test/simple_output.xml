@@ -1,0 +1,27 @@
+<results>
+	<result name="Actual Start Date"></result>
+	<result name="Actual End Date"></result>
+	<result name="Change Type"></result>
+	<result name="Change Timing"></result>
+	<result name="Company"></result>
+	<result name="Company3"></result>
+	<result name="Completed Date"></result>
+	<result name="Description"></result>
+	<result name="Detailed Description"></result>
+	<result name="Earliest Start Date"></result>
+	<result name="First Name"></result>
+	<result name="Impact"></result>
+	<result name="Last Name"></result>
+	<result name="Location Company"></result>
+	<result name="Risk Level"></result>
+	<result name="Scheduled Start Date"></result>
+	<result name="Scheduled End Date"></result>
+	<result name="Status"></result>
+	<result name="SRID"></result>
+	<result name="SRInstanceID"></result>
+	<result name="SRMSAOIGuid"></result>
+	<result name="Submitter"></result>
+	<result name="Support Group Name"></result>
+	<result name="Support Organization"></result>
+	<result name="Urgency"></result>
+</results>

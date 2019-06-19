@@ -1,0 +1,11 @@
+BMC_ITSM7_ChangeWorkInfo_Create_V4(2014-02-01)
+* This handler is safe to use in a subtree because it does not rely on any @base 
+information to process. All data is passed into the handler as parameters.
+
+BMC_ITSM7_ChangeWorkInfo_Create_V3 (2010-1-11)
+* Updated to set the 'Infra. Change Entry ID' field in the created change work
+  info entry.  The value for 'Infra. Change Entry ID' is automatically set by
+  using the change number to retrieve the request id of the change entry.
+  
+BMC_ITSM7_ChangeWorkInfo_Create_V2 (2010-12-22)
+* Initial version.  See README for details.

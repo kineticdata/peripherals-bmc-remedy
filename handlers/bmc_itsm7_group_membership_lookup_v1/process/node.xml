@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_group_membership_lookup" name="BMC ITSM7 Group Membership Lookup" 
+  schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>
+        Retrieves Email Address(es) for the individual or support group, separated by commas.
+    </description>
+    <helpurl>http://community.kineticdata.com/</helpurl>
+    <visible>false</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="assignee_id" label="Assignee Login Id" required="false" 
+          tooltip="The assignee login id to get the email address for"/>
+        <parameter id="support_group_id" label="ITSM Support Group" required="false" 
+          tooltip="The ITSM Support Group id to return email addresses for"/>          
+    </parameters>
+    <handler name="bmc_itsm7_group_membership_lookup" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name="assignee_id">&lt;%= @parameters['assignee_id'] %&gt;</parameter>
+            <parameter name="support_group_id">&lt;%= @parameters['support_group_id'] %&gt;</parameter>
+        </parameters>
+    </handler>
+    <results format="xml">
+        <result name="Email List"/>
+    </results>
+</taskDefinition>

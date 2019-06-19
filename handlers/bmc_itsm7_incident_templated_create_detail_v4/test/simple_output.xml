@@ -1,0 +1,8 @@
+<results>
+    <result name="Incident Number" type="Regexp">.+</result>
+    <result name="Incident Instance Id" type="Regexp">.+</result>
+    <result name="Status" type="Regexp">.+</result>
+	<result name="Status_Reason" type="Regexp"></result>
+    <result name="Resolution" type="Regexp"></result>
+    <result name="LMD" type="Regexp">.+</result>
+</results>

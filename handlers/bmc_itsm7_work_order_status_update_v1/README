@@ -1,0 +1,27 @@
+== BMC ITSM7 Work Order Status Update
+Updates the status and status reason if needed for a specific 
+BMC ITSM7 Work Order (WOI:WorkOrder) request.
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Work Order ID]
+  The work order id of the record to be updated.
+[Status]
+  The status that the work order will be changed to.
+[Status Reason]
+ The status reason that the work order will be changed to.  This is required if going to a completed status.
+
+=== Sample Configuration
+Work Order ID::	<%=@results['Create_WorkOrder']['Work Order ID']%>
+Status::            Completed
+Status Reason::  No Further Action Required
+
+=== Results
+[Work Order ID]
+	The work order id of the record updated.
+
+=== Detailed Description
+Updates the status and status reason if needed for a specific 
+BMC ITSM7 Work Order (WOI:WorkOrder) request using the 
+WOI:WorkOrderInterface form to interact with the work order. 

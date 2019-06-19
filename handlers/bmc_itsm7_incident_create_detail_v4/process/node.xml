@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_incident_create_detail" name="BMC ITSM7 Incident Create Detail"
+                schema_version="1.0" version="4">
+    <author>support@kineticdata.com</author>
+    <description>
+        Creates a BMC ITSM7 Incident (Help Desk) record that contains the Id of
+        the triggering Kinetic Request submission and the task instance deferral
+        token using the parameters provided.
+    </description>
+    <helpurl></helpurl>
+    <visible>true</visible>
+    <deferrable>true</deferrable>
+    <parameters>
+        <parameter id="srid" required="false" label="KSR Request ID:"
+				           tooltip="The KSR Base record relating to this incident." />
+		    <parameter id="srinstanceid" required="false" label="KSR Instance ID:"
+				           tooltip="The KSR Base record instance ID relating to this incident." />
+		    <parameter id="status" required="true" label="Status:"
+                   tooltip="The value placed in the Status field of the Incident.">New</parameter>		   
+		    <parameter id="status_reason" required="false" label="Status Reason:"
+                   tooltip="The value placed in the Status Reason field of the Incident."></parameter>		   
+		    <parameter id="type" required="false" label="Incident Type:"
+                   menu="User Service Restoration,User Service Request,Infrastructure Restoration,Infrastructure Event"
+				           tooltip="The value placed in the Incident Type field of the Incident.">User Service Request</parameter>
+		    <parameter id="requester_first_name" required="false" label="Requester First Name:"
+                   tooltip="The value placed in the First Name field on the Incident form." />
+        <parameter id="requester_last_name" required="false" label="Requester Last Name:"
+                   tooltip="The value placed in the Last Name field on the Incident form." />
+		    <parameter id="requester_login_id" required="true" label="Requester Login Id:"
+                   tooltip="Login is used to uniquely identify the requester." />
+        <parameter id="contact_first_name" required="false" label="Contact First Name:"
+                   tooltip="The value placed in the Direct Contact First Name field on the Incident form." />
+        <parameter id="contact_last_name" required="false" label="Contact Last Name:"
+                   tooltip="The value placed in the Direct Contact Last Name field on the Incident form." />
+		    <parameter id="contact_email" required="false" label="Contact Email:"
+                   tooltip="The value placed in the Direct Contact Internet E-Mail field on the Incident form." />
+				<parameter id="submitter_login_id" required="true" label="Submitter Login Id:"
+                   tooltip="The value placed in the Submitter field on the Incident form." />
+        <parameter id="incident_summary" required="true" label="Incident Summary:"
+                   tooltip="The value placed in the Summary field on the Incident form." />
+        <parameter id="incident_details" required="true" label="Incident Details:"
+                   tooltip="The value placed in the Description field on the Incident form." />
+		    <parameter id="resolution" required="false" label="Resolution:"
+                   tooltip="The value placed in the Resolution field on the Incident form." />		   
+        <parameter id="resolution_categorization_tier_1" required="false" label="Resolution Cat Tier 1:"
+                   tooltip="The value placed in the Resolution Categorization Tier 1 field on the Incident form." />
+		    <parameter id="resolution_categorization_tier_2" required="false" label="Resolution Cat Tier 2:"
+                   tooltip="The value placed in the Resolution Categorization Tier 2 field on the Incident form." />
+		    <parameter id="impact" required="true" label="Impact:"
+                   tooltip="The value placed in the Impact field on the Incident form." />
+        <parameter id="urgency" required="true" label="Urgency:"
+                   tooltip="The value placed in the Urgency field on the Incident form." />
+        <parameter id="category_tier_1" required="false" label="Operational Cat Tier 1"
+                   tooltip="Sets the 'Operational Cat Tier 1' field of the HPD:Incident entry" />
+        <parameter id="category_tier_2" required="false" label="Operational Cat Tier 2"
+                   tooltip="Sets the 'Operational Cat Tier 2' field of the HPD:Incident entry" />
+        <parameter id="category_tier_3" required="false" label="Operational Cat Tier 3"
+                   tooltip="Sets the 'Operational Cat Tier 3' field of the HPD:Incident entry" />
+        <parameter id="product_category_tier_1" required="false" label="Product Cat Tier 1"
+                   tooltip="Sets the 'Product Cat Tier 1' field of the HPD:Incident entry" />
+        <parameter id="product_category_tier_2" required="false" label="Product Cat Tier 2"
+                   tooltip="Sets the 'Product Cat Tier 2' field of the HPD:Incident entry" />
+        <parameter id="product_category_tier_3" required="false" label="Product Cat Tier 3"
+                   tooltip="Sets the 'Product Cat Tier 3' field of the HPD:Incident entry" />
+        <parameter id="product_name" required="false" label="Product Name"
+                   tooltip="Sets the 'Product Name' field of the HPD:Incident entry" />
+        <parameter id="product_manufacturer" required="false" label="Product Manufacturer"
+                   tooltip="Sets the 'Manufacturer' field of the HPD:Incident entry" />
+		    <parameter id="assigned_support_company" required="false" label="Assigned Support Company:"
+                   tooltip="The value placed in the Assigned Support Company field on the Incident form." />
+        <parameter id="assigned_support_organization" required="false" label="Assigned Support Organization:"
+                   tooltip="The value placed in the  Assigned Support Organization field on the Incident form." />
+        <parameter id="assigned_support_group" required="false" label="Assigned Support Group:"
+                   tooltip="The value placed in the Assigned Support Group field on the Incident form." />
+		    <parameter id="assigned_individual" required="false" label="Assigned Individual:"
+                   tooltip="The value placed in the Assignee field on the Incident form." />				   
+    </parameters>
+    <handler name="bmc_itsm7_incident_create_detail" version="4">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <fields>
+            <!-- HPD:IncidentInterface_Create -->
+            <field name='z1D_Action'>CREATE</field>
+            <field name='Status'>&lt;%= @parameters['status'] %&gt;</field>
+            <field name='Status_Reason'>&lt;%= @parameters['status_reason'] %&gt;</field>
+			      <field name='Resolution'>&lt;%= @parameters['resolution'] %&gt;</field>
+			      <field name='Resolution Category Tier 1'>&lt;%= @parameters['resolution_categorization_tier_1'] %&gt;</field>
+			      <field name='Resolution Category Tier 2'>&lt;%= @parameters['resolution_categorization_tier_2'] %&gt;</field>
+			      <field name='Reported Source'>Web</field>
+            <field name='Service_Type'>&lt;%= @parameters['type'] %&gt;</field>
+            <field name='Impact'>&lt;%= @parameters['impact'] %&gt;</field>
+            <field name='Urgency'>&lt;%= @parameters['urgency'] %&gt;</field>
+            <field name='Description'>&lt;%= @parameters['incident_summary'] %&gt;</field>
+            <field name='Detailed_Decription'>&lt;%= @parameters['incident_details'] %&gt;</field>
+            <field name='Assigned Support Company'>&lt;%= @parameters['assigned_support_company'] %&gt;</field>
+            <field name='Assigned Support Organization'>&lt;%= @parameters['assigned_support_organization'] %&gt;</field>
+            <field name='Assigned Group'>&lt;%= @parameters['assigned_support_group'] %&gt;</field>
+			      <field name='Assignee'>&lt;%= @parameters['assigned_individual'] %&gt;</field>
+            <field name='First_Name'>&lt;%= @parameters['requester_first_name'] %&gt;</field>
+            <field name='Last_Name'>&lt;%= @parameters['requester_last_name'] %&gt;</field>
+			      <field name='Login_ID'>&lt;%= @parameters['requester_login_id'] %&gt;</field>
+            <field name='Submitter'>&lt;%= @parameters['submitter_login_id'] %&gt;</field>
+            <field name='Direct Contact First Name'>&lt;%= @parameters['contact_first_name'] %&gt;</field>
+            <field name='Direct Contact Last Name'>&lt;%= @parameters['contact_last_name'] %&gt;</field>
+			      <field name='Direct Contact Internet E-mail'>&lt;%= @parameters['contact_email'] %&gt;</field>
+			      <field name='Categorization Tier 1'>&lt;%= @parameters['category_tier_1'] %&gt;</field>
+			      <field name='Categorization Tier 2'>&lt;%= @parameters['category_tier_2'] %&gt;</field>
+			      <field name='Categorization Tier 3'>&lt;%= @parameters['category_tier_3'] %&gt;</field>
+			      <field name='Product Categorization Tier 1'>&lt;%= @parameters['product_category_tier_1'] %&gt;</field>
+			      <field name='Product Categorization Tier 2'>&lt;%= @parameters['product_category_tier_2'] %&gt;</field>
+			      <field name='Product Categorization Tier 3'>&lt;%= @parameters['product_category_tier_3'] %&gt;</field>
+			      <field name='Product Name'>&lt;%= @parameters['product_name'] %&gt;</field>
+			      <field name='Manufacturer'>&lt;%= @parameters['product_manufacturer'] %&gt;</field>
+            <field name='SRID'>&lt;%= @parameters['srid'] %&gt;</field>
+            <field name='SRInstanceID'>&lt;%= @parameters['srinstanceid'] %&gt;</field>
+            <field name='SRMSAOIGuid'>&lt;%= @task['Deferral Token'] %&gt;</field>
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="Incident Number" />
+        <result name="Incident Instance Id" />
+    </results>
+</taskDefinition>

@@ -1,0 +1,4 @@
+<results>
+    <result name="Work Order ID" type="Regexp">.+</result>
+    <result name="Request ID" type="Regexp">.+</result>
+</results>

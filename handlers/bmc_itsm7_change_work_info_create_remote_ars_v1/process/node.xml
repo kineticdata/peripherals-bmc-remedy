@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_change_work_info_create_remote_ars" name="BMC ITSM7 Change Work Info Create"
+                schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>
+        Creates a BMC ITSM7 Infrastructure Change Work Info record based upon
+        the parameters provided.
+    </description>
+    <helpurl></helpurl>
+    <visible>true</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="change_number" required="true" label="Change Number:"
+                   tooltip="The change number of the Change to associate the Change Work Info entry with." />
+        <parameter id="include_review_request" required="true" label="Include Review Request:"
+                   tooltip="Option to prepend the review request URL to the Notes of the Change Work Info entry." menu="Yes,No" />
+        <parameter id="include_question_answers" required="true" label="Include Question Answers:"
+                   tooltip="Option to append the question answer pairs to the Notes of the Change Work Info entry." menu="Yes,No" />
+        <parameter id="work_info_type" required="true" label="Work Info Type:"
+                   tooltip="Work Info Type.">General Information</parameter>
+		<parameter id="work_info_summary" required="true" label="Work Info Summary:"
+                   tooltip="Sets the Summary of the Change Work Info entry." />
+        <parameter id="work_info_notes" required="false" label="Work Info Notes:"
+                   tooltip="Sets the Notes of the Change Work Info entry." />
+        <parameter id="work_info_submit_date" required="false" label="Work Info Submit Date:"
+                   tooltip="Sets the Date of the Change Work Info entry." />
+        <parameter id="attachment_question_menu_label_1" required="false" label="Attachment Question Menu Label 1:"
+                   tooltip="The menu label of an attachment question to retrieve an attachment from." />
+        <parameter id="attachment_question_menu_label_2" required="false" label="Attachment Question Menu Label 2:"
+                   tooltip="The menu label of an attachment question to retrieve an attachment from." />
+        <parameter id="attachment_question_menu_label_3" required="false" label="Attachment Question Menu Label 3:"
+                   tooltip="The menu label of an attachment question to retrieve an attachment from." />
+        <parameter id="submitter" required="false" label="Submitter:"
+                   tooltip="Sets the Submitter of the Change Work Info entry." />
+		<parameter id="secure_work_log" required="true" label="Locked:"
+                   tooltip="Sets the Incident Work Info entry Locked status." menu="Yes,No" />				   
+        <parameter id="view_access" required="true" label="View Access:"
+                   tooltip="Sets the Incident Work Info entry to Public or Internal.">Public</parameter>
+		<parameter id="customer_survey_instance_id" required="true" label="Customer Survey Instance ID:"
+                   tooltip="Instance ID of the submission that should be used to retrieve answers."/>
+		<parameter id="survey_template_instance_id" required="true" label="Survey Template Instance ID:"
+                   tooltip="The survey template instance ID related to the Customer Survey Instance ID."/>
+		<parameter id="default_web_server" required="true" label="Default Web Server:"
+                   tooltip="Instance ID of the submission that should be used to retrieve answers."/>
+    </parameters>
+    <handler name="bmc_itsm7_change_work_info_create_remote_ars" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password']%&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+			
+			<info name="ars_server">&lt;%= @info['ars_server'] %&gt;</info>
+            <info name="ars_username">&lt;%= @info['ars_username'] %&gt;</info>
+            <info name="ars_password">&lt;%= @info['ars_password'] %&gt;</info>
+            <info name="ars_port">&lt;%= @info['ars_port'] %&gt;</info>
+            <info name="ars_prognum">&lt;%= @info['ars_prognum'] %&gt;</info>
+            <info name="ars_authentication">&lt;%= @info['ars_authentication'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name='customer_survey_instance_id'>&lt;%= @parameters['customer_survey_instance_id'] %&gt;</parameter>
+            <parameter name='survey_template_instance_id'>&lt;%= @parameters['survey_template_instance_id'] %&gt;</parameter>
+            <parameter name='default_web_server'>&lt;%= @parameters['default_web_server'] %&gt;</parameter>
+            <parameter name='change_number'>&lt;%= @parameters['change_number'] %&gt;</parameter>
+            <parameter name='include_review_request'>&lt;%= @parameters['include_review_request'] %&gt;</parameter>
+            <parameter name='include_question_answers'>&lt;%= @parameters['include_question_answers'] %&gt;</parameter>
+            <parameter name='attachment_question_menu_label_1'>&lt;%= @parameters['attachment_question_menu_label_1'] %&gt;</parameter>
+            <parameter name='attachment_question_menu_label_2'>&lt;%= @parameters['attachment_question_menu_label_2'] %&gt;</parameter>
+            <parameter name='attachment_question_menu_label_3'>&lt;%= @parameters['attachment_question_menu_label_3'] %&gt;</parameter>
+			<parameter name='secure_work_log'>&lt;%= @parameters['secure_work_log'] %&gt;</parameter>
+            <parameter name='view_access'>&lt;%= @parameters['view_access'] %&gt;</parameter>
+        </parameters>
+        <fields>
+            <!-- CHG:WorkLog -->
+            <field name='Secure Work Log'>&lt;%= @parameters['secure_work_log'] %&gt;</field>
+            <field name='View Access'>&lt;%= @parameters['view_access'] %&gt;</field>
+            <field name='Communication Source'>Web</field>
+            <field name='z1D Previous Operation'>SET</field>
+            <field name='Status'>Enabled</field>
+            <field name='Work Log Type'>&lt;%= @parameters['work_info_type'] %&gt;</field>
+            <field name='Infra. Change Entry ID'>&lt;%= @parameters['change_number'] %&gt;</field>
+            <field name='Infrastructure Change ID'>&lt;%= @parameters['change_number'] %&gt;</field>
+            <field name='Description'>&lt;%= @parameters['work_info_summary'] %&gt;</field>
+            <field name='Detailed Description'>&lt;%= @parameters['work_info_notes'] %&gt;</field>
+            <field name='Work Log Date'>&lt;%= @parameters['work_info_submit_date'] %&gt;</field>
+            <field name='Work Log Submitter'>&lt;%= @parameters['submitter'] %&gt;</field>
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="Entry Id"/>
+    </results>
+</taskDefinition>

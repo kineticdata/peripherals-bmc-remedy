@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_incident_to_incident_relationship_create" name="BMC ITSM7 Incident to Incident Relationship Create"
+                schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>
+        Creates a relationship between two ITSM7 incidents using the HPD:Associations form
+    </description>
+    <helpurl>http://ktc.kineticdata.com/handler/bmc_itsm7_incident_to_incident_relationship_create/1</helpurl>
+    <visible>true</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="incident_number_1" required="true" label="Incident Number 1:"
+                   tooltip="The incident number for one side of the relationship." />
+        <parameter id="incident_number_2" required="true" label="Incident Number 2:"
+                   tooltip="The incident number for the other sise of the relationship." />
+        <parameter id="association_type" required="true" label="Association type:"
+		           menu="Duplicate of,Original of,Caused,Caused by,Related to,Resolved,Resolved by"
+				   tooltip="The type of relationship being created." />
+        <parameter id="submitter_login_id" required="true" label="Submitters Login ID:"
+                   tooltip="The Remedy login ID of the user to identify as the submitter of the relationship." />
+    </parameters>
+    <handler name="bmc_itsm7_incident_to_incident_relationship_create" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <fields>
+            <!-- HPD:Associations -->
+            <field name='Form Name01'>HPD:Help Desk</field>
+            <field name='Request ID01'>&lt;%= @parameters['incident_number_1'] %&gt;</field>
+            <field name='Request Type01'>Incident</field>
+            <field name='Form Name02'>HPD:Help Desk</field>
+            <field name='Request ID02'>&lt;%= @parameters['incident_number_2'] %&gt;</field>
+            <field name='Association Type01'>&lt;%= @parameters['association_type'] %&gt;</field>
+            <field name='Submitter'>&lt;%= @parameters['submitter_login_id'] %&gt;</field>
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="Associations ID" />
+    </results>
+</taskDefinition>

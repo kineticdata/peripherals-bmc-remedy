@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><taskDefinition id="bmc_itsm7_incident_close" name="BMC ITSM7 Incident Close" 
+    schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>Sets an Incidnet Status To closed.</description>
+    <helpurl/>
+    <visible>false</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="incident_number" required="true" label="Incident Number"
+                   tooltip="The incident number to close" />
+        <parameter id="status_reason" required="true" label="Status Reason"
+                   tooltip="Status Reason" />				   
+    </parameters>
+    <handler name="bmc_itsm7_incident_close" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+        </infos>
+		<parameters>
+            <parameter name="incident_number">&lt;%= @parameters['incident_number'] %&gt;</parameter>
+        </parameters>
+        <fields>
+            <!-- HPD:Help Desk -->
+            <field name='Status'>Closed</field>
+			<field name='Status_Reason'>&lt;%= @parameters['status_reason'] %&gt;</field>
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="Support Company"/>
+    </results>
+</taskDefinition>

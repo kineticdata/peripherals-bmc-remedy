@@ -1,0 +1,50 @@
+== BMC ITSM8 Associations to Asset Create
+Attaches a items to an asset on the AST:CMDB Associations.  (Second handlers are needed to attach the asset to the related item.)
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Consolidated Status]
+	Consolidated Status (status of Form Name01 record, Ex Executed for Contract, Scheduled for Change, etc)
+[Form Name01]
+	Form Name01 (Ex: CTR:MasterContract, HPD:Help Desk, CHG:Infrastructure Change)
+[Form Name02]
+	Form Name02 (Ex:  AST:ComputerSystem) default: AST:ComputerSystem
+[Form Name01 ID]
+	INC ID, Change ID, The contract's instance ID, etc
+[Asset Reconciliation ID]
+	The asset's reconciliation identity
+[Form Name01 Desciption]
+	INC ID: Summary, Change ID: Summary, Contract Name, etc
+[Association Type]
+	Association type. default: Attached to
+[Request Type]
+	Request Type (Ex. Contract, Infrastructure Change, Incident, etc)
+[Lookup Keyword]
+	Lookup Keyword relates (Class ID of the Asset - ex: MAINCHANGE, MAINHELPDESK, BMC_COMPUTERSYSTEM, not required on contract relationships)
+[Parent Dataset ID]
+	Parent DataSetID (most likely BMC.ASSET, not used on contract relationships)
+  
+==== Sample Configuration
+Consolidated Status ::			Scheduled
+Form Name01 ::					CHG:Infrastructure Change
+Form Name02 ::					AST:ComputerSystem
+Form Name01 ID ::				CRQ000000012352
+Asset Reconciliation ID ::		RE005054661F4Us1NYA8XgpDab
+Form Name01 Desciption ::		CRQ000000012352: Install Windows 7 Patches
+Association Type ::				Attached to
+Request Type ::					Infrastructure Change
+Lookup Keyword ::				MAINCHANGE
+Parent Dataset ID ::			BMC.ASSET
+
+=== Results
+[AST:CMDB Associations Entry ID]
+  The Request ID of the AST:CMDB Associations record that was created.
+
+
+=== Detailed Description
+This handler creates a record in the AST:CMDB Associations form based on the
+information input by the end user, and returns the Request ID of the record 
+created.  The handler is just half of the equation. It should be used in
+conjunction with bmc_itsm8_assoc_to_X_create where X is the type of record
+you are creating an association with, ex. change, incident, contract.

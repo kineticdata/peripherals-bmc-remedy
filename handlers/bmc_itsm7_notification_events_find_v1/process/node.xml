@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_notification_events_find" name="BMC ITSM7 Notification Events Find" schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+	<!--
+    <contributors>
+      <contributor>anne.ramey@kineticdata.com</contributor>
+    </contributors>
+    -->
+    <description>
+        Returns an XML listing (enabled) record ids found in the NTE:CFG-Notification Events form.
+    </description>
+    <helpurl></helpurl>
+    <visible>false</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+		<parameter id="type" label="Notification Event Type" required="false"
+            tooltip="Notification Event Type (User or System Default)"></parameter>
+		<parameter id="module" label="Module Name" required="false"
+            tooltip="Module Name (eg. Broadcast, Incident, Infrastructure Change, Request Management)"></parameter>
+		<parameter id="event" label="Notification Event" required="false"
+            tooltip="Notification Event (eg. Assignment, Approval, Broadcast Notification)"></parameter>
+		<parameter id="groupId" label="Support Group ID" required="false"
+            tooltip="Support Group ID"></parameter>
+		<parameter id="loginId" label="Remedy Login ID" required="false"
+            tooltip="Remedy Login ID"></parameter>
+		<parameter id="method" label="Remedy Notification Method" required="false"
+            tooltip="Remedy Notification Method (None, Alert, or Email)"></parameter>
+		<parameter id="pager" label="Pager Notification" required="false"
+            tooltip="Pager Notification (Yes or No)"></parameter>
+		<parameter id="individual" label="Individual Notification" required="false"
+            tooltip="Individual Notification (Yes or No)"></parameter>
+		<parameter id="group" label="Group Notification" required="false"
+            tooltip="Group Notification (Yes or No)"></parameter>
+    </parameters>
+    <handler name="bmc_itsm7_notification_events_find" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+		<parameters>
+			<parameter name='type'>&lt;%=@parameters['type']%&gt;</parameter>
+			<parameter name='module'>&lt;%=@parameters['module']%&gt;</parameter>
+			<parameter name='event'>&lt;%=@parameters['event']%&gt;</parameter>
+			<parameter name='groupId'>&lt;%=@parameters['groupId']%&gt;</parameter>
+			<parameter name='loginId'>&lt;%=@parameters['loginId']%&gt;</parameter>
+			<parameter name='method'>&lt;%=@parameters['method']%&gt;</parameter>
+			<parameter name='pager'>&lt;%=@parameters['pager']%&gt;</parameter>
+			<parameter name='individual'>&lt;%=@parameters['individual']%&gt;</parameter>
+			<parameter name='group'>&lt;%=@parameters['group']%&gt;</parameter>
+        </parameters>
+    </handler>
+    <results format="xml">
+	        <result name="List"/>
+			<result name="Count"/>
+    </results>
+</taskDefinition>

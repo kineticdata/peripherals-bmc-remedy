@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_srm_templated_work_order_create" name="BMC SRM Templated Work Order Create"
+                schema_version="1.0" version="3">
+    <author>support@kineticdata.com</author>
+    <description>
+        Creates a BMC ITSM7 Work Order record based on a given a Work Order Template.
+    </description>
+    <helpurl></helpurl>
+    <visible>true</visible>
+    <deferrable>true</deferrable>
+    <parameters>
+		<parameter id="work_order_template" required="true" label="Work Order Template:" tooltip="Name of the work order template to be used." />
+		<parameter id="work_order_summary" required="false" label="Work Order Summary:" tooltip="The value placed in the Summary field on the Work Order form. Leave empty to use the Summary defined in the WO Template." />
+		<parameter id="work_order_notes" required="false" label="Work Order Notes:" tooltip="The value placed in the Notes field on the Work Order form. Leave empty to use the Notes defined in the WO Template." />
+		<parameter id="requester_login_id" required="true" label="Requester Login Id:" tooltip="Login Id of the person making the request. This will be used to retrive the Person ID and place it in the Customer People ID field." />
+		<parameter id="submitter_login_id" required="true" label="Submitter Login Id:" tooltip="Login Id of the person submitting the request. This will be used to retrive the Person ID and place it in the Requested By People ID field." />
+		<parameter id="surveyid" required="true" label="Survey ID (KSR #):"
+                   tooltip="The value placed in the SRID field on the Work Order form." />
+        <parameter id="srinstanceid" required="true" label="Survey Instance ID:"
+                   tooltip="The value placed in the SRInstanceID field on the Work Order form." />
+		<parameter id="wo_detail_field_value_1" required="false" label="Detail Field 1 Value:" tooltip="Value for Field 1 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_2" required="false" label="Detail Field 2 Value:" tooltip="Value for Field 2 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_3" required="false" label="Detail Field 3 Value:" tooltip="Value for Field 3 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_4" required="false" label="Detail Field 4 Value:" tooltip="Value for Field 4 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_5" required="false" label="Detail Field 5 Value:" tooltip="Value for Field 5 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_6" required="false" label="Detail Field 6 Value (Datetime):" tooltip="Value for Field 6 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_7" required="false" label="Detail Field 7 Value (Datetime):" tooltip="Value for Field 7 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_8" required="false" label="Detail Field 8 Value (Integer):" tooltip="Value for Field 8 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_9" required="false" label="Detail Field 9 Value (Integer):" tooltip="Value for Field 9 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_10" required="false" label="Detail Field 10 Value:" tooltip="Value for Field 10 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_11" required="false" label="Detail Field 11 Value:" tooltip="Value for Field 11 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_12" required="false" label="Detail Field 12 Value:" tooltip="Value for Field 12 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_13" required="false" label="Detail Field 13 Value:" tooltip="Value for Field 13 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_14" required="false" label="Detail Field 14 Value:" tooltip="Value for Field 14 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_15" required="false" label="Detail Field 15 Value:" tooltip="Value for Field 15 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_16" required="false" label="Detail Field 16 Value:" tooltip="Value for Field 16 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_17" required="false" label="Detail Field 17 Value:" tooltip="Value for Field 17 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_18" required="false" label="Detail Field 18 Value:" tooltip="Value for Field 18 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_19" required="false" label="Detail Field 19 Value:" tooltip="Value for Field 19 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_20" required="false" label="Detail Field 20 Value:" tooltip="Value for Field 20 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_21" required="false" label="Detail Field 21 Value:" tooltip="Value for Field 21 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_22" required="false" label="Detail Field 22 Value:" tooltip="Value for Field 22 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_23" required="false" label="Detail Field 23 Value:" tooltip="Value for Field 23 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_24" required="false" label="Detail Field 24 Value (Integer):" tooltip="Value for Field 24 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_25" required="false" label="Detail Field 25 Value (Integer):" tooltip="Value for Field 25 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_26" required="false" label="Detail Field 26 Value (Integer):" tooltip="Value for Field 26 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_27" required="false" label="Detail Field 27 Value (Integer):" tooltip="Value for Field 27 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_28" required="false" label="Detail Field 28 Value:" tooltip="Value for Field 28 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_29" required="false" label="Detail Field 29 Value:" tooltip="Value for Field 29 as sepcified in the WO Template Detail tab." />
+		<parameter id="wo_detail_field_value_30" required="false" label="Detail Field 30 Value:" tooltip="Value for Field 30 as sepcified in the WO Template Detail tab." />
+	</parameters>
+    <handler name="bmc_srm_templated_work_order_create" version="3">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+		<parameters>
+			<parameter name="Work Order Template Name">&lt;%= @parameters['work_order_template'] %&gt;</parameter>
+			<parameter name="Requester Login Id">&lt;%= @parameters['requester_login_id'] %&gt;</parameter>
+			<parameter name="Submitter Login Id">&lt;%= @parameters['submitter_login_id'] %&gt;</parameter>
+		</parameters>
+        <fields>
+            <!-- WOI:WorkOrderInterface_Create -->
+			<field name='z1D_Action'>CREATE</field>
+			<field name='Summary'>&lt;%= @parameters['work_order_summary'] %&gt;</field>
+			<field name='Detailed Description'>&lt;%= @parameters['work_order_notes'] %&gt;</field>
+			<field name='WO Type Field 01'>&lt;%= @parameters['wo_detail_field_value_1'] %&gt;</field>
+			<field name='WO Type Field 02'>&lt;%= @parameters['wo_detail_field_value_2'] %&gt;</field>
+			<field name='WO Type Field 03'>&lt;%= @parameters['wo_detail_field_value_3'] %&gt;</field>
+			<field name='WO Type Field 04'>&lt;%= @parameters['wo_detail_field_value_4'] %&gt;</field>
+			<field name='WO Type Field 05'>&lt;%= @parameters['wo_detail_field_value_5'] %&gt;</field>
+			<field name='WO Type Field 06'>&lt;%= @parameters['wo_detail_field_value_6'] %&gt;</field>
+			<field name='WO Type Field 07'>&lt;%= @parameters['wo_detail_field_value_7'] %&gt;</field>
+			<field name='WO Type Field 08'>&lt;%= @parameters['wo_detail_field_value_8'] %&gt;</field>
+			<field name='WO Type Field 09'>&lt;%= @parameters['wo_detail_field_value_9'] %&gt;</field>
+			<field name='WO Type Field 10'>&lt;%= @parameters['wo_detail_field_value_10'] %&gt;</field>
+			<field name='WO Type Field 11'>&lt;%= @parameters['wo_detail_field_value_11'] %&gt;</field>
+			<field name='WO Type Field 12'>&lt;%= @parameters['wo_detail_field_value_12'] %&gt;</field>
+			<field name='WO Type Field 13'>&lt;%= @parameters['wo_detail_field_value_13'] %&gt;</field>
+			<field name='WO Type Field 14'>&lt;%= @parameters['wo_detail_field_value_14'] %&gt;</field>
+			<field name='WO Type Field 15'>&lt;%= @parameters['wo_detail_field_value_15'] %&gt;</field>
+			<field name='WO Type Field 16'>&lt;%= @parameters['wo_detail_field_value_16'] %&gt;</field>
+			<field name='WO Type Field 17'>&lt;%= @parameters['wo_detail_field_value_17'] %&gt;</field>
+			<field name='WO Type Field 18'>&lt;%= @parameters['wo_detail_field_value_18'] %&gt;</field>
+			<field name='WO Type Field 19'>&lt;%= @parameters['wo_detail_field_value_19'] %&gt;</field>
+			<field name='WO Type Field 20'>&lt;%= @parameters['wo_detail_field_value_20'] %&gt;</field>
+			<field name='WO Type Field 21'>&lt;%= @parameters['wo_detail_field_value_21'] %&gt;</field>
+			<field name='WO Type Field 22'>&lt;%= @parameters['wo_detail_field_value_22'] %&gt;</field>
+			<field name='WO Type Field 23'>&lt;%= @parameters['wo_detail_field_value_23'] %&gt;</field>
+			<field name='WO Type Field 24'>&lt;%= @parameters['wo_detail_field_value_24'] %&gt;</field>
+			<field name='WO Type Field 25'>&lt;%= @parameters['wo_detail_field_value_25'] %&gt;</field>
+			<field name='WO Type Field 26'>&lt;%= @parameters['wo_detail_field_value_26'] %&gt;</field>
+			<field name='WO Type Field 27'>&lt;%= @parameters['wo_detail_field_value_27'] %&gt;</field>
+			<field name='WO Type Field 28'>&lt;%= @parameters['wo_detail_field_value_28'] %&gt;</field>
+			<field name='WO Type Field 29'>&lt;%= @parameters['wo_detail_field_value_29'] %&gt;</field>
+			<field name='WO Type Field 30'>&lt;%= @parameters['wo_detail_field_value_30'] %&gt;</field>
+			<field name='Submitter'>&lt;%= @parameters['submitter_login_id'] %&gt;</field>
+			<field name='SRMSAOIGuid'>&lt;%= @task['Deferral Token'] %&gt;</field>
+			<field name='SRID'>&lt;%= @parameters['surveyid'] %&gt;</field>
+			<field name='SRInstanceID'>&lt;%= @parameters['srinstanceid'] %&gt;</field>
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="Work Order ID" />
+        <result name="Request ID" />
+		<result name="Deferral Token" />
+    </results>
+</taskDefinition>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_incident_templated_create_detail" name="BMC ITSM7 Incident Templated Create Detail"
+                schema_version="1.0" version="4">
+    <author>support@kineticdata.com</author>
+    <description>
+        Creates a BMC ITSM7 Incident (Help Desk) record that contains the Id of
+        the triggering Kinetic Request submission and the task instance deferral
+        token using the specified Incident Template and parameters provided.
+    </description>
+    <helpurl>http://ktc.kineticdata.com/handler/bmc_itsm7_incident_templated_create/3</helpurl>
+    <visible>true</visible>
+    <deferrable>true</deferrable>
+    <parameters>
+        <parameter id="incident_template_name" required="true" label="Incident Template Name:"
+                   tooltip="The name of the incident template to submit with." />
+        <parameter id="requester_first_name" required="true" label="Requester First Name:"
+                   tooltip="The value placed in the First Name field on the Incident form." />
+        <parameter id="requester_last_name" required="true" label="Requester Last Name:"
+                   tooltip="The value placed in the Last Name field on the Incident form." />
+		<parameter id="requester_login_id" required="false" label="Requester Login ID:"
+                    tooltip="Requester Login ID (optional)"/>
+        <parameter id="submitter_login_id" required="true" label="Submitter Login Id:"
+                   tooltip="The value placed in the Submitter field on the Incident form." />
+		<parameter id="contact_first_name" required="false" label="Contact First Name:"
+                   tooltip="The value placed in the Contact First Name field on the Incident form." />
+        <parameter id="contact_last_name" required="false" label="Contact Last Name:"
+                   tooltip="The value placed in the Contact Last Name field on the Incident form." />
+		<parameter id="summary" required="false" label="Summary:"
+                   tooltip="The value placed in the Summary field on the Incident form." />
+		<parameter id="notes" required="false" label="Notes:"
+                   tooltip="The value placed in the Notes field on the Incident form. (Will append with any Notes Values in the Template)" />
+		<parameter id="service_type" required="false" label="Service Type:"
+                   tooltip="The Service Type (eg. User Service Request or User Service Restoration) value placed in the Notes field on the Incident form." />
+		<parameter id="impact" required="false" label="Impact:"
+                   tooltip="Should be exactly equal to the text visible in Remedy for this field." />
+		<parameter id="urgency" required="false" label="Urgency:"
+                   tooltip="Should be exactly equal to the text visible in Remedy for this field." />
+		<parameter id="op_cat_1" required="false" label="Operational Category 1:"
+                   tooltip="Should be exactly equal to the text visible in Remedy for this field." />
+		<parameter id="op_cat_2" required="false" label="Operational Category 2:"
+                   tooltip="Should be exactly equal to the text visible in Remedy for this field." />
+		<parameter id="op_cat_3" required="false" label="Operational Category 3:"
+                   tooltip="Should be exactly equal to the text visible in Remedy for this field." />
+		<parameter id="prod_cat_1" required="false" label="Product Category 1:"
+                   tooltip="Should be exactly equal to the text visible in Remedy for this field." />
+		<parameter id="prod_cat_2" required="false" label="Product Category 2:"
+                   tooltip="Should be exactly equal to the text visible in Remedy for this field." />
+		<parameter id="prod_cat_3" required="false" label="Product Category 3:"
+                   tooltip="Should be exactly equal to the text visible in Remedy for this field." />
+		<parameter id="prod_name" required="false" label="Product Name:"
+                   tooltip="Should be exactly equal to the text visible in Remedy for this field." />
+		<parameter id="prod_model" required="false" label="Product Model/Version:"
+                   tooltip="Should be exactly equal to the text visible in Remedy for this field." />
+		<parameter id="prod_mfg" required="false" label="Product Manufacturer:"
+                   tooltip="Should be exactly equal to the text visible in Remedy for this field." />	
+		<parameter id="surveyid" required="true" label="Survey ID (KSR #):"
+                   tooltip="The value placed in the SRID field on the Incident form." />
+		<parameter id="srinstanceid" required="true" label="Survey Instance ID:"
+                   tooltip="The value placed in the SRInstanceID field on the Incident form." />
+
+    </parameters>
+    <handler name="bmc_itsm7_incident_templated_create_detail" version="4">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name="incident_template_name">&lt;%= @parameters['incident_template_name'] %&gt;</parameter>
+        </parameters>
+        <fields>
+            <!-- HPD:IncidentInterface_Create --> 
+            <field name='z1D_Action'>CREATE</field>
+            <field name='Status'>New</field>
+            <field name='Reported Source'>Web</field>
+            <field name='Service_Type'>&lt;%= @parameters['service_type'] %&gt;</field>
+            <field name='Last_Name'>&lt;%= @parameters['requester_last_name'] %&gt;</field>
+            <field name='First_Name'>&lt;%= @parameters['requester_first_name'] %&gt;</field>
+            <field name='Submitter'>&lt;%= @parameters['submitter_login_id'] %&gt;</field>
+			<field name='Login_ID'>&lt;%= @parameters['requester_login_id'] %&gt;</field>
+            <field name='Description'>&lt;%= @parameters['summary'] %&gt;</field>
+            <field name='Detailed_Decription'>&lt;%= @parameters['notes'] %&gt;</field>
+            <field name='Impact'>&lt;%= @parameters['impact'] %&gt;</field>
+            <field name='Urgency'>&lt;%= @parameters['urgency'] %&gt;</field>
+            <field name='SRID'>&lt;%= @parameters['surveyid'] %&gt;</field>
+            <field name='SRInstanceID'>&lt;%= @parameters['srinstanceid'] %&gt;</field>
+            <field name='SRMSAOIGuid'>&lt;%= @task['Deferral Token'] %&gt;</field>
+			<field name='Direct Contact First Name'>&lt;%= @parameters['contact_first_name'] %&gt;</field>
+			<field name='Direct Contact Last Name'>&lt;%= @parameters['contact_last_name'] %&gt;</field>
+			<field name='Categorization Tier 1'>&lt;%= @parameters['op_cat_1'] %&gt;</field>
+			<field name='Categorization Tier 2'>&lt;%= @parameters['op_cat_2'] %&gt;</field>
+			<field name='Categorization Tier 3'>&lt;%= @parameters['op_cat_3'] %&gt;</field>
+			<field name='Product Categorization Tier 1'>&lt;%= @parameters['prod_cat_1'] %&gt;</field>
+			<field name='Product Categorization Tier 2'>&lt;%= @parameters['prod_cat_2'] %&gt;</field>
+			<field name='Product Categorization Tier 3'>&lt;%= @parameters['prod_cat_3'] %&gt;</field>
+			<field name='Product Name'>&lt;%= @parameters['prod_name'] %&gt;</field>
+			<field name='Product Model/Version'>&lt;%= @parameters['prod_model'] %&gt;</field>
+			<field name='Manufacturer'>&lt;%= @parameters['prod_mfg'] %&gt;</field>
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="Incident Number" />
+        <result name="Incident Instance Id" />
+        <result name="Status" />
+		<result name="Status_Reason" />
+		<result name="Resolution" />
+		<result name="LMD" />
+    </results>
+</taskDefinition>

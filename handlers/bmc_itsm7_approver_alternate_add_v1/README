@@ -1,0 +1,33 @@
+== Bmc_Itsm7_Approver_Alternate_Add
+Creates an alternate approver entry with the specified information.
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Alternate]
+  The Remedy ID of the new Alternate Approver
+[For]
+  The Remedy ID of the person this is an alternate for
+[Start Date]
+  The date this alternate approver should become active.
+[End Date]
+  The date this alternate approver should expire.
+[Notify]  
+  Should this approver be notified [Yes,No].
+  
+==== Sample Configuration
+Alternate:: <%=@results['create_approver']['New Approver']%>
+For:: <%=@dataset['Submitter']%>
+Start Date:: <%=@results['create_approver']['Start']%>
+End Date:: <%=@results['create_approver']['End']%>
+Notify:: <%=@results['create_approver']['Notify']%>
+
+=== Results
+[AlternateID]
+  The 'Request ID' field data of the record created.
+
+=== Detailed Description
+This handler creates an entry in the AP:Alternate table for use
+with BMC ITSM7 Change Management. An alternate approval record is 
+created with the specified information covering All (not a specific 
+process) and returns the unique record id.

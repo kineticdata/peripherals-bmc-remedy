@@ -1,0 +1,24 @@
+== Bmc Itsm7 Incident Asset Relate
+Creates an HPD:Associations record to relate a CI to a Incident.
+
+=== Parameters
+[Incident Number]
+  Incident Number of Incident to relate to CI
+[Reconciliation Identity]
+  CI Reconciliation Identity
+
+
+
+=== Results
+[Associations ID]
+  The record Id of the generated association.  
+
+  
+==== Sample Configuration
+Incident Number::                  INC000000000934
+Reconciliation Identity::          RE00505696001CPgVjUQLigtIwfbsT
+
+
+Associations ID::  HAS000000000607
+
+=== Detailed Description

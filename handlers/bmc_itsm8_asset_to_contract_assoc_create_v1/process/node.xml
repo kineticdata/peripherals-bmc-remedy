@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm8_asset_to_contract_assoc_create" name="BMC ITSM8 Asset to Contract Assoc Create" schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>
+        Attaches a contract to an asset.  (A second handler is needed to attach the contract to the asset.)
+    </description>
+    <helpurl></helpurl>
+    <visible>true</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="parent_form_name" tooltip="The value for the 'Parent Form Name' field.  Ex: AST:ComputerSystem" label="Parent Form Name" required="true">AST:ComputerSystem</parameter>
+		<parameter id="parent_instance_id" tooltip="Reconciliation ID of the asset." label="Parent Instance ID" required="true"/>
+		<parameter id="parent_relationship_type" tooltip="Parent Relationship Type" label="Parent Relationship Type" required="true" >Configuration Item</parameter>
+		<parameter id="parent_description" tooltip="The Asset Name" label="Parent Description" required="true" />
+		<parameter id="child_form_name" tooltip="The child form name" label="Child Form Name" required="true" >CTR:MasterContract</parameter>
+		<parameter id="child_instance_id" tooltip="Contract Instance ID" label="Child Instance ID" required="true" />
+        <parameter id="child_relationship_type" tooltip="Child relationship type" label="Child Relationship Type" required="true" >Contract</parameter>
+        <parameter id="child_description" tooltip="Contract name" label="Child Description" required="true"/>
+    </parameters>
+    <handler name="bmc_itsm8_asset_to_contract_assoc_create" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+        </infos>
+        <parameters>
+		</parameters>
+        <fields>
+            <field name='Parent_Form_Name'>&lt;%= @parameters['parent_form_name'] %&gt;</field>
+            <field name='Parent_Instance_ID'>&lt;%= @parameters['parent_instance_id'] %&gt;</field>
+            <field name='Parent_Relationship_Type'>&lt;%= @parameters['parent_relationship_type'] %&gt;</field>
+            <field name='Parent_Description'>&lt;%= @parameters['parent_description'] %&gt;</field>
+            <field name='Child_Form_Name'>&lt;%= @parameters['child_form_name'] %&gt;</field>
+            <field name='Child_Instance_ID'>&lt;%= @parameters['child_instance_id'] %&gt;</field>
+			<field name='Child_Relationship_Type'>&lt;%= @parameters['child_relationship_type'] %&gt;</field>
+            <field name='Child_Description'>&lt;%= @parameters['child_description'] %&gt;</field>
+            <field name='Child_ID'>&lt;%= @parameters['child_instance_id'] %&gt;</field>
+            <field name='Association Type01'>Attached to</field>
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="CTR:Contract_Relationship Entry ID"/>
+    </results>
+</taskDefinition>

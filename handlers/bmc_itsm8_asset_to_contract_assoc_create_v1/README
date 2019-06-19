@@ -1,0 +1,43 @@
+== BMC ITSM8 Asset to Contract Assoc Create
+Attaches a contract to an asset.  (A second handler is needed to attach the contract to the asset.)
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Parent Form Name]
+	The value for the 'Parent Form Name' field.  Ex: AST:ComputerSystem. default: AST:ComputerSystem
+[Parent Instance ID]
+	Reconciliation ID of the asset.
+[Parent Relationship Type]
+	Parent Relationship Type. default: Configuration Item
+[Parent Description]
+	The Asset Name
+[Child Form Name]
+	The child form name. default: CTR:MasterContract
+[Child Instance ID]
+	Contract Instance ID
+[Child Relationship Type]
+	Child relationship type. default: Contract
+[Child Description]
+	Contract name
+  
+==== Sample Configuration
+Parent Form Name ::				AST:ComputerSystem
+Parent Instance ID ::			RE01g23b4f13dgG23h54350f1
+Parent Relationship Type :: 	Configuration Item
+Parent Description ::			Adobe Pro
+Child Form Name ::				CTR:MasterContract
+Child Instance ID ::			CTR000000013948
+Child Relationship Type ::		Contract
+Child Description ::			1 Year Term
+
+=== Results
+[CTR:Contract_Relationship Entry ID]
+  The Request ID of the CTR:Contract_Relationship record that was created.
+
+
+=== Detailed Description
+This handler creates a record in the CTR:Contract_Relationship form based on the
+information input by the end user, and returns the Request ID of the record 
+created.  The handler is just half of the equation. It should be used in
+conjunction with bmc_itsm8_assoc_to_asset_create handler.

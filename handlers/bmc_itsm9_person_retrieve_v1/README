@@ -1,0 +1,77 @@
+== BMC_ITSM9_Person_Retrieve
+Retrieves a single ITSM CTM People entry related to the 
+Remedy Login specified via the REST API.
+
+
+=== Parameters
+[Remedy Login ID]
+  The Remedy Login ID associated to the CTM People record to retrieve
+
+=== Sample Configuration
+Remedy Login Id::        <%=@answers['ReqFor Login ID']%>
+
+=== Results
+[Remedy Login ID]
+  The 'Remedy Login ID' of the retrieved CTM:People record.
+[Email]
+  The 'Email' of the retrieved CTM:People record.
+[First Name]
+  The 'First Name' of the retrieved CTM:People record.
+[Middle Initial]
+  The 'Middle Initial' of the retrieved CTM:People record.
+[Last Name]
+  The 'Last Name' of the retrieved CTM:People record.
+[Job Title]
+  The 'Job Title' of the retrieved CTM:People record.
+[Nick Name]
+  The 'Nick Name' of the retrieved CTM:People record.
+[Corporate ID]
+  The 'Corporate ID' of the retrieved CTM:People record.
+[Profile Status]
+  The 'Profile Status' of the retrieved CTM:People record.
+[Contact Type]
+  The 'Contact Type' of the retrieved CTM:People record.
+[Client Sensitivity]
+  The 'Client Sensitivity' of the retrieved CTM:People record.
+[VIP]
+  The 'VIP' of the retrieved CTM:People record.
+[Support Staff]
+  The 'Support Staff' of the retrieved CTM:People record.
+[Assignment Availability]
+  The 'Assignment Availability' of the retrieved CTM:People record.
+[Company]
+  The 'Company' of the retrieved CTM:People record.
+[Organization]
+  The 'Organization' of the retrieved CTM:People record.
+[Department]
+  The 'Department' of the retrieved CTM:People record.
+[Region]
+  The 'Region' of the retrieved CTM:People record.
+[Site Group]
+  The 'Site Group' of the retrieved CTM:People record.
+[Site]
+  The 'Site' of the retrieved CTM:People record.
+[Desk Location]
+  The 'Desk Location' of the retrieved CTM:People record.
+[Mail Station]
+  The 'Mail Station' of the retrieved CTM:People record.
+[Phone Number Business]
+  The 'Phone Number Business' of the retrieved CTM:People record.
+[Phone Number Mobile]
+  The 'Phone Number Mobile' of the retrieved CTM:People record.
+[Phone Number Fax]
+  The 'Phone Number Fax' of the retrieved CTM:People record.
+[Phone Number Pager]
+  The 'Phone Number Pager' of the retrieved CTM:People record.
+[ACD Phone Num]
+  The 'ACD Phone Num' of the retrieved CTM:People record.
+[Corporate E-Mail]
+  The 'Corporate E-Mail' of the retrieved CTM:People record.
+[Accounting Number]
+  The 'Accounting Number' of the retrieved CTM:People record.
+[ManagersName]
+  The 'ManagersName' of the retrieved CTM:People record.
+[ManagerLoginID]
+  The 'ManagerLoginID' of the retrieved CTM:People record.
+[Cost Center Code]
+  The 'Cost Center Code' of the retrieved CTM:People record.

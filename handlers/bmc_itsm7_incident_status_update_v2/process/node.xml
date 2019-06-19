@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_incident_status_update" name="BMC ITSM7 Update Incident Status" schema_version="1.0" version="2">
+    <author>support@kineticdata.com</author>
+    <description>Updates the Incident Status</description>
+    <helpurl/>
+    <visible>true</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="IncidentID" required="true" label="Incident Number:" tooltip="Incident Number" />
+        <parameter id="Status" required="true" label="Status:" tooltip="Incident Status" />
+		<parameter id="StatusReason" required="false" label="Status Reason:" tooltip="Incident Status Reason" />
+    </parameters>
+    <handler name="bmc_itsm7_incident_status_update" version="2">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+        </infos>        
+        <parameters>
+			<parameter name='IncidentID'>&lt;%= @parameters['IncidentID'] %&gt;</parameter>
+        </parameters>        
+        <fields>
+            <field name='Status'>&lt;%= @parameters['Status'] %&gt;</field>	
+			<field name='Status_Reason'>&lt;%= @parameters['StatusReason'] %&gt;</field>				
+            <field name='IncidentID'>&lt;%= @parameters['IncidentID'] %&gt;</field>							
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="Entry ID"/>
+    </results>
+</taskDefinition>

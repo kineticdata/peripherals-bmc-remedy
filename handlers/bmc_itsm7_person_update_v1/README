@@ -1,0 +1,79 @@
+== BMC ITSM7 Person Update
+Updates an ITSM v7.x CTM People entry given the Remedy Login Id.  
+It only updates the record with the given values if those values 
+are provided (will not null out values).  It also creates a 
+WorkLog entry to audit the modification.
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Remedy Login ID]
+	The Remedy Login ID associated to the CTM People record to retrieve
+[Author]
+	The author of the modifications to the person record
+[Email Address]
+	The email address to set
+[Region]
+	The region to set
+[Site Group]
+	The site group to set
+[Site]
+	The site to set
+[Site ID]
+	The site id to set - required if setting site
+[Site City]
+	The site city to set - required if setting site (to correctly populate address)
+[Site Country]
+	The site county to set - required if setting site (to correctly populate address)
+[Site State/Province]
+	The site state/province to set - required if setting site (to correctly populate address)
+[Site Street]
+	The site street to set - required if setting site (to correctly populate address)
+[Site Zip/Postal Code]
+	The site zip/postal code to set - required if setting site (to correctly populate address)
+[Site Time Zone]
+	The site time zone to set - required if setting site (to correctly populate address)
+[CC Business]
+	The phone number country code to set
+[Area Code Business]
+	The phone number area code to set
+[Local Part Business Phone]
+	The phone number local part to set
+[Business Phone]
+	The phone number (put together) to set
+[Language]
+	The language to set (ex. en_US, fr_FR)
+
+=== Sample Configuration
+Remedy Login Id::       <%=@answers['ReqFor Login ID']%>
+Author::				KD_WEBUSER	
+Email Address::			<%=@answers['ReqFor Email']%>
+Region::				<%=@answers['New Region']%>
+Site Group::			<%=@answers['New Site Group']%>
+Site::					<%=@answers['New Site']%>
+Site ID::				<%=@answers['New Site ID']%>
+Site City::				<%=@answers['New Site City']%>
+Site Country::			<%=@answers['New Site Country']%>
+Site State/Province::	<%=@answers['New Site State/Province']%>
+Site Street::			<%=@answers['New Site Street']%>
+Site Zip/Postal Code::	<%=@answers['New Site Zip/Postal Code']%>
+Site Time Zone::		<%=@answers['New Site Time Zone']%>
+CC Business::			<%=@answers['New CC Business']%>
+Area Business::			<%=@answers['New Area Business']%>
+Local Business::		<%=@answers['New Local Business']%> 
+Business Phone::		<%=@answers['New Business Phone']%>
+Language::				<%=@answers['New Language']%>
+
+=== Results
+None
+
+=== Detailed Description
+Updates a single ITSM v7.x CTM People entry related to the 
+Remedy Login specified.
+
+Note: If a site is provided and a site ID is not, an error will occur.
+If a site is provided without city, country, state, street, timezone, and
+zip/postal code information, the site will be set, but the "Site Address"
+field in CTM:People will still display the old location/address.
+
+Note: If one component of the phone number is passed, all 4 should be.

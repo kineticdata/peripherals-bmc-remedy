@@ -1,0 +1,4 @@
+<results>
+    <result name="Work Order ID" type="Regexp">.+</result>
+    <result name="Incident Instance Id" type="Regexp">.+</result>
+</results>

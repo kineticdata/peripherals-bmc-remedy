@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_approval_approve" name="BMC ITSM7 Approval Approve" schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>
+        Approves a specific AP:Detail-Signature record.
+    </description>
+    <helpurl></helpurl>
+    <visible>false</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+		<parameter id="impersonating" label="Approver" required="true"
+            tooltip="The approver the handler should log in as. This should be the approver for approvers and the alternate if an alternate is approving." />
+		<parameter id="approval_record" label="Approval Record ID" required="true"
+            tooltip="The unique ID (field 1) for the Approval Detail-Signatre Record to be approved" />
+		<parameter id="approval_status" label="Approval Status" required="true"
+            tooltip="Whether the approval was approved or rejected. Valid Values: Approved, Rejected, Hold, More Information, Cancelled" />
+		<parameter id="approval_comments" label="Approval Comments" required="false"
+            tooltip="Any comments provided." />
+    </parameters>
+    <handler name="bmc_itsm7_approval_approve" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+        </infos>
+        <parameters>
+			<parameter name="impersonating">&lt;%= @parameters['impersonating'] %&gt;</parameter>
+			<parameter name="approval_record">&lt;%= @parameters['approval_record'] %&gt;</parameter>
+        </parameters>
+		<fields>
+            <field name='Approval Status'>&lt;%=@parameters['approval_status']%&gt;</field>
+			<field name='Comments'>&lt;%=@parameters['approval_comments']%&gt;</field>
+		</fields>
+    </handler>
+    <results format="xml">
+        <result name="Date Approved"/>
+    </results>
+</taskDefinition>

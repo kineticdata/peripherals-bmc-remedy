@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_incident_templated_create" name="BMC ITSM7 Incident Templated Create"
+                schema_version="1.0" version="3">
+    <author>support@kineticdata.com</author>
+    <description>
+        Creates a BMC ITSM7 Incident (Help Desk) record that contains the Id of
+        the triggering Kinetic Request submission and the task instance deferral
+        token using the specified Incident Template and parameters provided.
+    </description>
+    <helpurl>http://community.kineticdata.com/</helpurl>
+    <visible>true</visible>
+    <deferrable>true</deferrable>
+    <parameters>
+        <parameter id="incident_template_name" required="true" label="Incident Template Name:"
+                   tooltip="The name of the incident template to submit with." />
+        <parameter id="requester_first_name" required="true" label="Requester First Name:"
+                   tooltip="The value placed in the First Name field on the Incident form." />
+        <parameter id="requester_last_name" required="true" label="Requester Last Name:"
+                   tooltip="The value placed in the Last Name field on the Incident form." />
+        <parameter id="submitter_login_id" required="true" label="Submitter Login Id:"
+                   tooltip="The value placed in the Submitter field on the Incident form." />
+		<parameter id="surveyid" required="true" label="Survey ID (KSR #):"
+                   tooltip="The value placed in the SRID field on the Incident form." />
+        <parameter id="srinstanceid" required="true" label="Survey Instance ID:"
+                   tooltip="The value placed in the SRInstanceID field on the Incident form." />
+    </parameters>
+    <handler name="bmc_itsm7_incident_templated_create" version="3">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name="incident_template_name">&lt;%= @parameters['incident_template_name'] %&gt;</parameter>
+        </parameters>
+        <fields>
+            <!-- HPD:IncidentInterface_Create -->
+            <field name='z1D_Action'>CREATE</field>
+            <field name='Status'>New</field>
+            <field name='Reported Source'>Web</field>
+            <field name='Service_Type'>User Service Request</field>
+            <field name='Last_Name'>&lt;%= @parameters['requester_last_name'] %&gt;</field>
+            <field name='First_Name'>&lt;%= @parameters['requester_first_name'] %&gt;</field>
+            <field name='Submitter'>&lt;%= @parameters['submitter_login_id'] %&gt;</field>
+            <field name='SRID'>&lt;%= @parameters['surveyid'] %&gt;</field>
+            <field name='SRInstanceID'>&lt;%= @parameters['srinstanceid'] %&gt;</field>
+            <field name='SRMSAOIGuid'>&lt;%= @task['Deferral Token'] %&gt;</field>
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="Incident Number" />
+        <result name="Incident Instance Id" />
+    </results>
+</taskDefinition>

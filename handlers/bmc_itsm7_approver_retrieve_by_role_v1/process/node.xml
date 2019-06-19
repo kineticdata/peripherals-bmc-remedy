@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_approver_retrieve_by_role" name="BMC ITSM7 Approver Retrieve by Role" schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>
+        Retrieves a list of approvers for the role provided.
+    </description>
+    <helpurl></helpurl>
+    <visible>true</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="role_name" label="Role Name" required="true"
+            tooltip="The Role Name to send approvals to" />
+    </parameters>
+    <handler name="bmc_itsm7_approver_retrieve_by_role" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name="role_name" description="role_name">&lt;%= @parameters['role_name'] %&gt;</parameter>
+        </parameters>
+    </handler>
+    <results format="xml">
+        <result name="userIdList"/>
+		<result name="ifMultiple"/>
+    </results>
+</taskDefinition>

@@ -1,0 +1,143 @@
+== BMC SRM Templated Work Order Create
+Creates a BMC ITSM7 (SRM) Work Order record based on a given a Work Order Template.
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Work Order Template]
+	Name of the work order template to be used
+[Work Order Summary]
+	The value placed in the Summary field on the Work Order form. Leave empty to use the Summary defined in the WO Template.
+[Work Order Notes]
+	The value placed in the Notes field on the Work Order form. Leave empty to use the Notes defined in the WO Template.
+[Requester Login Id]
+	Login Id of the person making the request. This will be used to retrive the Person ID and place it in the Customer People ID field.
+[Submitter Login Id]
+	Login Id of the person submitting the request. This will be used to retrive the Person ID and place it in the Requested By People ID field.
+[Survey ID (KSR #)]
+	The value placed in the SRID field on the Work Order form.
+[Survey Instance ID]
+	The value placed in the SRInstanceID field on the Work Order form.
+[Detail Field 1 Value]
+	Value for Field 1 as sepcified in the WO Template Detail tab.
+[Detail Field 2 Value]
+	Value for Field 2 as sepcified in the WO Template Detail tab.
+[Detail Field 3 Value]
+	Value for Field 3 as sepcified in the WO Template Detail tab.
+[Detail Field 4 Value]
+	Value for Field 4 as sepcified in the WO Template Detail tab.
+[Detail Field 5 Value]
+	Value for Field 5 as sepcified in the WO Template Detail tab.
+[Detail Field 6 Value (Datetime)]
+	Value for Field 6 as sepcified in the WO Template Detail tab.
+[Detail Field 7 Value (Datetime)]
+	Value for Field 7 as sepcified in the WO Template Detail tab.
+[Detail Field 8 Value (Integer)]
+	Value for Field 8 as sepcified in the WO Template Detail tab.
+[Detail Field 9 Value (Integer)]
+	Value for Field 9 as sepcified in the WO Template Detail tab.
+[Detail Field 10 Value]
+	Value for Field 10 as sepcified in the WO Template Detail tab.
+[Detail Field 11 Value]
+	Value for Field 11 as sepcified in the WO Template Detail tab.
+[Detail Field 12 Value]
+	Value for Field 12 as sepcified in the WO Template Detail tab.
+[Detail Field 13 Value]
+	Value for Field 13 as sepcified in the WO Template Detail tab.
+[Detail Field 14 Value]
+	Value for Field 14 as sepcified in the WO Template Detail tab.
+[Detail Field 15 Value]
+	Value for Field 15 as sepcified in the WO Template Detail tab.
+[Detail Field 16 Value]
+	Value for Field 16 as sepcified in the WO Template Detail tab.
+[Detail Field 17 Value]
+	Value for Field 17 as sepcified in the WO Template Detail tab.
+[Detail Field 18 Value]
+	Value for Field 18 as sepcified in the WO Template Detail tab.
+[Detail Field 19 Value]
+	Value for Field 19 as sepcified in the WO Template Detail tab.
+[Detail Field 20 Value]
+	Value for Field 20 as sepcified in the WO Template Detail tab.
+[Detail Field 21 Value]
+	Value for Field 21 as sepcified in the WO Template Detail tab.
+[Detail Field 22 Value]
+	Value for Field 22 as sepcified in the WO Template Detail tab.
+[Detail Field 23 Value]
+	Value for Field 23 as sepcified in the WO Template Detail tab.
+[Detail Field 24 Value (Integer)]
+	Value for Field 24 as sepcified in the WO Template Detail tab.
+[Detail Field 25 Value (Integer)]
+	Value for Field 25 as sepcified in the WO Template Detail tab.
+[Detail Field 26 Value (Integer)]
+	Value for Field 26 as sepcified in the WO Template Detail tab.
+[Detail Field 27 Value (Integer)]
+	Value for Field 27 as sepcified in the WO Template Detail tab.
+[Detail Field 28 Value]
+	Value for Field 28 as sepcified in the WO Template Detail tab.
+[Detail Field 29 Value]
+	Value for Field 29 as sepcified in the WO Template Detail tab.
+[Detail Field 30 Value]
+	Value for Field 30 as sepcified in the WO Template Detail tab
+
+=== Sample Configuration
+Work Order Template:: Order Phone
+Work Order Summary:: Phone order for <%= @inputs['Site']%>
+Work Order Notes:: Please process a phone order for the requester.
+Requester Login Id:: <%= @inputs['Requested For Login']%>
+Submitter Login Id::  <%= @inputs['Submitted By Login']%>
+Survey ID (KSR #)::   <%= @inputs['KSR']%>
+Survey Instance ID::  <%= @inputs['Instance ID']%>
+Detail Field 1 Value:: <%= @inputs['Site']%>
+Detail Field 2 Value:: <%= @inputs['Phone Type']%>
+Detail Field 3 Value:: <%= @inputs['Dail Area']%>
+Detail Field 4 Value:: <%= @inputs['voicemail']%>
+Detail Field 5 Value::
+Detail Field 6 Value (Datetime)::
+Detail Field 7 Value (Datetime)::
+Detail Field 8 Value (Integer)::
+Detail Field 9 Value (Integer)::
+Detail Field 10 Value::
+Detail Field 11 Value::
+Detail Field 12 Value::
+Detail Field 13 Value::
+Detail Field 14 Value::
+Detail Field 15 Value::
+Detail Field 16 Value::
+Detail Field 17 Value::
+Detail Field 18 Value::
+Detail Field 19 Value::
+Detail Field 20 Value::
+Detail Field 21 Value::
+Detail Field 22 Value::
+Detail Field 23 Value::
+Detail Field 24 Value (Integer)::
+Detail Field 25 Value (Integer)::
+Detail Field 26 Value (Integer)::
+Detail Field 27 Value (Integer)::
+Detail Field 28 Value::
+Detail Field 29 Value::
+Detail Field 30 Value::
+
+=== Results
+[Work Order ID]
+  The ID of the work order created (WOI##########)
+[Request ID]
+  The request ID associated with this work order.
+[Deferral Token]
+  The deferral token used for this work order.
+
+=== Detailed Description
+This handler uses the WOI:WorkOrderInterface_Create form &
+functionality in ITSM to create work orders. This handler 
+allows for creation of a work order using a template, but 
+allowing the detail fields to be populated with request data.
+
+Note that in 7.6.X version of ITSM, there have been issues 
+reported with using WOI:WorkOrderInterface_Create to create 
+work orders. This may need to be repaired in ITSM before this 
+can effectively be used, but no changes are necessary in the 
+handler.
+
+This handler is safe to use in a subtree because it does not 
+rely on any @base information to process. All data is passed 
+into the handler as parameters.

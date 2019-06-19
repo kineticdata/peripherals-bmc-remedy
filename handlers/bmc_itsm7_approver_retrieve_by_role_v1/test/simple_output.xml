@@ -1,0 +1,4 @@
+<results>
+	<result name="userIdList" type="Regexp">.+</result>
+	<result name="ifMultiple" type="Regexp">.+</result>
+</results>

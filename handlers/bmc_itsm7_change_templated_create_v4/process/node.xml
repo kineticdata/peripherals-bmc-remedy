@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_change_templated_create" name="BMC ITSM7 Change Templated Create"
+                schema_version="1.0" version="4">
+    <author>support@kineticdata.com</author>
+    <description>
+        Creates a BMC ITSM7 Infrastructure Change record that contains the Id of
+        the triggering Kinetic Request submission and the task instance deferral
+        token using the specified Change Template and data parameters provided.
+    </description>
+    <helpurl>http://ktc.kineticdata.com/handler/bmc_itsm7_change_templated_create/2</helpurl>
+    <visible>true</visible>
+    <deferrable>true</deferrable>
+    <parameters>
+        <parameter id="change_template_name" required="true" label="Change Template Name:"
+                   tooltip="The name of the change template to be used.  Change templates are retrieved from CHG:Template." />
+        <parameter id="requester_first_name" required="false" label="Requester First Name:"
+                   tooltip="Used to find the Requester for the Requester tab under the Requested By header." />
+        <parameter id="requester_last_name" required="false" label="Requester Last Name:"
+                   tooltip="Used to find the Requester for the Requester tab under the Requested By header." />
+        <parameter id="requester_loginid" required="false" label="Requester Login ID:"
+                   tooltip="Used to find the Requester for the Requester tab under the Requested By header." />
+        <parameter id="requester_support_company" required="false" label="Requester Support Company:"
+                   tooltip="Sets the Support Company on the Requester tab under the Requested By header." />
+        <parameter id="submitter_login_id" required="true" label="Submitter Login Id:"
+                   tooltip="Sets the Submitter on the Dates tab under the Change Dates header." />
+        <parameter id="change_manager_support_company" required="true" label="Change Manager Support Company:"
+                   tooltip="Sets the Support Company on the Assignment tab under the Infrastructure Change Manage header." />
+        <parameter id="change_manager_support_organization" required="true" label="Change Manager Support Organization"
+                   tooltip="Sets the Support Organization on the Assignment tab under the Infrastructure Change Manage header." />
+        <parameter id="change_manager_support_group_name" required="true" label="Change Manager Support Group Name"
+                   tooltip="Sets the Support Group Name on the Assignment tab under the Infrastructure Change Manage header." />
+		<parameter id="surveyid" required="true" label="Survey ID (KSR #):"
+                   tooltip="The value placed in the SRID field on the Change form." />
+        <parameter id="srinstanceid" required="true" label="Survey Instance ID:"
+                   tooltip="The value placed in the SRInstanceID field on the Change form." />
+    </parameters>
+    <handler name="bmc_itsm7_change_templated_create" version="4">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name="change_template_name">&lt;%= @parameters['change_template_name'] %&gt;</parameter>
+        </parameters>
+        <fields>
+            <!-- CHG:ChangeInterface_Create -->
+            <field name="z1D_Action">CREATE</field>
+            <field name="First Name">&lt;%= @parameters['requester_first_name'] %&gt;</field>
+            <field name="Last Name">&lt;%= @parameters['requester_last_name'] %&gt;</field>
+			<field name="RequesterLoginID">&lt;%= @parameters['requester_loginid'] %&gt;</field>
+            <field name="Company">&lt;%= @parameters['requester_support_company'] %&gt;</field>
+            <field name="Submitter">&lt;%= @parameters['submitter_login_id'] %&gt;</field>
+            <field name="Company3">&lt;%= @parameters['change_manager_support_company'] %&gt;</field>
+            <field name="Support Organization">&lt;%= @parameters['change_manager_support_organization'] %&gt;</field>
+            <field name="Support Group Name">&lt;%= @parameters['change_manager_support_group_name'] %&gt;</field>
+            <field name='SRID'>&lt;%= @parameters['surveyid'] %&gt;</field>
+            <field name='SRInstanceID'>&lt;%= @parameters['srinstanceid'] %&gt;</field>
+            <field name='SRMSAOIGuid'>&lt;%= @task['Deferral Token'] %&gt;</field>
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="Change Number" />
+        <result name="Change Instance Id" />
+    </results>
+</taskDefinition>

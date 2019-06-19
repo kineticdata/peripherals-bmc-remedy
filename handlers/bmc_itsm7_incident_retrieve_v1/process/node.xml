@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm7_incident_retrieve" name="BMC ITSM7 Incident Retrieve" schema_version="1.0" version="1">
+    <author></author>
+    <description>
+	    Retrieves a single ITSM Incident entry.
+	</description>
+    <helpurl></helpurl>
+    <visible>false</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="incident_number" label="Incident Number:" required="true" 
+		  tooltip="The incident number of the ticket to retrieve"/>
+    </parameters>
+    <handler name="bmc_itsm7_incident_retrieve" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+			<info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name="incident_number">&lt;%= @parameters['incident_number'] %&gt;</parameter>
+        </parameters>
+    </handler>
+    <results format="xml">
+        <result name="Direct Contact Person ID"/>
+		<result name="Direct Contact Department"/>
+		<result name="Direct Contact Organization"/>
+		<result name="Direct Contact First Name"/>
+		<result name="Direct Contact Last Name"/>
+		<result name="Direct Contact Company"/>
+		<result name="Vendor Resolved Date"/>
+		<result name="Vendor Responded On"/>
+		<result name="Priority"/>
+		<result name="SLM Status"/>
+		<result name="Service Type"/>
+		<result name="Status"/>
+		<result name="Next Target Date"/>
+		<result name="Resolution Category"/>
+		<result name="Reported to Vendor"/>
+		<result name="Original Incident Number"/>
+		<result name="Generic Categorization Tier 1"/>
+		<result name="Owner"/>
+		<result name="Vendor Ticket Number"/>
+		<result name="Status"/>
+		<result name="Owner Support Company"/>
+		<result name="Owner Group"/>
+		<result name="Assigned Group Shift Name"/>
+		<result name="Assigned Support Company"/>
+		<result name="Assignee"/>
+		<result name="Assigned Group"/>
+		<result name="Reported Source"/>
+		<result name="Incident Number"/>
+		<result name="Entry ID"/>
+		<result name="Priority Weight"/>
+		<result name="Priority"/>
+		<result name="Impact"/>
+		<result name="Urgency"/>
+		<result name="Resolution"/>
+		<result name="Detailed Decription"/>
+		<result name="Contact Company"/>
+		<result name="Person ID"/>
+		<result name="Categorization Tier 3"/>
+		<result name="Categorization Tier 2"/>
+		<result name="Categorization Tier 1"/>
+		<result name="First Name"/>
+		<result name="Last Name"/>
+		<result name="Organization"/>
+		<result name="Company"/>
+		<result name="Description"/>
+		<result name="Direct Contact Internet E-mail"/>
+		<result name="Status_Reason"/>
+		<result name="Site"/>
+		<result name="Product Model/Version"/>
+		<result name="Manufacturer"/>
+		<result name="Product Name"/>
+		<result name="Department"/>
+		<result name="Product Categorization Tier 3"/>
+		<result name="Product Categorization Tier 2"/>
+		<result name="Product Categorization Tier 1"/>
+    </results>
+</taskDefinition>

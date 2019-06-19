@@ -1,0 +1,123 @@
+== BMC_ITSM7_Change_Retrieve_V1
+Retrieves a BMC ITSM7 Infrastructure Change record for the specified Infrastructure Change ID or
+InstanceID.
+
+=== Parameters
+[search_by]
+	The Search By parameter has two menu options, Infrastructure Change ID
+	and Instance ID, that configures which field the handler will use in its search qualification.
+	
+[search_value]
+	Provides the search value for the search qualification.
+	This can be either an Infrastructure Change ID (e.g. CRQ000000000042),
+	or an Instance ID for the record (e.g. AG00305616002CXe6wUQOvsjDweskK)	
+
+	
+
+==== Sample Configuration
+search_by::                         <%=@answers['Search By Selection']%>
+search_value::                      <%=@answers['Search Value']%>
+
+
+
+=== Results
+
+[Actual End Date]
+	Actual end date of the change. Date/time formatted as: Sat Jun 15 00:00:00-0500 2013
+
+ 
+[Actual Start Date]
+	Actual start date of the change. Date/time formatted as: Sat Jun 15 00:00:00-0500 2013
+
+ 
+[Change Timing]
+	Defined type of change timing. This may show as 'Class' on the BMC Change form. A few stock BMC values include: Emergency, Expedited, Latent, Normal
+
+ 
+[Change Type]
+	Type of the change request.
+
+ 
+[Company]
+	Chosen company that change applies to. 
+
+ 
+[Company3]
+	Change Manager Support Company
+
+ 
+[Completed Date]
+	When the change was completed. Date/time formatted as: Sat Jun 15 00:00:00-0500 2013
+
+ 
+[Description]
+	Description for the change. This field maps to what will likely show up on the BMC change form as 'Summary'.
+
+ 
+[Detailed Description]
+	Detailed description for the change. This field maps to what will likely show up on the BMC change form as 'Notes'.
+
+ 
+[Earliest Start Date]
+	Earliest possible start date for the change. Date/time formatted as: Sat Jun 15 00:00:00-0500 2013
+
+ 
+[First Name]
+	First name of the requester for the request.
+
+ 
+[Impact]
+	Chosen impact value for the change. The value returned for this field will be formatted as it is displayed on the form. For example: 4-Minor/Localized
+
+ 
+[Last Name]
+	Last name of the requester for the request.
+
+ 
+[Location Company]
+	Chosen company that the change applies. Filled out on the change form from the 'Location Change'.
+
+ 
+[Risk Level]
+	Calculated risk value of the change. The value returned for this field will be formatted as it is displayed on the form. For example: Risk Level 4
+
+ 
+[Scheduled End Date]
+	Scheduled end date/time of the change. Date/time formatted as: Sat Jun 15 00:00:00-0500 2013
+
+ 
+[Scheduled Start Date]
+	Scheduled start date/time of the change. Date/time formatted as: Sat Jun 15 00:00:00-0500 2013
+
+ 
+[Status]
+	Status of the change request. A few stock BMC values include: Cancelled, Completed, Draft, Pending, Planning In Progress, Request for Authorization
+
+ 
+[SRID]
+	Stock BMC change field used by Kinetic Request to store the associated Kinetic Request ID (CustomerSurveyID field from the KS_SRV_CustomerSurvey_base form.) Example value: KSR000000000042
+
+ 
+[SRInstanceID]
+	Stock BMC change field used by Kinetic Request to store an associated CustomerSurveyInstanceId field off of the KS_SRV_CustomerSurvey_base form. Example value: AG00501196001CXe6wUQOvsjDweskK
+
+ 
+[SRMSAOIGuid]
+	Stock BMC change field used by Kinetic Request to store the Kinetic Task deferal token.
+
+ 
+[Submitter]
+	Remedy user id of the submitter for the change request.
+
+ 
+[Support Group Name]
+	Support group chosen for the change request.
+
+ 
+[Support Organization]
+	Support ogranization chosen for the change request.
+
+ 
+[Urgency]
+	Chosen urgency value for the change. The value returned for this field will be formatted as it is displayed on the form. For example: 4-Low
+

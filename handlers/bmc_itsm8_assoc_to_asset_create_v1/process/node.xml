@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm8_assoc_to_asset_create" name="BMC ITSM8 Associations to Asset Create" schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>
+        Attaches a items to an asset on the AST:CMDB Associations.  (Second handlers are needed to attach the asset to the related item.)
+    </description>
+    <helpurl></helpurl>
+    <visible>true</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="consolidated_status" tooltip="Consolidated Status (status of Form Name01 record, Ex Executed for Contract, Scheduled for Change, etc)" label="Consolidated Status" required="true"></parameter>
+		<parameter id="form_name01" tooltip="Form Name01 (Ex: CTR:MasterContract, HPD:Help Desk, CHG:Infrastructure Change)" label="Form Name01" required="true"></parameter>
+		<parameter id="form_name02" tooltip="Form Name02 (Ex:  AST:ComputerSystem)" label="Form Name02" required="true" >AST:ComputerSystem</parameter>
+		<parameter id="request_id01" tooltip="INC ID, Change ID, The contract's instance ID, etc" label="Form Name01 ID" required="true" />
+		<parameter id="request_id02" tooltip="The asset's reconciliation identity" label="Asset Reconciliation ID" required="true" ></parameter>
+		<parameter id="request_description01" tooltip="INC ID: Summary, Change ID: Summary, Contract Name, etc" label="Form Name01 Desciption" required="true" />
+        <parameter id="association_type01" tooltip="Association type" label="Association Type" required="true" >Attached to</parameter>
+        <parameter id="request_type01" tooltip="Request Type (Ex. Contract, Infrastructure Change, Incident, etc)" label="Request Type" required="true"></parameter>
+		<parameter id="lookup_keyword" tooltip="Lookup Keyword relates (Class ID of the Asset - ex: MAINCHANGE, MAINHELPDESK, BMC_COMPUTERSYSTEM, not required on contract relationships)" label="Lookup Keyword" required="false"></parameter>
+		<parameter id="parent_dataset_id01" tooltip="Parent DataSetID (most likely BMC.ASSET, not used on contract relationships)" label="Parent Dataset ID" required="false"></parameter>
+    </parameters>
+    <handler name="bmc_itsm8_assoc_to_asset_create" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+        </infos>
+        <parameters>
+		</parameters>
+        <fields>
+            <field name='ConsolidatedStatus'>&lt;%= @parameters['consolidated_status'] %&gt;</field>
+            <field name='Form Name01'>&lt;%= @parameters['form_name01'] %&gt;</field>
+            <field name='Form Name02'>&lt;%= @parameters['form_name02'] %&gt;</field>
+            <field name='Request ID01'>&lt;%= @parameters['request_id01'] %&gt;</field>
+            <field name='Request ID02'>&lt;%= @parameters['request_id02'] %&gt;</field>
+            <field name='Request Description01'>&lt;%= @parameters['request_description01'] %&gt;</field>
+			<field name='Association Type01'>&lt;%= @parameters['association_type01'] %&gt;</field>
+            <field name='Request Type01'>&lt;%= @parameters['request_type01'] %&gt;</field>
+			<field name='Lookup Keyword'>&lt;%= @parameters['lookup_keyword'] %&gt;</field>
+			<field name='Parent_DataSet_ID01'>&lt;%= @parameters['parent_dataset_id01'] %&gt;</field>
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="AST:CMDB Associations Entry ID"/>
+    </results>
+</taskDefinition>

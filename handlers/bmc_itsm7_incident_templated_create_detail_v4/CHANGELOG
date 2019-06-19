@@ -1,0 +1,15 @@
+BMC_ITSM7_Incident_Templated_Create_Detail_V3 (2015-07-22)
+* exposed/separated the login ID field
+
+BMC_ITSM7_Incident_Templated_Create_Detail_V3 (2015-07-1)
+* Added additional functionality to support Direct Contact on Incident, as well as Operational
+and Product Categories.
+
+BMC_ITSM7_Incident_Templated_Create_Detail (2014-03-07)
+* This handler is safe to use in a subtree because it does not rely on any @base 
+information to process. All data is passed into the handler as parameters.
+* Updated template search to only include Enabled templates
+
+BMC_ITSM7_Incident_Templated_Create_Detail (2011-10-03)
+ * Initial version.  See README for details.
+

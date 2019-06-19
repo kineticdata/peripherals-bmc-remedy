@@ -1,0 +1,29 @@
+== BMC ITSM7 Change Status Update
+Updates the status and status reason if needed for a specific 
+BMC ITSM7 Change (CHG:Infrastructure Change) request.
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Change ID]
+  The change id of the record to be updated.
+[Status]
+  The status that the change will be changed to.
+[Status Reason]
+ The status reason that the change will be changed to.  This is required if going to a certain statuses.
+
+=== Sample Configuration
+Change ID::	    <%=@results['Create_Change']['Change ID']%>
+Status::            Resolved
+Status Reason::     No Further Action Required
+
+=== Results
+[Entry ID]
+	The entry id of the record updated.
+
+=== Detailed Description
+Updates the status and status reason, if needed, for a specific 
+BMC ITSM7 Change (CHG:Infrastructure Change) request. Depending on the 
+Status provided, a Status Reason might be necessary. The status
+and status reason combination should be valid per the system/
+workflow. 

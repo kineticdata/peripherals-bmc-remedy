@@ -1,0 +1,41 @@
+== BMC_ITSM7_Incident_To_Incident_Relationship_Create_V1
+Creates a relationship between two incidents using the HPD:Association form.
+One HPD:Association record is created.  Use TWO of these in a task tree
+to complete the full relationships: Ticket 1 --> Ticket 2 and 
+Ticket 2 --> Ticket 1
+
+=== Parameters
+[Incident Number 1]
+  The incident number of one of the tickets.
+[Incident Number 2]
+  The incident number for the second ticket.
+[Submitter Logon ID]
+ Remedy usercode to be user identified as the Submitter of the relationships.
+
+=== Sample Configuration
+Incident Number 1::                 <%=@result['Primary Incident']['Incident Number']%>
+Incident Number 2::                 <%=@result['Secondary Incident']['Incident Number']%>
+Association Type::                  Related to
+Submitter Logon ID::                KD_WEBUSER
+
+=== Results
+[Association ID]
+  The 'Association ID' (field 1) of the generated relationship.
+
+=== Detailed Description
+A proper relationship between two Incidents within ITSM is to have two relationships,
+Ticket 1 to Ticket 2, and Ticket 2 to Ticket 1.  Use two task nodes for this, as the 
+input parameter values are switched between the two HPD:Associations records.
+
+The following data is used to create the 'HPD:Associations' record:
+* References the summary field values for the identified tickets from the HPD:Help Desk 
+  form.
+  - 'Request Description01'         => Value returned by the lookup of the summary description of Incident Number 1
+* Maps the following field values of the HPD_Associations form to the field values provided:
+  - 'Form Name01'                   => 'HPD:Help Desk'
+  - 'Form Name02'                   => 'HPD:Help Desk'
+  - 'Request Type01'                => 'Incident'
+* Maps the following field values to the values of the specified parameters:
+  - 'Request ID01'                  => "Incident Number 1"
+  - 'Request ID02'                  => "Incident Number 2"
+  - 'Association Type01'            => "Association Type"

@@ -1,0 +1,6 @@
+BMC_SRM_Templated_Work_Order_Create_V3
+* This handler is safe to use in a subtree because it does not rely on any @base 
+information to process. All data is passed into the handler as parameters.
+
+BMC_SRM_Templated_Work_Order_Create_V2 (Date Unknown)
+* Initial Version. See README for details.

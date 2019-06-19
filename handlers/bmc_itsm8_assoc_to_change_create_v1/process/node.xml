@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm8_assoc_to_change_create" name="BMC ITSM8 Assoc to Change Request Create" schema_version="1.0" version="1">
+    <author>support@kineticdata.com</author>
+    <description>
+        Attaches an item to a Change Request.  (A second handler is needed to attach the change request to related item.)
+    </description>
+    <helpurl></helpurl>
+    <visible>true</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="dataset_id" tooltip="The Dataset ID, usually BMC.ASSET" label="Dataset ID" required="true">BMC.ASSET</parameter>
+		<parameter id="lookup_keyword" tooltip="The lookup keyword the item (for CMDB relationships, the ClassID ex: BMC_COMPUTERSYSTEM)" label="Lookup Keyword" required="true">BMC_COMPUTERSYSTEM</parameter>
+		<parameter id="form_name01" tooltip="Form Name 01 (for CMDB relationships, the Asset form name, ex: AST:ComputerSystem" label="Form Name 01" required="true">AST:ComputerSystem</parameter>
+		<parameter id="form_name02" tooltip="Form Name 02 (the change form name, ex: CHG:Infrastructure Change)" label="Form Name 02" required="true" >CHG:Infrastructure Change</parameter>
+		<parameter id="request_id01" tooltip="Reconciliation ID of the item being related" label="Related Item ReconID" required="true" />
+		<parameter id="request_id02" tooltip="CRQ Number" label="Change Request Number" required="true"></parameter>
+		<parameter id="request_description01" tooltip="Related item name (i.e., server name)" label="Related Item Name" required="true"/>
+        <parameter id="association_type01" tooltip="Association type (ex: 'Related to')" label="Association Type" required="true">Related to</parameter>
+		<parameter id="request_type01" tooltip="Request Type (ex: 'Configuration Item')" label="Request Type" required="true">Configuration Item</parameter>
+	</parameters>
+    <handler name="bmc_itsm8_assoc_to_change_create" version="1">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+        </infos>
+        <parameters>
+		</parameters>
+        <fields>
+            <field name='z1D_Local_DataSetID'>&lt;%= @parameters['dataset_id'] %&gt;</field>
+			<field name='Data_Set_ID01'>&lt;%= @parameters['dataset_id'] %&gt;</field>
+			<field name='Parent_DataSet_ID01'>&lt;%= @parameters['dataset_id'] %&gt;</field>
+			<field name='Status'>Enabled</field>
+            <field name='Lookup Keyword'>&lt;%= @parameters['lookup_keyword'] %&gt;</field>
+            <field name='Form Name01'>&lt;%= @parameters['form_name01'] %&gt;</field>
+            <field name='Form Name02'>&lt;%= @parameters['form_name02'] %&gt;</field>
+            <field name='Request ID01'>&lt;%= @parameters['request_id01'] %&gt;</field>
+            <field name='Request ID02'>&lt;%= @parameters['request_id02'] %&gt;</field>
+			<field name='Request Description01'>&lt;%= @parameters['request_description01'] %&gt;</field>
+            <field name='Association Type01'>&lt;%= @parameters['association_type01'] %&gt;</field>
+            <field name='Request Type01'>&lt;%= @parameters['request_type01'] %&gt;</field>			
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="CHG:Associations Entry ID"/>
+    </results>
+</taskDefinition>

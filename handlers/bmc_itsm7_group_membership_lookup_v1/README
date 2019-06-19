@@ -1,0 +1,89 @@
+== BMC_ITSM7_Approver_Lookup_V2
+Retrieves severals fields from the CTM:People record associated to the
+approver's remedy login id.  If alternate approvers are assigned, the CTM:People
+record is retrieved using the remedy login id of the available alternate 
+approver.
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Remedy Login ID]
+  The Remedy login name of the approver.
+
+==== Sample Configuration
+Remedy Login ID:: <%=@answer['Remedy Login ID']%>
+
+=== Results
+[Remedy Login ID]
+  Field from the CTM:People record.
+[Email]
+  Field from the CTM:People record.
+[First Name]
+  Field from the CTM:People record.
+[Middle Initial]
+  Field from the CTM:People record.
+[Last Name]
+  Field from the CTM:People record.
+[Job Title]
+  Field from the CTM:People record.
+[Nick Name]
+  Field from the CTM:People record.
+[Corporate ID]
+  Field from the CTM:People record.
+[Profile Status]
+  Field from the CTM:People record.
+[Contact Type]
+  Field from the CTM:People record.
+[Client Sensitivity]
+  Field from the CTM:People record.
+[VIP]
+  Field from the CTM:People record.
+[Support Staff]
+  Field from the CTM:People record.
+[Assignment Availability]
+  Field from the CTM:People record.
+[Company]
+  Field from the CTM:People record.
+[Organization]
+  Field from the CTM:People record.
+[Department]
+  Field from the CTM:People record.
+[Region]
+  Field from the CTM:People record.
+[Site Group]
+  Field from the CTM:People record.
+[Site]
+  Field from the CTM:People record.
+[Desk Location]
+  Field from the CTM:People record.
+[Mail Station]
+  Field from the CTM:People record.
+[Phone Number Business]
+  Field from the CTM:People record.
+[Phone Number Mobile]
+  Field from the CTM:People record.
+[Phone Number Fax]
+  Field from the CTM:People record.
+[Phone Number Pager]
+  Field from the CTM:People record.
+[ACD Phone Num]
+  Field from the CTM:People record.
+[Corporate E-Mail]
+  Field from the CTM:People record.
+[Accounting Number]
+  Field from the CTM:People record.
+[ManagersName]
+  Field from the CTM:People record.
+[ManagerLoginID]
+  Field from the CTM:People record.
+[Cost Center Code]
+  Field from the CTM:People record.
+
+=== Detailed Description
+The handlers takes a remedy login id as a parameter and returns a record from
+the CTM:People form.  If the remedy login id that is passed as the parameter has
+no alternate approvers, the CTM:People record will be related to that remedy
+login id.  Otherwise, it searches through the chain of alternte approvers until
+an approver with no alternates is found.  Once an approver without alternates is
+found, that approvers remedy login id is used as a qualification in the query to
+the CTM:People form.

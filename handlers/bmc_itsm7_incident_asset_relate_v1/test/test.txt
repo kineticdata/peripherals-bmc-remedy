@@ -1,0 +1,1 @@
+"C:\Program Files (x86)\Java\jdk1.6.0_33\bin\java" -jar ./KineticTask/kinetic-task.jar -test-handler="C:\Workspace\Tasks\telus_e2e_bmc_itsm7_change_asset_relate_v1"

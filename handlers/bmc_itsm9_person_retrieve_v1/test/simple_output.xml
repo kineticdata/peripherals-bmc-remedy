@@ -1,0 +1,34 @@
+<results>
+      <result name="Remedy Login ID" type="Regexp">.*</result>
+      <result name="Email" type="Regexp">.*</result>
+      <result name="First Name" type="Regexp">.*</result>
+      <result name="Middle Initial" type="Regexp">.*</result>
+      <result name="Last Name" type="Regexp">.*</result>
+      <result name="Job Title" type="Regexp">.*</result>
+      <result name="Nick Name" type="Regexp">.*</result>
+      <result name="Corporate ID" type="Regexp">.*</result>
+      <result name="Profile Status" type="Regexp">.*</result>
+      <result name="Contact Type" type="Regexp">.*</result>
+      <result name="Client Sensitivity" type="Regexp">.*</result>
+      <result name="VIP" type="Regexp">.*</result>
+      <result name="Support Staff" type="Regexp">.*</result>
+      <result name="Assignment Availability" type="Regexp">.*</result>
+      <result name="Company" type="Regexp">.*</result>
+      <result name="Organization" type="Regexp">.*</result>
+      <result name="Department" type="Regexp">.*</result>
+      <result name="Region" type="Regexp">.*</result>
+      <result name="Site Group" type="Regexp">.*</result>
+      <result name="Site" type="Regexp">.*</result>
+      <result name="Desk Location" type="Regexp">.*</result>
+      <result name="Mail Station" type="Regexp">.*</result>
+      <result name="Phone Number Business" type="Regexp">.*</result>
+      <result name="Phone Number Mobile" type="Regexp">.*</result>
+      <result name="Phone Number Fax" type="Regexp">.*</result>
+      <result name="Phone Number Pager" type="Regexp">.*</result>
+      <result name="ACD Phone Num" type="Regexp">.*</result>
+      <result name="Corporate E-Mail" type="Regexp">.*</result>
+      <result name="Accounting Number" type="Regexp">.*</result>
+      <result name="ManagersName" type="Regexp">.*</result>
+      <result name="ManagerLoginID" type="Regexp">.*</result>
+      <result name="Cost Center Code" type="Regexp">.*</result>
+</results>
