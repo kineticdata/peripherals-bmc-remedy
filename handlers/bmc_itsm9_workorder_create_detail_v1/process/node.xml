@@ -20,19 +20,19 @@
 		<parameter id="status" required="true" label="Status:"
 		  tooltip="The value placed in the Status field on the Work Order form.">Assigned</parameter>
 		<parameter id="status_reason" required="false" label="Status Reason:"
-		  tooltip="The value placed in the Status Reason field on the Work Order form." />		
-		
+		  tooltip="The value placed in the Status Reason field on the Work Order form." />
+
 		<parameter id="company" required="true" label="Company:"
 		  tooltip="The value placed in the Company field on the Work Order form." />
 		<parameter id="location_company" required="true" label="Location Company:"
 		  tooltip="The value placed in the Location Company field on the Work Order form." />
-		
+
 		<parameter id="region" required="true" label="Requester Region:"
 		  tooltip="The value placed in the Region field on the Work Order form." />
 		<parameter id="site_group" required="true" label="Requester Site Group:"
 		  tooltip="The value placed in the Site Group field on the Work Order form." />
 		<parameter id="site" required="true" label="Requester Site:"
-		  tooltip="The value placed in the Site field on the Work Order form." />	  
+		  tooltip="The value placed in the Site field on the Work Order form." />
 		<parameter id="requester_first_name" required="true" label="Requester First Name:"
 		  tooltip="The value placed in the Requester First Name field on the Work Order form." />
 		<parameter id="requester_last_name" required="true" label="Requester Last Name:"
@@ -46,24 +46,24 @@
 		  tooltip="The value placed in the Customer Last Name field on the Work Order form." />
 		<parameter id="customer_person_id" required="true" label="Customer Person ID:"
 		  tooltip="The value placed in the Customer Person ID field on the Work Order form." />
-		
+
 		<parameter id="submitter_first_name" required="false" label="Submitter First Name:"
 		  tooltip="Will be used to populate the Contact field." />
 		<parameter id="submitter_last_name" required="true" label="Submitter Last Name:"
 		  tooltip="Will be used to populate the Contact field." />
 		  <parameter id="submitter_email" required="true" label="Submitter EMail Address:"
-		  tooltip="Will be used to populate the Contact field." />		
+		  tooltip="Will be used to populate the Contact field." />
 		<parameter id="submitter_person_id" required="true" label="Submitter Person Id:"
 		  tooltip="Will be used to populate the Contact field." />
         <parameter id="requested_by_person_id" required="true" label="Requested By Person Id:"
 		  tooltip="Will be used to populate the Contact field." />
 		<parameter id="submitter_login_id" required="true" label="Submitter Login Id:"
 		  tooltip="The value placed in the Submitter field on the Work Order form." />
-		
+
 		<parameter id="priority" required="false" label="Priority:"
 		  tooltip="The value placed in the Priority field on the Work Order form." />
 		<parameter id="work_order_type" required="false" label="Work Order Type:"
-		  tooltip="The value placed in the Work Order Type field on the Work Order form." />		  
+		  tooltip="The value placed in the Work Order Type field on the Work Order form." />
 		<parameter id="work_order_summary" required="true" label="Work Order Summary:"
 		  tooltip="The value placed in the Summary field on the Work Order form." />
 		<parameter id="work_order_description" required="false" label="Work Order Detailed Description:"
@@ -71,7 +71,7 @@
 
 		<parameter id="work_order_template_name" required="true" label="Template Name:"
 		  tooltip="The value placed in the Template Name field on the Work Order Template form." />
-		  
+
 		<parameter id="op_cat_t1" required="false" label="Operational Categorization Tier1:"
 		  tooltip="The value placed in the Categorization Tier 1 field on the Work Order Template form." />
 		<parameter id="op_cat_t2" required="false" label="Operational Categorization Tier2:"
@@ -89,22 +89,22 @@
 		  tooltip="The value placed in the Product Name field on the Work Order Template form." />
 		<parameter id="prod_manufacturer" required="false" label="Product Manufacturer:"
 		  tooltip="The value placed in the Manufacturer field on the Work Order Template form." />
-		  
+
 		<parameter id="support_company" required="false" label="Assignee Support Company:"
 		  tooltip="The value placed in the Request Assignee Support Company field on the Work Order Template form." />
 		<parameter id="support_organization" required="false" label="Assignee Support Organization:"
 		  tooltip="The value placed in the Request Assignee Support Organization field on the Work Order Template form." />
 		<parameter id="support_group_name" required="false" label="Assignee Support Group Name:"
-		  tooltip="The value placed in the Request Assignee Support Group Name field on the Work Order Template form." />	  
+		  tooltip="The value placed in the Request Assignee Support Group Name field on the Work Order Template form." />
 		<parameter id="request_assignee" required="false" label="Request Assignee:"
 		  tooltip="The value placed in the Request Assignee field on the Work Order Template form." />
-		  
+
 		<parameter id="mgr_support_company" required="false" label="Manager Support Company:"
 		  tooltip="The value placed in the Request Manager Support Company field on the Work Order Template form." />
 		<parameter id="mgr_support_organization" required="false" label="Manager Support Organization:"
 		  tooltip="The value placed in the Request Manager Support Organization field on the Work Order Template form." />
 		<parameter id="mgr_support_group_name" required="false" label="Manager Support Group Name:"
-		  tooltip="The value placed in the Request Manager Support Group Name field on the Work Order Template form." />	  
+		  tooltip="The value placed in the Request Manager Support Group Name field on the Work Order Template form." />
 		<parameter id="mgr_request_assignee" required="false" label="Request Manager:"
 		  tooltip="The value placed in the Request Manager field on the Work Order Template form." />
     </parameters>
@@ -122,28 +122,28 @@
             <!-- HPD:IncidentInterface_Create -->
             <field name='Status'>&lt;%= @parameters['status'] %&gt;</field>
 			<field name='Status Reason'>&lt;%= @parameters['status_reason'] %&gt;</field>
-            
+
 			<field name='Company'>&lt;%= @parameters['company'] %&gt;</field>
 			<field name='Location Company'>&lt;%= @parameters['location_company'] %&gt;</field>
-			
+
 			<field name='Region'>&lt;%= @parameters['region'] %&gt;</field>
 			<field name='Site Group'>&lt;%= @parameters['site_group'] %&gt;</field>
 			<field name='Site'>&lt;%= @parameters['site'] %&gt;</field>
 			<field name='First Name'>&lt;%= @parameters['requester_first_name'] %&gt;</field>
             <field name='Last Name'>&lt;%= @parameters['requester_last_name'] %&gt;</field>
-			
+
 			<field name='Customer Company'>&lt;%= @parameters['customer_company'] %&gt;</field>
 			<field name='Customer First Name'>&lt;%= @parameters['customer_first_name'] %&gt;</field>
 			<field name='Customer Last Name'>&lt;%= @parameters['customer_last_name'] %&gt;</field>
 			<field name='Customer Person ID'>&lt;%= @parameters['customer_person_id'] %&gt;</field>
-			
+
 	        <field name='First Name'>&lt;%= @parameters['submitter_first_name'] %&gt;</field>
 			<field name='Last Name'>&lt;%= @parameters['submitter_last_name'] %&gt;</field>
 			<field name='Internet E-mail'>&lt;%= @parameters['submitter_email'] %&gt;</field>
 			<field name='Requested By Person ID'>&lt;%= @parameters['requested_by_person_id'] %&gt;</field>
 			<field name='Person ID'>&lt;%= @parameters['submitter_person_id'] %&gt;</field>
 			<field name='Submitter'>&lt;%= @parameters['submitter_login_id'] %&gt;</field>
-			
+
 			<field name='Priority'>&lt;%= @parameters['priority'] %&gt;</field>
 			<field name='Work Order Type'>&lt;%= @parameters['work_order_type'] %&gt;</field>
 			<field name='Summary'>&lt;%= @parameters['work_order_summary'] %&gt;</field>
@@ -152,18 +152,18 @@
 			<field name='Categorization Tier 1'>&lt;%= @parameters['op_cat_t1'] %&gt;</field>
 			<field name='Categorization Tier 2'>&lt;%= @parameters['op_cat_t2'] %&gt;</field>
 			<field name='Categorization Tier 3'>&lt;%= @parameters['op_cat_t3'] %&gt;</field>
-		  
+
 			<field name='Product Cat Tier 1(2)'>&lt;%= @parameters['prod_cat_t1'] %&gt;</field>
 			<field name='Product Cat Tier 2 (2)'>&lt;%= @parameters['prod_cat_t2'] %&gt;</field>
 			<field name='Product Cat Tier 3 (2)'>&lt;%= @parameters['prod_cat_t3'] %&gt;</field>
 			<field name='Product Name (2)'>&lt;%= @parameters['prod_name'] %&gt;</field>
 			<field name='Manufacturer (2)'>&lt;%= @parameters['prod_manufacturer'] %&gt;</field>
-		  
+
 			<field name='Support Company'>&lt;%= @parameters['support_company'] %&gt;</field>
 			<field name='Support Organization'>&lt;%= @parameters['support_organization'] %&gt;</field>
 			<field name='Support Group Name'>&lt;%= @parameters['support_group_name'] %&gt;</field>
 			<field name='Request Assignee'>&lt;%= @parameters['request_assignee'] %&gt;</field>
-			
+
 			<field name='Request Manager Company'>&lt;%= @parameters['mgr_support_company'] %&gt;</field>
 			<field name='Manager Support Organization'>&lt;%= @parameters['mgr_support_organization'] %&gt;</field>
 			<field name='Manager Support Group Name'>&lt;%= @parameters['mgr_support_group_name'] %&gt;</field>
@@ -176,6 +176,6 @@
     </handler>
     <results format="xml">
         <result name="Work Order ID" />
-        <result name="Work Order Instance Id" />>
+        <result name="Work Order Instance Id" />
     </results>
 </taskDefinition>
