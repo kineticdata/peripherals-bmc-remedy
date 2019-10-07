@@ -31,17 +31,17 @@
         <parameter id="attachment_field_2" required="false" label="Attachment Field 2:"
                    tooltip="The Field Name of an attachment question to retrieve an attachment from." dependsOnId="attachment_input_type" dependsOnValue="Field"/>
         <parameter id="attachment_field_3" required="false" label="Attachment Field 3:"
-                   tooltip="The Field Name of an attachment question to retrieve an attachment from." dependsOnId="attachment_input_type" dependsOnValue="Field"/> 
+                   tooltip="The Field Name of an attachment question to retrieve an attachment from." dependsOnId="attachment_input_type" dependsOnValue="Field"/>
         <parameter id="attachment_json_1" required="false" label="Attachment JSON 1:"
                    tooltip="The Field Name of an attachment question to retrieve an attachment from." dependsOnId="attachment_input_type" dependsOnValue="JSON"/>
         <parameter id="attachment_json_2" required="false" label="Attachment JSON 2:"
                    tooltip="The Field Name of an attachment question to retrieve an attachment from." dependsOnId="attachment_input_type" dependsOnValue="JSON"/>
         <parameter id="attachment_json_3" required="false" label="Attachment JSON 3:"
                    tooltip="The Field Name of an attachment question to retrieve an attachment from." dependsOnId="attachment_input_type" dependsOnValue="JSON"/>
-        <parameter id="submitter" required="false" label="Submitter:"
+        <parameter id="submitter" required="true" label="Submitter:"
                    tooltip="Sets the Submitter of the Change Work Info entry." />
 		<parameter id="secure_work_log" required="true" label="Locked:"
-                   tooltip="Sets the Incident Work Info entry Locked status." menu="Yes,No" />				   
+                   tooltip="Sets the Incident Work Info entry Locked status." menu="Yes,No" />
         <parameter id="view_access" required="true" label="View Access:"
                    tooltip="Sets the Incident Work Info entry to Public or Internal.">Public</parameter>
 		<parameter id="submission_id" label="Submission ID:" required="true"
@@ -56,7 +56,7 @@
             <info name="api_username">&lt;%= @info['api_username'] %&gt;</info>
             <info name="space_slug">&lt;%= @info['space_slug'] %&gt;</info>
 			<info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
-			
+
 			<info name="ars_server">&lt;%= @info['ars_server'] %&gt;</info>
             <info name="ars_username">&lt;%= @info['ars_username'] %&gt;</info>
             <info name="ars_password">&lt;%= @info['ars_password'] %&gt;</info>
