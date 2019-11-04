@@ -1,8 +1,10 @@
+Remedy Generic  query Retrieve V2 (2019-4-11)
+ * Adding error message handling
+
 Remedy Generic  query Retrieve V2 (2019-18-02)
  * Removed nested folder structure.
 
 Remedy Generic  query Retrieve V2 (2016-11-10)
  * Won't throw an error if nothing found, will return the information in a result instead
-Remedy Generic query Retrieve 
+Remedy Generic query Retrieve
  * Initial version.  See README for details.
-

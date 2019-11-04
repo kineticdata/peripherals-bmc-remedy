@@ -1,6 +1,7 @@
+Remedy Generic Retrieve V2 (2019-11-4)
+* Adding error message handling
 Remedy Generic Retrieve V2 (2013-07-16)
  * Fixing bug to allow this to be used for multiple different
    forms on the same task instance
 Remedy Generic Retrieve (2012-05-29)
  * Initial version.  See README for details.
-

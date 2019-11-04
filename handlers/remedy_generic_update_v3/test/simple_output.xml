@@ -1,3 +1,4 @@
 <results>
-      <result name="request_id">.+</result>
+  <result name="Handler Error Message"></result>
+  <result name="request_id">.+</result>
 </results>

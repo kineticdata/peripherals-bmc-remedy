@@ -9,6 +9,7 @@
     'enable_debug_logging' => 'No'
   },
   'parameters' => {
+    'error_handling' => '',
 	'form' => 'SIT:Site Alias Company LookUp',
     'request_query' => %|'Site' = "Site 1"|
   }

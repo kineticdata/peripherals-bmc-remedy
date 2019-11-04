@@ -9,6 +9,7 @@
 	'enable_debug_logging' => 'Yes'
   },
   'parameters' => {
+    'error_handling' => '',
     'form'        => 'HPD:LoadTemplate',
     'field_values' => '{"Template Identifier":"12345",
 "Template Name":"12345",

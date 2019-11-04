@@ -37,7 +37,15 @@ class RemedyGenericUpdateV3
 
     # Initialize the handler and pre-load form definitions using the credentials
     # supplied by the task info items.
-    preinitialize_on_first_load(@input_document, [])
+    begin
+        # Obtain a unchangable reference to the configuration (the @@config class
+        # variable could be concurrently changed by other threads -- by defining the
+        # @config instance variable, the execution of this handler is "locked in" to
+        # using that config for the entire execution)
+        @config = preinitialize_on_first_load(@input_document, [])
+    rescue Exception => error
+      @error = error
+    end
   end
 
   # Uses the Remedy Login ID to retrieve a single entry from the ITSM v7.x
@@ -50,28 +58,48 @@ class RemedyGenericUpdateV3
   # ==== Returns
   # An Xml formatted String representing the return variable results.
   def execute()
+    error_handling = @parameters["error_handling"]
+    error_message = nil
+    subid = nil
 
-  	@field_values = {}
-	  #@field_values[@parameters['field_name']] = @parameters['new_field_value']
-    @field_values = JSON.parse(@parameters['field_values'])
+    # If preinitialize fail then stop execution and rasie or return error
+    if (@error.to_s.empty?)
+    	@field_values = {}
+  	  #@field_values[@parameters['field_name']] = @parameters['new_field_value']
+      @field_values = JSON.parse(@parameters['field_values'])
 
-    # Retrieve a single entry from specified form with given request id
-    submission = get_remedy_form(@parameters['form']).find_entries(
-      :single,
-      :conditions => [%|'1' = "#{@parameters['request_id']}"|],
-      :fields => nil
-    )
+      begin
+        # Retrieve a single entry from specified form with given request id
+        submission = get_remedy_form(@parameters['form']).find_entries(
+          :single,
+          :conditions => [%|'1' = "#{@parameters['request_id']}"|],
+          :fields => nil
+        )
+      rescue Exception => error
+        error_message = error.inspect
+        raise error if error_handling == "Raise Error"
+      end
 
-	# Raise error if unable to locate the entry
-	raise("No matching entry on the #{@parameters['form']} form for the given field 1 [#{@parameters['request_id']}]") if submission.nil?
+    if  submission.nil?
+    	# Raise error if unable to locate the entry
+    	error_message = "No matching entry on the #{@parameters['form']} form for the given field 1 [#{@parameters['request_id']}]"
+      raise @error if error_handling == "Raise Error"
+    else
 
-	# Update customer survey base entry and specify the fields we want to return
-    submission.update_attributes!(@field_values)
+  	# Update customer survey base entry and specify the fields we want to return
+      submission.update_attributes!(@field_values)
+      subid = submission.id
+    end
+    else
+      error_message = @error
+      raise @error if error_handling == "Raise Error"
+    end
 
     # Build the results to be returned by this handler
     results = <<-RESULTS
     <results>
-      <result name="request_id">#{escape(submission.id)}</result>
+      <result name="Handler Error Message">#{escape(error_message)}</result>
+      <result name="request_id">#{escape(subid)}</result>
     </results>
     RESULTS
 	puts(results) if @debug_logging_enabled
