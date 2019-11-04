@@ -17,12 +17,12 @@ class RemedyGenericQueryRetrieveV2
   # Engine.
   #
   # ==== Parameters
-  # * +input+ - The String of Xml that was built by evaluating the node.xml 
+  # * +input+ - The String of Xml that was built by evaluating the node.xml
   #   handler template.
   def initialize(input)
     # Set the input document attribute
     @input_document = REXML::Document.new(input)
-	
+
     # Determine if debug logging is enabled.
     @debug_logging_enabled = get_info_value(@input_document, 'enable_debug_logging') == 'Yes'
     puts("Logging enabled.") if @debug_logging_enabled
@@ -32,14 +32,22 @@ class RemedyGenericQueryRetrieveV2
     REXML::XPath.match(@input_document, '/handler/parameters/parameter').each do |node|
       @parameters[node.attribute('name').value] = node.text
     end
-    puts("Parameters: #{@parameters.inspect}") if @debug_logging_enabled	
-	
-		
+    puts("Parameters: #{@parameters.inspect}") if @debug_logging_enabled
+
+
     # Initialize the handler and pre-load form definitions using the credentials
     # supplied by the task info items.
-    preinitialize_on_first_load(@input_document, [])
+    begin
+        # Obtain a unchangable reference to the configuration (the @@config class
+        # variable could be concurrently changed by other threads -- by defining the
+        # @config instance variable, the execution of this handler is "locked in" to
+        # using that config for the entire execution)
+        @config = preinitialize_on_first_load(@input_document, [])
+    rescue Exception => error
+      @error = error
+    end
   end
-  
+
   # Uses the Remedy Login ID to retrieve a single entry from the ITSM v7.x
   # CTM:People form.  The purpose of this is to return data elements associated
   # to the entry found.
@@ -50,44 +58,61 @@ class RemedyGenericQueryRetrieveV2
   # ==== Returns
   # An Xml formatted String representing the return variable results.
   def execute()
-    @error = ""
-  
-    # Retrieve a single entry from specified form with given request id
-    entry = get_remedy_form(@parameters['form']).find_entries(
-      :first,
-      :conditions => [%|#{@parameters['request_query']}|],
-      :fields => :all
-    )
-	
-	# Raise error if unable to locate the entry
-	if entry.nil?
-	@error = "No matching entry on the #{@parameters['form']} form for the given query [#{@parameters['request_query']}]" 
-	results = "<results><result name=\"Handler Error Message\">#{escape(@error)}</result></results>"
-	return results
-	end
-	
-	
-	#Begin building XML of fields
-	field_list = ""
-	
-  # Build up a list of all field names and values for this record
-  field_values = entry.field_values.collect do |field_id, value|
-    "#{get_remedy_form(@parameters['form']).field_for(field_id).name}: #{value}"
-    textvalue = value.to_s()	
-    if textvalue.include? 'ArsModels'
-      if textvalue.include? 'DiaryFieldValue'
-        textvalue = value.text.to_s()
-      else    
-        textvalue = value.value
-      end
-    end
-    #Build result XML
-    field_list << '<result name="'+escape(get_remedy_form(@parameters['form']).field_for(field_id).name)+'">'+ escape(textvalue) +'</result>'
-  end
+    #@error = ""
 
-  field_list <<  '<results><result name="Handler Error Message">'+escape(@error)+'</result></results>'
-  
-  puts("Field Values: #{field_values.inspect}") if @debug_logging_enabled	
+    error_handling = @parameters["error_handling"]
+    error_message = nil
+    #Begin building XML of fields
+    field_list = ""
+
+    # If preinitialize fail then stop execution and rasie or return error
+    if (@error.to_s.empty?)
+      # Retrieve a single entry from specified form with given request id
+      begin
+        entry = get_remedy_form(@parameters['form']).find_entries(
+          :first,
+          :conditions => [%|#{@parameters['request_query']}|],
+          :fields => :all
+        )
+      rescue Exception => error
+        error_message = error.inspect
+        raise error if error_handling == "Raise Error"
+      end
+
+  	# Raise error if unable to locate the entry
+  	if entry.nil?
+  	@error = "No matching entry on the #{@parameters['form']} form for the given query [#{@parameters['request_query']}]"
+    raise @error if error_handling == "Raise Error"
+  	results = "<results><result name=\"Handler Error Message\">#{escape(@error)}</result></results>"
+  	return results
+  	end
+
+    # Build up a list of all field names and values for this record
+    field_values = entry.field_values.collect do |field_id, value|
+      "#{get_remedy_form(@parameters['form']).field_for(field_id).name}: #{value}"
+      textvalue = value.to_s()
+      if textvalue.include? 'ArsModels'
+        if textvalue.include? 'DiaryFieldValue'
+          textvalue = value.text.to_s()
+        else
+          textvalue = value.value
+        end
+      end
+      #Build result XML
+      field_list << '<result name="'+escape(get_remedy_form(@parameters['form']).field_for(field_id).name)+'">'+ escape(textvalue) +'</result>'
+    end
+
+    field_list <<  '<results><result name="Handler Error Message">'+escape(@error)+'</result></results>'
+    if !@error.nil?
+      raise @error if error_handling == "Raise Error"
+    end
+
+    puts("Field Values: #{field_values.inspect}") if @debug_logging_enabled
+  else
+    error_message = @error
+    field_list <<  '<results><result name="Handler Error Message">'+escape(@error)+'</result></results>'
+    raise @error if error_handling == "Raise Error"
+  end
 
   # Build the results to be returned by this handler
   results = <<-RESULTS
@@ -95,14 +120,14 @@ class RemedyGenericQueryRetrieveV2
     #{field_list}
   </results>
   RESULTS
-  
-	puts(results) if @debug_logging_enabled	
-	
+
+	puts(results) if @debug_logging_enabled
+
 	# Return the results String
     return results
   end
 
-      
+
   # This method is an accessor for the @@remedy_forms variable that caches form
   # definitions.  It checks to see if the specified form has been loaded if so
   # it returns it otherwise it needs to load the form and add it to the cache.
@@ -115,7 +140,7 @@ class RemedyGenericQueryRetrieveV2
 	end
 	@@remedy_forms[form_name]
   end
-  
+
   ##############################################################################
   # General handler utility functions
   ##############################################################################

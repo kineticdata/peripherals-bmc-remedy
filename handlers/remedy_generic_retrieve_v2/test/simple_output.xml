@@ -1,3 +1,4 @@
 <results>
+      <result name="Handler Error Message"></result>
       <result name="field_list">.+</result>
 </results>
