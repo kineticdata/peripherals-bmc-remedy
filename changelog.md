@@ -6,3 +6,15 @@ ARS \[handlers\] (2019-10-4)
 ARS \[bridge adapters\] (2019-09-17)
   \[kinetic-bridgehub-adapter-ars-rest\] (2019-09-17)
     * Initial development of the ARS version 9 bridge adapter.
+
+ARS \[handlers\] (2019-11-06)
+  \[bmc_itsm9_person_create_v1\] (2019-11-06)
+    * Initial commit
+  \[bmc_itsm9_person_update_v1\] (2019-11-06)
+    * Initial commit
+  \[bmc_itsm9_support_group_member_add_v1\] (2019-11-06)
+    * Initial commit
+  \[bmc_itsm9_support_group_member_functional_role_v1\] (2019-11-06)
+    * Initial commit
+  \[bmc_itsm9_support_group_member_remove_v1\] (2019-11-06)
+    * Initial commit

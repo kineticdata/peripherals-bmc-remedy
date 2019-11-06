@@ -1,0 +1,85 @@
+== BMC ITSM9 Person Create
+Creates an ITSM CTM People entry.  
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Error Handling]
+  Determine what to return if an error is encountered.
+[Remedy Login ID]
+	The Remedy Login ID associated to the CTM People record to retrieve
+[First Name]
+	The First Name to use
+[Last Name]
+	The Last Name to use
+[Middle Name]
+	The Middle Name/Initial to use, optional
+[Client Type]
+	The Client Type to set, often 'Office-Based Employee' or 'Contractor' or 'Customer'. Must be valid option of menu on the form.
+[Client Sensitivity]
+	The Client Sensitivity to set. Either Standard or Sensitive. Defaults to Standard
+[VIP]
+	The VIP value to set. Yes or No. Default is No
+[Company]
+	The Company to set
+[Organization]
+	The Organization to set
+[Department]
+	The Department to set
+[Author]
+	The author of the modifications to the person record
+[Email Address]
+	The email address to set
+[Region]
+	The region to set
+[Site Group]
+	The site group to set
+[Site]
+	The site to set
+[CC Business]
+	The phone number country code to set
+[Area Code Business]
+	The phone number area code to set
+[Local Part Business Phone]
+	The phone number local part to set
+[Business Phone]
+	The phone number (put together) to set
+[Language]
+	The language to set (ex. en_US, fr_FR)
+
+=== Sample Configuration
+Error Handling:         Raise Error
+Remedy Login Id::       <%=@answers['ReqFor Login ID']%>
+First Name::             <%=@answers['ReqFor First Name']%>
+Last Name::             <%=@answers['ReqFor Last Name']%>
+Middle Name::             <%=@answers['ReqFor Middle Name']%>
+Client Type::             <%=@results['ReqFor Type']['output']%>
+Client Sensitivity::        Standard    
+VIP::             			No
+Company::             <%=@answers['ReqFor Company']%>
+Organization::            <%=@answers['ReqFor Organization']%> 
+Department::             <%=@answers['ReqFor Department']%>
+Author::				KD_WEBUSER	
+Email Address::			<%=@answers['ReqFor Email']%>
+Region::				<%=@answers['New Region']%>
+Site Group::			<%=@answers['New Site Group']%>
+Site::					<%=@answers['New Site']%>
+CC Business::			<%=@answers['New CC Business']%>
+Area Business::			<%=@answers['New Area Business']%>
+Local Business::		<%=@answers['New Local Business']%> 
+Business Phone::		<%=@answers['New Business Phone']%>
+Language::				<%=@answers['New Language']%>
+
+=== Results
+[Handler Error Message]
+   Error, if one is found
+[Result]
+   Json result of the update
+[Person ID] 	
+   The Person ID of the record created
+
+=== Detailed Description
+Creates a single ITSM v9.x CTM People entry with the information specified
+via the REST API
+
+Note: If one component of the phone number is passed, all 4 should be.
