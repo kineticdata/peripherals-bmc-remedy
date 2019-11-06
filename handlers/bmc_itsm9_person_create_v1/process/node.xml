@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm9_person_create" name="BMC ITSM9 Person Create" schema_version="1.0" version="1">
+    <author></author>
+    <description>
+        Create an entry in the People Form
+    </description>
+    <helpurl></helpurl>
+    <visible>false</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+	    <parameter id="error_handling" label="Error Handling" required="true" tooltip="Determine what to return if an error is encountered." menu="Error Message,Raise Error">Error Message</parameter>
+		<parameter id="profile_status" label="Profile Status:" required="true" 
+            tooltip="The Remedy Profile Status."/>
+		<parameter id="remedy_login_id" label="Remedy Login ID:" required="true" 
+            tooltip="The Remedy Login ID associated to the CTM People record to create."/>
+		<parameter id="firstName" label="First Name:" required="true" 
+            tooltip="The First Name to set"/>
+		<parameter id="lastName" label="Last Name:" required="true" 
+            tooltip="The Last Name to set"/>
+		<parameter id="middleName" label="Middle Name:" required="false" 
+            tooltip="The Middle Name/Initial to set, Optional"/>
+		<parameter id="clientType" label="Client Type:" required="true" 
+            tooltip="The Client Type to set, often 'Office-Based Employee' or 'Contractor' or 'Customer'. Must be valid option of menu."/>
+		<parameter id="sensitivity" label="Client Sensitivity:" required="false" 
+            tooltip="The Client Sensitivity to set. Either Standard or Sensitive.">Standard</parameter>
+		<parameter id="vip" label="VIP:" required="false" 
+            tooltip="The VIP value to set. Yes or No">No</parameter>
+        <parameter id="author" label="Author:" required="true" 
+            tooltip="The author of the creation to the person record."/>
+		<parameter id="company" label="Company:" required="true" 
+            tooltip="The Company to set"/>
+		<parameter id="organization" label="Organization:" required="false" 
+            tooltip="The Organization to set"/>
+		<parameter id="department" label="Department:" required="false" 
+            tooltip="The Department to set"/>
+        <parameter id="email_address" label="Email Address:" required="false" 
+            tooltip="The email address to set"/>
+		<parameter id="region" label="Region:" required="false" 
+            tooltip="The region to set"/>
+		<parameter id="site_group" label="Site Group:" required="false" 
+            tooltip="The site group to set"/>
+		<parameter id="site" label="Site:" required="true" 
+            tooltip="The site to set"/>
+        <parameter id="cc_business" label="CC Business:" required="false" 
+            tooltip="The phone number country code to set"/>
+		<parameter id="area_business" label="Area Code Business:" required="false" 
+            tooltip="The phone number area code to set"/>
+		<parameter id="local_business" label="Local Part Business Phone:" required="false" 
+            tooltip="The phone number local part to set"/>
+		<parameter id="phone_business" label="Business Phone:" required="false" 
+            tooltip="The phone number (put together) to set"/>
+		<parameter id="locale2" label="Language" required="false" 
+            tooltip="The language to set (ex. en_US, fr_FR)"/>
+		<parameter id="support_staff" label="Support Staff:" required="false" tooltip=""/>
+		<parameter id="assignment_availability" label="Assignment Availability:" required="false" tooltip=""/>
+		<parameter id="desk_location" label="Desk Location:" required="false" tooltip=""/>	
+		<parameter id="mail_station" label="Mail Station:" required="false" tooltip=""/>	
+		<parameter id="acd_phone_num" label="ACD:" required="false" tooltip=""/>	
+		<parameter id="managersname" label="Managers Name:" required="false" tooltip=""/>
+        <parameter id="managerloginid" label="Manager Login ID:" required="false" tooltip=""/>
+        <parameter id="geonet" label="Primary Domain:" required="false" tooltip=""/>
+        <parameter id="cost_center_code" label="Cost Center Code:" required="false" tooltip=""/>
+        <parameter id="unrestricted_access" label="Unrestricted Access:" required="false" tooltip=""/>
+    </parameters>
+    <handler name="bmc_itsm9_person_create" version="1">
+        <infos>
+            <info name="api_password">&lt;%= @info['api_password'] %&gt;</info>
+            <info name="api_server">&lt;%= @info['api_server'] %&gt;</info>
+            <info name="api_username">&lt;%= @info['api_username'] %&gt;</info>
+			<info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+		<parameters>
+			<parameter name="error_handling">&lt;%= @parameters.has_key?("error_handling") ? @parameters["error_handling"] : "Raise Error" %&gt;</parameter>
+			<parameter name="author">&lt;%= @parameters['author'] %&gt;</parameter>
+			<parameter name="site">&lt;%= @parameters['site'] %&gt;</parameter>
+		</parameters>
+        <fields>
+		    <field name="Profile Status">&lt;%= @parameters['profile_status'] %&gt;</field>
+			<field name="Internet E-mail">&lt;%= @parameters['email_address'] %&gt;</field>
+			<field name="Remedy Login ID">&lt;%= @parameters['remedy_login_id'] %&gt;</field>
+			<field name="First Name">&lt;%= @parameters['firstName'] %&gt;</field>
+			<field name="Last Name">&lt;%= @parameters['lastName'] %&gt;</field>
+			<field name="Middle Initial">&lt;%= @parameters['middleName'] %&gt;</field>
+			<field name="Client Type">&lt;%= @parameters['clientType'] %&gt;</field>
+			<field name="Client Sensitivity">&lt;%= @parameters['sensitivity'] %&gt;</field>
+			<field name="VIP">&lt;%= @parameters['vip'] %&gt;</field>
+			<field name="Company">&lt;%= @parameters['company'] %&gt;</field>
+			<field name="Organization">&lt;%= @parameters['organization'] %&gt;</field>
+			<field name="Department">&lt;%= @parameters['department'] %&gt;</field>
+			<field name="Region">&lt;%= @parameters['region'] %&gt;</field>
+			<field name="Site">&lt;%= @parameters['site'] %&gt;</field>
+			<field name="Site Group">&lt;%= @parameters['site_group'] %&gt;</field>
+			<field name="CC Business">&lt;%= @parameters['cc_business'] %&gt;</field>
+			<field name="Area Business">&lt;%= @parameters['area_business'] %&gt;</field>
+			<field name="Local Business">&lt;%= @parameters['local_business'] %&gt;</field>
+			<field name="Phone Number Business">&lt;%= @parameters['phone_business'] %&gt;</field>
+			<field name="Locale2">&lt;%= @parameters['locale2'] %&gt;</field>
+			
+			<field name="Support Staff">&lt;%= @parameters['support_staff'] %&gt;</field>
+			<field name="Assignment Availability">&lt;%= @parameters['assignment_availability'] %&gt;</field>
+			<field name="Desk Location">&lt;%= @parameters['desk_location'] %&gt;</field>
+			<field name="Mail Station">&lt;%= @parameters['mail_station'] %&gt;</field>
+			<field name="ACD Phone Num">&lt;%= @parameters['acd_phone_num'] %&gt;</field>
+			<field name="ManagersName">&lt;%= @parameters['managersname'] %&gt;</field>
+			<field name="ManagerLoginID">&lt;%= @parameters['managerloginid'] %&gt;</field>
+			<field name="GEOnet">&lt;%= @parameters['geonet'] %&gt;</field>
+            <field name="Cost Center Code">&lt;%= @parameters['cost_center_code'] %&gt;</field>
+			<field name="Unrestricted Access">&lt;%= @parameters['unrestricted_access'] %&gt;</field>
+			
+	
+			
+			
+			
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="Handler Error Message"></result>
+		<result name="Result"></result>
+        <result name="Person ID"></result>
+    </results>
+</taskDefinition>

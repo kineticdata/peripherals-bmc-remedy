@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="bmc_itsm9_support_group_member_add" name="BMC ITSM9 Support Group Membership Add" schema_version="1.0" version="1">
+    <author></author>
+    <description>
+        Adds the individual to support group.
+    </description>
+    <helpurl></helpurl>
+    <visible>true</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+	    <parameter id="error_handling" label="Error Handling" required="true" tooltip="Determine what to return if an error is encountered." menu="Error Message,Raise Error">Error Message</parameter>
+        <parameter id="assignee_id" label="New Member Login Id" required="true" 
+          tooltip="The new member login id"/>
+		<parameter id="availability" label="Assignment Availability" required="true" 
+          tooltip="The new member Assignment Availability, Yes or No"/>
+		<parameter id="role" label="Role" required="false" 
+          tooltip="The new member login id, Member or Associate Member"/>
+        <parameter id="support_company" label="ITSM Support Company" required="true" 
+          tooltip="The ITSM Support Company to Add person to"/>  
+		<parameter id="support_org" label="ITSM Support Org" required="true" 
+          tooltip="The ITSM Support Org to Add person to"/>  
+		<parameter id="support_group_name" label="ITSM Support Group Name" required="true" 
+          tooltip="The ITSM Support Group name to Add person to"/>      
+        <parameter id="short_description" label="Short Description" required="true" 
+          tooltip="Short Description">Created Via Kinetic Task</parameter>
+    </parameters>
+    <handler name="bmc_itsm9_support_group_member_add" version="1">
+        <infos>
+            <info name="api_password">&lt;%= @info['api_password'] %&gt;</info>
+            <info name="api_server">&lt;%= @info['api_server'] %&gt;</info>
+            <info name="api_username">&lt;%= @info['api_username'] %&gt;</info>
+			<info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+		 <parameters>
+			<parameter name="error_handling">&lt;%= @parameters.has_key?("error_handling") ? @parameters["error_handling"] : "Raise Error" %&gt;</parameter>
+			<parameter name="assignee_id">&lt;%= @parameters['assignee_id'] %&gt;</parameter>
+			<parameter name="availability">&lt;%= @parameters['availability'] %&gt;</parameter>
+            <parameter name="role">&lt;%= @parameters['role'] %&gt;</parameter>
+            <parameter name="support_company">&lt;%= @parameters['support_company'] %&gt;</parameter>
+			<parameter name="support_org">&lt;%= @parameters['support_org'] %&gt;</parameter>
+			<parameter name="support_group_name">&lt;%= @parameters['support_group_name'] %&gt;</parameter>
+			</parameters>
+        <fields>
+		<field name='Default'>No</field>
+            <field name='Status'>Enabled</field>
+            <field name='Short Description'>&lt;%= @parameters['short_description'] %&gt;</field>
+            <field name='Assignment Availability'>&lt;%= @parameters['availability'] %&gt;</field>
+            <field name='Support Group Association Role'>&lt;%= @parameters['role'] %&gt;</field>
+			<field name='Login ID'>&lt;%= @parameters['assignee_id'] %&gt;</field>
+        </fields>
+    </handler>
+    <results format="xml">
+        <result name="Handler Error Message"></result>
+		<result name="Result"></result>
+        <result name="Support Group Association ID" />
+    </results>
+</taskDefinition>

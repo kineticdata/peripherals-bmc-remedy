@@ -1,0 +1,42 @@
+{
+  'info' => {
+    'api_server' => '',
+    'api_username' => '',
+    'api_password' => '',
+    'enable_debug_logging' => 'Yes'
+  },
+  'parameters' => {
+    'error_handling' => "Error Message",
+    'author'          => 'KD_WEBUSER',
+    'login_id' => 'testkinetic1',
+	'profile_status' => "",
+	'firstName' => 'Testing',
+    'lastName'   => '',
+    'middleName'    => '',
+	'clientType'	=> '',
+	'sensitivity' => '',
+	'vip' => '',
+    'remedy_login_id' => '',
+    'email_address'   => '',
+    'cc_business'    => '',
+	'area_business'	=> '',
+	'local_business' => '',
+	'company' =>'',
+	'organization' => '',
+	'department' => '',
+	'region'  => '',
+	'site_group' => '',
+	'site'  => 'Remote-Michigan', #Remote-Michigan
+	'phone_business' => '',
+	'locale2' => '',
+	'support_staff'	=> 'Yes',
+    'assignment_availability' => '',
+    'desk_location'	=> '',
+    'mail_station'	=> '',
+    'acd_phone_num'	=> '', # this is the ACD field
+    'managersname'	=> '',  #or Vijay Vaddadi
+    'managerloginid' => '', #or vvaddadi
+    'geonet' => '', # this is Primary Domain
+    'cost_center_code'	=> '',
+    'unrestricted_access'	=> ''
+}}

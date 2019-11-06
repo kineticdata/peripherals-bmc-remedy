@@ -1,0 +1,40 @@
+== BMC ITSM9 Support Group Member Add V1
+Adds the given user (indicated by Login ID) to the specified
+ITSM Support Group.
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Error Handling]
+  Determine what to return if an error is encountered.
+[Member Login Id]
+   The member login id
+[ITSM Support Company]
+   The ITSM Support Company to Add person to
+[ITSM Support Org]
+   The ITSM Support Org to Add person to
+[ITSM Support Group Name]
+   The ITSM Support Group name to Add person to
+
+==== Sample Configuration
+Error Handling:         Raise Error 
+Member Login Id::       <%=@answer['Remedy Login ID']%>
+ITSM Support Company::      My Company
+ITSM Support Org::          This Org
+ITSM Support Group Name::   My Group
+
+=== Results
+[Handler Error Message]
+   Error, if one is found
+[Result]
+   Json result of the update
+[Support Group Association ID]
+  Field 1 from the created record.
+  
+== Detailed Description
+
+Adds the given user (indicated by Login ID) to the specified
+ITSM Support Group using the REST API. The person must be a 
+Support Staff (indicated on the CTM:People record) already. 
+The Association record is created as NOT the default group for 
+the individual.
