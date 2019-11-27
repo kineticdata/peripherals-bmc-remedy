@@ -1,20 +1,24 @@
 == Remedy Generic Delete
-This handler deletes the entry for the request id provided
-in the form specified. 
+This handler deletes the entry for the request id provided in the form specified. 
 
 For more information, see the Detailed Description section below.
 
 === Parameters
+[Error Handling]
+  Determines what to return if an error is encountered (Error Message or Raise Error).
 [Remedy Form]
 	Remedy Form Name (not display name), eg. People is CTM:People
 [Request ID]
 	The record to delete
 
 === Sample Configuration
+Error Handling::    Error Message
 Remedy Form::       User
-Request ID::		<%=@results['retrieve user']['Request ID']%>
+Request ID::        <%=@results['retrieve user']['Request ID']%>
 
 === Results
+[Handler Error Message]
+  Error message if an error was encountered and Error Handling is set to "Error Message".
 
 === Detailed Description
 This handler deletes the specified record in the form provided.
