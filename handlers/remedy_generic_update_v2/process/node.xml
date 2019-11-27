@@ -9,14 +9,17 @@
     <visible>true</visible>
     <deferrable>false</deferrable>
     <parameters>
-        <parameter id="form" label="Remedy Form:" required="true" 
-		  tooltip="Remedy Form Name (not display name), eg. People is CTM:People"/>
-        <parameter id="request_id" label="Request ID:" required="true" 
-		  tooltip="Request ID (Field 1) of record to update"/>
-		<parameter id="field_name" label="Field Name:" required="true" 
-		  tooltip="Field Name (Database Name) to update"/>
-		<parameter id="new_field_value" label="New Value:" required="true" 
-		  tooltip="Value to place in specified field"/>
+        <parameter id="error_handling" label="Error Handling" required="true"
+            tooltip="Determine what to return if an error is encountered."
+            menu="Error Message,Raise Error">Error Message</parameter>
+        <parameter id="form" label="Remedy Form:" required="true"
+            tooltip="Remedy Form Name (not display name), eg. People is CTM:People"/>
+        <parameter id="request_id" label="Request ID:" required="true"
+            tooltip="Request ID (Field 1) of record to update"/>
+        <parameter id="field_name" label="Field Name:" required="true"
+            tooltip="Field Name (Database Name) to update"/>
+        <parameter id="new_field_value" label="New Value:" required="true"
+            tooltip="Value to place in specified field"/>
     </parameters>
     <handler name="remedy_generic_update" version="2">
         <infos>
@@ -26,16 +29,19 @@
             <info name="port">&lt;%= @info['port'] %&gt;</info>
             <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
             <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
-			<info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
         </infos>
         <parameters>
+            <parameter name="error_handling">&lt;%= @parameters.has_key?("error_handling") ?
+                @parameters["error_handling"] : "Raise Error" %&gt;</parameter>
             <parameter name="form">&lt;%= @parameters['form'] %&gt;</parameter>
-			<parameter name="request_id">&lt;%= @parameters['request_id'] %&gt;</parameter>
-			<parameter name="field_name">&lt;%= @parameters['field_name'] %&gt;</parameter>
-			<parameter name="new_field_value">&lt;%= @parameters['new_field_value'] %&gt;</parameter>
+            <parameter name="request_id">&lt;%= @parameters['request_id'] %&gt;</parameter>
+            <parameter name="field_name">&lt;%= @parameters['field_name'] %&gt;</parameter>
+            <parameter name="new_field_value">&lt;%= @parameters['new_field_value'] %&gt;</parameter>
         </parameters>
     </handler>
     <results format="xml">
+        <result name="Handler Error Message"/>
         <result name="request_id"/>
     </results>
 </taskDefinition>

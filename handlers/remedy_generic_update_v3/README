@@ -16,9 +16,10 @@ For more information, see the Detailed Description section below.
 	JSON mapping of fields to set values
 
 === Sample Configuration
-Remedy Form::     CTM:People
-Request ID::		  <%=@results['retrieve person']['Person ID']%>
-Field Values::    <%={"Email Address" => @answers['New Email'], "Nickname" => @answers['Nickname']}.to_json%>
+Error Handling::       Error Message
+Remedy Form::          CTM:People
+Request ID::           <%=@results['retrieve person']['Person ID']%>
+Field Values::         <%={"Email Address" => @answers['New Email'], "Nickname" => @answers['Nickname']}.to_json%>
 
 === Results
 [Handler Error Message]

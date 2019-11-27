@@ -14,12 +14,13 @@ For more information, see the Detailed Description section below.
 	The query to search by
 
 === Sample Configuration
+Error Handling::    Error Message
 Remedy Form::       User
-Request ID::		<%=@results['retrieve user']['Request ID']%>
+Request ID::        <%=@results['retrieve user']['Request ID']%>
 
 === Results
 [Handler Error Message]
-  Error message if an error was encountered and Error Handling is set to "Error Message".
+	Error message if an error was encountered and Error Handling is set to "Error Message".
 [field_list]
   The request ids (field 1) of the updated record.
 
