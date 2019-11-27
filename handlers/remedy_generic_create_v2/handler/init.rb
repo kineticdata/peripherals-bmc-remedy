@@ -20,11 +20,7 @@ class RemedyGenericCreateV2
     # Initialize the handler and pre-load form definitions using the credentials
     # supplied by the task info items.
     begin
-        # Obtain a unchangable reference to the configuration (the @@config class
-        # variable could be concurrently changed by other threads -- by defining the
-        # @config instance variable, the execution of this handler is "locked in" to
-        # using that config for the entire execution)
-        @config = preinitialize_on_first_load(@input_document, [])
+      preinitialize_on_first_load(@input_document, [])
     rescue Exception => error
       @error = error
     end
@@ -48,26 +44,30 @@ class RemedyGenericCreateV2
   # variables setup and validated by the initialize method to generate a result
   # xml string.
   def execute()
-    # Create the entry using the ArsModels form setup the first time this
-    # handler is executed.  The :field_values parameter takes a Hash of field
-    # names to value mappings (which was built in the #initialize method).  The
-    # :fields parameter is an optional Array of field values to return with the
-    # entry.  By default (when the :fields parameter is omitted), all field
-    # values are returned.  For large forms, the performance gained by
-    # specifying a smaller subset of fields can be significant.
+
     error_handling = @parameters["error_handling"]
     error_message = nil
+    entry_id = nil
 
     # If preinitialize fail then stop execution and rasie or return error
     if (@error.to_s.empty?)
-    	@field_values = JSON.parse(@parameters['field_values'])
-    	puts(format_hash("Field Values:", @field_values)) if @debug_logging_enabled
-
       begin
+        # Create the entry using the ArsModels form setup the first time this
+        # handler is executed.  The :field_values parameter takes a Hash of field
+        # names to value mappings (which was built in the #initialize method).  The
+        # :fields parameter is an optional Array of field values to return with the
+        # entry.  By default (when the :fields parameter is omitted), all field
+        # values are returned.  For large forms, the performance gained by
+        # specifying a smaller subset of fields can be significant.
+      	@field_values = JSON.parse(@parameters['field_values'])
+      	puts(format_hash("Field Values:", @field_values)) if @debug_logging_enabled
+
         entry = get_remedy_form(@parameters['form']).create_entry!(
           :field_values => @field_values,
           :fields => []
         )
+
+        entry_id = entry.id
       rescue Exception => error
         error_message = error.inspect
         raise error if error_handling == "Raise Error"
@@ -77,13 +77,13 @@ class RemedyGenericCreateV2
       raise @error if error_handling == "Raise Error"
     end
 
-        # Return the results
-        <<-RESULTS
-        <results>
-          <result name="Handler Error Message">#{escape(error_message)}</result>
-          <result name="Entry Id">#{escape(entry.id)}</result>
-        </results>
-        RESULTS
+    # Return the results
+    <<-RESULTS
+    <results>
+      <result name="Handler Error Message">#{escape(error_message)}</result>
+      <result name="Entry Id">#{escape(entry_id)}</result>
+    </results>
+    RESULTS
   end
 
   # This method is an accessor for the @@remedy_forms variable that caches form

@@ -38,11 +38,7 @@ class RemedyGenericRetrieveV2
     # Initialize the handler and pre-load form definitions using the credentials
     # supplied by the task info items.
     begin
-        # Obtain a unchangable reference to the configuration (the @@config class
-        # variable could be concurrently changed by other threads -- by defining the
-        # @config instance variable, the execution of this handler is "locked in" to
-        # using that config for the entire execution)
-        @config = preinitialize_on_first_load(@input_document, [])
+      preinitialize_on_first_load(@input_document, [])
     rescue Exception => error
       @error = error
     end
@@ -58,71 +54,64 @@ class RemedyGenericRetrieveV2
   # ==== Returns
   # An Xml formatted String representing the return variable results.
   def execute()
-
     error_handling = @parameters["error_handling"]
     error_message = nil
-    #Begin building XML of fields
+    results_list = ""
     field_list = ""
 
-    # If preinitialize fail then stop execution and rasie or return error
     if (@error.to_s.empty?)
-    # Retrieve a single entry from specified form with given request id
       begin
+        # Retrieve a single entry from specified form with given request id
         entry = get_remedy_form(@parameters['form']).find_entries(
           :single,
           :conditions => [%|'1' = "#{@parameters['request_id']}"|],
           :fields => :all
         )
+
+        # Raise error if unable to locate the entry
+        if entry.nil?
+          error_message = "No matching entry on the #{@parameters['form']} form for the given field 1 [#{@parameters['request_id']}]"
+          raise error_message if error_handling == "Raise Error"
+        else
+          #Begin building XML of fields
+          field_list = '<field_list>'
+
+          # Build up a list of all field names and values for this record
+          field_values = {}
+          entry.field_values.collect do |field_id, value|
+            field_values[get_remedy_form(@parameters['form']).field_for(field_id).name] = value
+            textvalue = value.to_s()
+            if textvalue.include? 'ArsModels'
+              if textvalue.include? 'DiaryFieldValue'
+                textvalue = value.text.to_s()
+              else
+                textvalue = value.value
+              end
+            end
+            #Build result XML
+            field_list << "<field id='#{get_remedy_form(@parameters['form']).field_for(field_id).name}'>#{textvalue}</field>"
+          end
+
+          #Complete result XML
+          field_list << '</field_list>'
+          puts("Field Values: #{field_values.inspect}") if @debug_logging_enabled
+          puts("Field Output: \n#{field_list}") if @debug_logging_enabled
+        end
       rescue Exception => error
         error_message = error.inspect
         raise error if error_handling == "Raise Error"
       end
-
-  	# Raise error if unable to locate the entry
-  	@error = "No matching entry on the #{@parameters['form']} form for the given field 1 [#{@parameters['request_id']}]" if entry.nil?
-  	raise @error if error_handling == "Raise Error"
-
-  	#Begin building XML of fields
-  	field_list = '<field_list>'
-
-      # Build up a list of all field names and values for this record
-      field_values = entry.field_values.collect do |field_id, value|
-        "#{get_remedy_form(@parameters['form']).field_for(field_id).name}: #{value}"
-  		textvalue = value.to_s()
-  	  if textvalue.include? 'ArsModels'
-  	    if textvalue.include? 'DiaryFieldValue'
-  			textvalue = value.text.to_s()
-  		else
-  			textvalue = value.value
-  		end
-  	  end
-  	  #Build result XML
-  	  field_list << '<field id=\''+get_remedy_form(@parameters['form']).field_for(field_id).name+'\'>'+ textvalue +'</field>'
-      end
-
-  	#Complete result XML
-  	field_list << '</field_list>'
-  	puts("Field Values: #{field_values.inspect}") if @debug_logging_enabled
-  else
-    error_message = @error
-    field_list <<  '<results><result name="Handler Error Message">'+escape(@error)+'</result></results>'
-     if error_handling == "Raise Error"
-       raise @error
-     else
-       return field_list
-     end
-  end
+    else
+      error_message = @error
+      raise @error if error_handling == "Raise Error"
+    end
     # Build the results to be returned by this handler
-    results = <<-RESULTS
+    <<-RESULTS
     <results>
-      <result name="Handler Error Message"></result>
+      <result name="Handler Error Message">#{escape(error_message)}</result>
       <result name="field_list">#{escape(field_list)}</result>
     </results>
     RESULTS
-	puts(results) if @debug_logging_enabled
-
-	# Return the results String
-    return results
   end
 
 
