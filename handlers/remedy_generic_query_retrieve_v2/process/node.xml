@@ -2,16 +2,19 @@
 <taskDefinition id="remedy_generic_query_retrieve" name="Remedy Generic Query Retrieve" schema_version="1.0" version="2">
     <author>anne.ramey@kineticdata.com</author>
     <description>
-	    Retrieves a single Remedy entry related to the form name and query specified.
+      This handler returns all the fields of the first matching entry for the specified Remedy form name and query.
 	</description>
-    <helpurl>http://ktc.kineticdata.com/handler/remedy_generic_find_single</helpurl>
+    <helpurl></helpurl>
     <visible>true</visible>
     <deferrable>false</deferrable>
     <parameters>
-        <parameter id="form" label="Remedy Form:" required="true" 
-		  tooltip="Remedy Form Name (not display name), eg. People is CTM:People"/>
-        <parameter id="request_query" label="Query:" required="true" 
-		  tooltip="Advanced Search Query of the record to retrieve"/>
+        <parameter id="error_handling" label="Error Handling" required="true"
+            tooltip="Determine what to return if an error is encountered."
+            menu="Error Message,Raise Error">Error Message</parameter>
+        <parameter id="form" label="Remedy Form:" required="true"
+		        tooltip="Remedy Form Name (not display name), eg. People is CTM:People"/>
+        <parameter id="request_query" label="Query:" required="true"
+		        tooltip="Advanced Search Query of the record to retrieve"/>
     </parameters>
     <handler name="remedy_generic_query_retrieve" version="2">
         <infos>
@@ -21,15 +24,17 @@
             <info name="port">&lt;%= @info['port'] %&gt;</info>
             <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
             <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
-			<info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
         </infos>
         <parameters>
+            <parameter name="error_handling">&lt;%= @parameters.has_key?("error_handling") ?
+                @parameters["error_handling"] : "Raise Error" %&gt;</parameter>
             <parameter name="form">&lt;%= @parameters['form'] %&gt;</parameter>
-			<parameter name="request_query">&lt;%= @parameters['request_query'] %&gt;</parameter>
+            <parameter name="request_query">&lt;%= @parameters['request_query'] %&gt;</parameter>
         </parameters>
     </handler>
     <results format="xml">
+        <result name="Handler Error Message"/>
         <result name="#FIELD NAME PLACE HOLDER#"/>
-		<result name="Handler Error Message"/>
     </results>
 </taskDefinition>

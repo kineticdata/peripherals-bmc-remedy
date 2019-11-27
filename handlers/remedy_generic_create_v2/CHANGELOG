@@ -1,3 +1,6 @@
+Remedy Generic Create V2 (2019-11-4)
+*added error message handling
+
 Remedy Generic Create v2 (2016-08-25)
 *Added debug logging capability. Added JSON library so will work in Task 3.
 

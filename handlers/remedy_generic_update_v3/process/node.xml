@@ -9,6 +9,9 @@
     <visible>true</visible>
     <deferrable>false</deferrable>
     <parameters>
+        <parameter id="error_handling" label="Error Handling" required="true"
+          tooltip="Determine what to return if an error is encountered."
+          menu="Error Message,Raise Error">Error Message</parameter>
         <parameter id="form" label="Remedy Form:" required="true"
           tooltip="Remedy Form Name (not display name), eg. People is CTM:People"/>
         <parameter id="request_id" label="Request ID:" required="true"
@@ -27,12 +30,15 @@
             <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
         </infos>
         <parameters>
+            <parameter name="error_handling">&lt;%= @parameters.has_key?("error_handling") ?
+                @parameters["error_handling"] : "Raise Error" %&gt;</parameter>
             <parameter name="form">&lt;%= @parameters['form'] %&gt;</parameter>
             <parameter name="request_id">&lt;%= @parameters['request_id'] %&gt;</parameter>
             <parameter name="field_values">&lt;%= @parameters['field_values'] %&gt;</parameter>
         </parameters>
     </handler>
     <results format="xml">
+        <result name="Handler Error Message"/>
         <result name="request_id"/>
     </results>
 </taskDefinition>

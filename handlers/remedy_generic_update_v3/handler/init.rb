@@ -37,60 +37,73 @@ class RemedyGenericUpdateV3
 
     # Initialize the handler and pre-load form definitions using the credentials
     # supplied by the task info items.
-    preinitialize_on_first_load(@input_document, [])
+    begin
+      preinitialize_on_first_load(@input_document, [])
+    rescue Exception => error
+      @error = error
+    end
   end
 
-  # Uses the Remedy Login ID to retrieve a single entry from the ITSM v7.x
-  # CTM:People form.  The purpose of this is to return data elements associated
-  # to the entry found.
-  #
   # This is a required method that is automatically called by the Kinetic Task
   # Engine.
   #
   # ==== Returns
   # An Xml formatted String representing the return variable results.
   def execute()
+    error_handling = @parameters["error_handling"]
+    error_message = nil
+    submission_id = nil
 
-  	@field_values = {}
-	  #@field_values[@parameters['field_name']] = @parameters['new_field_value']
-    @field_values = JSON.parse(@parameters['field_values'])
+    if (@error.to_s.empty?)
+      begin
+      	@field_values = {}
+        @field_values = JSON.parse(@parameters['field_values'])
 
-    # Retrieve a single entry from specified form with given request id
-    submission = get_remedy_form(@parameters['form']).find_entries(
-      :single,
-      :conditions => [%|'1' = "#{@parameters['request_id']}"|],
-      :fields => nil
-    )
+        # Retrieve a single entry from specified form with given request id
+        submission = get_remedy_form(@parameters['form']).find_entries(
+          :single,
+          :conditions => [%|'1' = "#{@parameters['request_id']}"|],
+          :fields => nil
+        )
 
-	# Raise error if unable to locate the entry
-	raise("No matching entry on the #{@parameters['form']} form for the given field 1 [#{@parameters['request_id']}]") if submission.nil?
-
-	# Update customer survey base entry and specify the fields we want to return
-    submission.update_attributes!(@field_values)
+        # Raise error if unable to locate the entry
+        if submission.nil?
+          error_message = "No matching entry on the #{@parameters['form']} form for the given field 1 [#{@parameters['request_id']}]"
+          raise error_message if error_handling == "Raise Error"
+        else
+          submission.update_attributes!(@field_values)
+          submission_id = submission.id
+        end
+      rescue Exception => error
+        error_message = error.inspect
+        raise error if error_handling == "Raise Error"
+      end
+    else
+      error_message = @error
+      raise @error if error_handling == "Raise Error"
+    end
 
     # Build the results to be returned by this handler
-    results = <<-RESULTS
+    <<-RESULTS
     <results>
-      <result name="request_id">#{escape(submission.id)}</result>
+      <result name="Handler Error Message">#{escape(error_message)}</result>
+      <result name="request_id">#{escape(submission_id)}</result>
     </results>
     RESULTS
-	puts(results) if @debug_logging_enabled
 
-	# Return the results String
-    return results
   end
 
   # This method is an accessor for the @@remedy_forms variable that caches form
   # definitions.  It checks to see if the specified form has been loaded if so
   # it returns it otherwise it needs to load the form and add it to the cache.
   def get_remedy_form(form_name)
-	if @@remedy_forms[form_name].nil?
-		@@remedy_forms[form_name] = ArsModels::Form.find(form_name, :context => @@remedy_context)
-	end
-	if @@remedy_forms[form_name].nil?
-		raise "Could not find form " + form_name
-	end
-	@@remedy_forms[form_name]
+    if @@remedy_forms[form_name].nil?
+      @@remedy_forms[form_name] = ArsModels::Form.find(form_name, :context => @@remedy_context)
+    end
+    if @@remedy_forms[form_name].nil?
+      raise "Could not find form " + form_name
+    end
+    @@remedy_forms[form_name]
   end
 
   ##############################################################################

@@ -17,12 +17,12 @@ class RemedyGenericDeleteV2
   # Engine.
   #
   # ==== Parameters
-  # * +input+ - The String of Xml that was built by evaluating the node.xml 
+  # * +input+ - The String of Xml that was built by evaluating the node.xml
   #   handler template.
   def initialize(input)
     # Set the input document attribute
     @input_document = REXML::Document.new(input)
-	
+
     # Determine if debug logging is enabled.
     @debug_logging_enabled = get_info_value(@input_document, 'enable_debug_logging') == 'Yes'
     puts("Logging enabled.") if @debug_logging_enabled
@@ -32,39 +32,57 @@ class RemedyGenericDeleteV2
     REXML::XPath.match(@input_document, '/handler/parameters/parameter').each do |node|
       @parameters[node.attribute('name').value] = node.text
     end
-    puts("Parameters: #{@parameters.inspect}") if @debug_logging_enabled	
-	
-		
+    puts("Parameters: #{@parameters.inspect}") if @debug_logging_enabled
+
+
     # Initialize the handler and pre-load form definitions using the credentials
     # supplied by the task info items.
-    preinitialize_on_first_load(@input_document, [])
+    begin
+      preinitialize_on_first_load(@input_document, [])
+    rescue Exception => error
+      @error = error
+    end
   end
-  
-  # Uses the Remedy Login ID to retrieve a single entry from the ITSM v7.x
-  # CTM:People form.  The purpose of this is to return data elements associated
-  # to the entry found.
-  #
-  # This is a required method that is automatically called by the Kinetic Task
-  # Engine.
-  #
-  # ==== Returns
-  # An Xml formatted String representing the return variable results.
+
+  # The execute method takes no parameters and should leverage the instance
+  # variables setup and validated by the initialize method to generate a result
+  # xml string.
   def execute()
-  
-    # Retrieve a single entry from specified form with given request id
-    entry = get_remedy_form(@parameters['form']).find_entries(
-      :single,
-      :conditions => [%|'1' = "#{@parameters['request_id']}"|],
-      :fields => :all
-    )
-	
-	# Raise error if unable to locate the entry
-	raise("No matching entry on the #{@parameters['form']} form for the given field 1 [#{@parameters['request_id']}]") if entry.nil?
-	
-	deleteResults = entry.delete!
-	
-    # Return an empty results String
-    return "<results/>"
+    error_handling = @parameters["error_handling"]
+    error_message = nil
+
+    # If preinitialize fail then stop execution and rasie or return error
+    if (@error.to_s.empty?)
+      begin
+        # Retrieve a single entry from specified form with given request id
+        entry = get_remedy_form(@parameters['form']).find_entries(
+          :single,
+          :conditions => [%|'1' = "#{@parameters['request_id']}"|],
+          :fields => :all
+        )
+
+        # Raise error if unable to locate the entry
+        if entry.nil?
+          error_message = "No matching entry on the #{@parameters['form']} form for the given field 1 [#{@parameters['request_id']}]"
+          raise error_message if error_handling == "Raise Error"
+        else
+          deleteResults = entry.delete!
+        end
+      rescue Exception => error
+        error_message = error.inspect
+        raise error if error_handling == "Raise Error"
+      end
+    else
+      error_message = @error
+      raise @error if error_handling == "Raise Error"
+    end
+
+    # Return the results
+    <<-RESULTS
+    <results>
+      <result name="Handler Error Message">#{escape(error_message)}</result>
+    </results>
+    RESULTS
   end
 
   # This method is an accessor for the @@remedy_forms variable that caches form
