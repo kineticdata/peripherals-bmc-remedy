@@ -18,3 +18,7 @@ ARS \[handlers\] (2019-11-06)
     * Initial commit
   \[bmc_itsm9_support_group_member_remove_v1\] (2019-11-06)
     * Initial commit
+
+ARS \[handlers\] (2019-12-16)
+  \[ars9_generic_query_retrieve_v1\] (2019-12-16)
+    * Removed unneeded info values from info.xml file.

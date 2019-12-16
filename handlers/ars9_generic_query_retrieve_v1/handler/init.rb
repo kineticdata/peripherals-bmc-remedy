@@ -34,7 +34,7 @@ class Ars9GenericQueryRetrieveV1
     REXML::XPath.each(@input_document, "/handler/fields/field") do |item|
       @fields[item.attributes["name"]] = item.text.to_s.strip
     end
-	puts(format_hash("Handler fields:", @fields)) if @debug_logging_enabled
+	  puts(format_hash("Handler fields:", @fields)) if @debug_logging_enabled
 	
     # Store parameters in the node.xml in a hash attribute named @parameters.
     @parameters = {}
@@ -50,72 +50,72 @@ class Ars9GenericQueryRetrieveV1
   # results will then be available to subsequent tasks in the process.
   def execute
     @error_handling  = @parameters["error_handling"]
-	api_username    = URI.encode(@info_values["api_username"])
+	  api_username    = URI.encode(@info_values["api_username"])
     api_password    = @info_values["api_password"]
     api_server      = @info_values["api_server"]
-	query = @parameters["request_query"]
+	  query = @parameters["request_query"]
     form = @parameters["form"]
     api_route = "#{api_server}/arsys/v1/entry/#{URI.encode(form)}?q=#{URI.encode(query)}"
 
-	puts("API ROUTE: #{api_route}") if @debug_logging_enabled
+	  puts("API ROUTE: #{api_route}") if @debug_logging_enabled
 
     resource = RestClient::Resource.new(api_route)
 	
-	token = get_access_token(api_server, api_username, api_password)
+    token = get_access_token(api_server, api_username, api_password)
 
-	headers = {:content_type => 'application/json', :authorization => "AR-JWT "+token}
-	puts(format_hash("Headers: ", headers)) if @debug_logging_enabled
-	 
+    headers = {:content_type => 'application/json', :authorization => "AR-JWT "+token}
+    puts(format_hash("Headers: ", headers)) if @debug_logging_enabled
 
-	record_route = api_route 
-	record_resource = RestClient::Resource.new(record_route)
-	record_reponse = record_resource.get(:authorization => "AR-JWT "+token)
-	record_parsed = JSON.parse(record_reponse)
-	puts("Response: #{record_reponse}") if @debug_logging_enabled
+    record_route = api_route 
+    record_resource = RestClient::Resource.new(record_route)
+    record_reponse = record_resource.get(:authorization => "AR-JWT "+token)
+    record_parsed = JSON.parse(record_reponse)
+    puts("Response: #{record_reponse}") if @debug_logging_enabled
 
-	if record_parsed["entries"][0].nil?
+    if record_parsed["entries"][0].nil?
       if @error_handling == "Raise Error"
         raise "No Matching Record Found"
       else
         @results = "<results>"
         @results += "<result name='Handler Error Message'>#{"No Matching Record Found"}</result>"
         @results += "</results>"
-       
-		puts(@results) if @debug_logging_enabled	
-		 return @results
-      end
+        
+      puts(@results) if @debug_logging_enabled	
+      return @results
+    end
 	end
 	
 	
-    # Build the results to be returned by this handler
-    @results = "<results>"
+  # Build the results to be returned by this handler
+  @results = "<results>"
 	@results += "<result name='Remedy Login ID'>#{escape(record_parsed["entries"][0]["values"]['Remedy Login ID'])}</result>"
     # Build up a list of all field names and values for this record
     
   field_values = record_parsed["entries"][0]["values"].each do |key, value|
-    #Build result XML
-    @results+= "<result name='#{key}'>#{escape(value)}</result>"
+  #Build result XML
+  @results+= "<result name='#{key}'>#{escape(value)}</result>"
   end
 
 	
 	@results += "<result name='Handler Error Message'></result>"
-    @results += "</results>"
+  @results += "</results>"
 	puts(@results) if @debug_logging_enabled	
 	@results
-	  rescue RestClient::Exception => error
-	  puts error.response if @debug_logging_enabled
-       error_message = JSON.parse(error.response)[0]
-      if @error_handling == "Raise Error"
-        raise error_message
-      else
-        @results = "<results>"
-        @results += "<result name='Handler Error Message'>#{error.http_code}: #{escape(error_message)} </result>"
-        @results += "</results>"
-       
-		puts(@results) if @debug_logging_enabled	
-		 @results
-      end
-
+  rescue RestClient::Exception => error
+    puts error.response if @debug_logging_enabled
+    if !error.response.nil?
+      error_message = JSON.parse(error.response)[0]
+    end
+    if @error_handling == "Raise Error"
+      raise error_message
+    else
+      @results = "<results>"
+      @results += "<result name='Handler Error Message'>#{error.http_code}: #{escape(error_message)} </result>"
+      @results += "</results>"
+      
+	  	puts(@results) if @debug_logging_enabled	
+      @results
+    end
   end
 
   def get_access_token(api_server, username, password)
@@ -123,11 +123,11 @@ class Ars9GenericQueryRetrieveV1
       'username' => username,
       'password' => password
     }
-	puts('Logging in') if @debug_logging_enabled
-	
-	loginResource = RestClient::Resource.new(api_server+"/jwt/login")
+    puts('Logging in') if @debug_logging_enabled
+    
+    loginResource = RestClient::Resource.new(api_server+"/jwt/login")
     result = loginResource.post(params, :content_type => 'application/x-www-form-urlencoded')
-	puts(result.body) if @debug_logging_enabled
+    puts(result.body) if @debug_logging_enabled
     return result.body
   end
   ##############################################################################
