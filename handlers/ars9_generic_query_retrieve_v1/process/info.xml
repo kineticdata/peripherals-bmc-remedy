@@ -13,7 +13,6 @@ with a default value of 'KD_WEBUSER' add the following line:
 <info name="username">KD_WEBUSER</info>
 -->
 <taskInfo version="1.0">
-<info name="kapi_server" description="The Kinetic ARS API application, if running task locally could be http://localhost:8008/">http://server:port/api</info>
   <info name="api_server" description="The ITSM ARS API application, if running task locally could be http://localhost:8008/">http://server:port/api</info>
   <info name="api_username" description="Name of user account that has permission to use the ITSM API"></info>
   <info name="api_password" description="Password for the ITSM API user" type="encrypted"></info>
