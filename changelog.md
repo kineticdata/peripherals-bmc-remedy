@@ -22,3 +22,8 @@ ARS \[handlers\] (2019-11-06)
 ARS \[handlers\] (2019-12-16)
   \[ars9_generic_query_retrieve_v1\] (2019-12-16)
     * Removed unneeded info values from info.xml file.
+
+ARS \[bridge adapters\] (2019-12-23)
+  \[kinetic-bridgehub-adapter-ars\] (2019-12-23)
+    * fixed issue with multiple remedy instances using the same bridge adapter.
+    Global forms were being set for performance reasons.

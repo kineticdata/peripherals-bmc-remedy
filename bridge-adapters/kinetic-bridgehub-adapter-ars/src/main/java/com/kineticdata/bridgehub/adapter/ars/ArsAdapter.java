@@ -153,14 +153,12 @@ public class ArsAdapter implements BridgeAdapter {
             this.helperContext = new HelperContext(username, password, server, port, prognum);
             this.helperContext.setTimezoneOffset(0);
 
-            // Initialize a global form cache
-            FormCache globalCache = new FormCache(helperContext);
-            // Set the global cache
-            ArsHelper.setGlobalFormCache(globalCache);
-            ArsPrecisionHelper.setGlobalFormCache(globalCache);
-
+            // Initialize a form cache
+            FormCache formCache = new FormCache(helperContext);
             // Initialize a new helper
             this.helper = new ArsPrecisionHelper(this.helperContext);
+            // Set local form cache
+            this.helper.setLocalCache(formCache);
         } catch (Exception e) {
             throw new BridgeError("Unable to initialize the bridge, "+
                 "there was a problem instantiating the ARS context.", e);
