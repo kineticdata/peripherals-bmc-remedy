@@ -26,9 +26,11 @@ Query:									'Group List' LIKE "%<%=@answers['Group']%>%"
 
 === Detailed Description
 This handler has the ability to have form caching disabled.  To disable form caching set
-disable_caching to "Yes".  Note that this should not be done in production as it can cause
-preformance loss.
-This handler returns the request ids (field 1) for all records in 
+disable_caching to "Yes".  Disabling caching may negatively impact performance, but it
+is also necessary when using a single handler to interact with multiple Remedy
+environments.
+
+This handler returns the request ids (field 1) for all records in
 the specified form that match the provided query.  This is returned
 in XML format (like below) for use in loops.
 
@@ -46,5 +48,5 @@ It also returns the instance ids (field 179) in a similar format:
 	<InstanceId>AG0050569A648CMZtSUAKUBMAgMrkC</InstanceId>
 </Instance_Ids>
 
-It also returns a count of the number of records found. It returns 
+It also returns a count of the number of records found. It returns
 zero if there were no matches (not nil).

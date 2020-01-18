@@ -17,39 +17,34 @@ class RemedyGenericFindV4
   # Engine.
   #
   # ==== Parameters
-  # * +input+ - The String of Xml that was built by evaluating the node.xml 
+  # * +input+ - The String of Xml that was built by evaluating the node.xml
   #   handler template.
   def initialize(input)
     # Set the input document attribute
     @input_document = REXML::Document.new(input)
-  
+
     # Determine if debug logging is enabled.
     @debug_logging_enabled = get_info_value(@input_document, 'enable_debug_logging') == 'Yes'
     puts("Logging enabled.") if @debug_logging_enabled
 
     # Determine if caching is disabled.
     @disable_caching = get_info_value(@input_document, 'disable_caching') == 'Yes'
-    if @disable_caching
-      puts("WARNING: Caching disabled.  This may be convenient in development "+
-        "environments (where forms are changing), but should not be used in "+
-        "production (where it would negatively impact performance).")
-    end
 
     # Store parameters in the node.xml in a hash attribute named @parameters.
     @parameters = {}
     REXML::XPath.match(@input_document, '/handler/parameters/parameter').each do |node|
       @parameters[node.attribute('name').value] = node.text
     end
-    puts("Parameters: #{@parameters.inspect}") if @debug_logging_enabled  
-  
-    
+    puts("Parameters: #{@parameters.inspect}") if @debug_logging_enabled
+
+
     # Initialize the handler and pre-load form definitions using the credentials
     # supplied by the task info items.
     # Here we initialize with an empty forms array because this handler will be
-    # used to access a dynamic set of forms depending on the input. 
+    # used to access a dynamic set of forms depending on the input.
     begin
-        # Obtain a unchangable reference to the configuration (the @@config class 
-        # variable could be concurrently changed by other threads -- by defining the 
+        # Obtain a unchangable reference to the configuration (the @@config class
+        # variable could be concurrently changed by other threads -- by defining the
         # @config instance variable, the execution of this handler is "locked in" to
         # using that config for the entire execution)
         @config = preinitialize_on_first_load(@input_document, [])
@@ -57,8 +52,8 @@ class RemedyGenericFindV4
       @error = error
     end
   end
-  
-  # Returns the request ids (field 1) and instance ids (field 179) for all records 
+
+  # Returns the request ids (field 1) and instance ids (field 179) for all records
   # in the specified form that match the provided prameter of query.
   #
   # This is a required method that is automatically called by the Kinetic Task
@@ -67,13 +62,13 @@ class RemedyGenericFindV4
   # ==== Returns
   # An Xml formatted String representing the return variable results.
   def execute()
-    
+
     error_handling = @parameters["error_handling"]
     error_message = nil
-    
+
     # If preinitialize fail then stop execution and rasie or return error
-    if (@error.to_s.empty?) 
-    
+    if (@error.to_s.empty?)
+
       begin
         # Retrieve a entries from specified form with given query
         entry = get_remedy_form(@parameters['form']).find_entries(
@@ -81,12 +76,12 @@ class RemedyGenericFindV4
           :conditions => [%|#{@parameters['query']}|],
           :fields => [1,179]
         )
-        
+
         #Begin building XML of fields
         id_list = '<Request_Ids>'
         id_list2 = '<Instance_Ids>'
         count = 0
-        
+
         if !entry.nil?
           # Build up a list of all request ids returned
           entry.each do |entry|
@@ -99,7 +94,7 @@ class RemedyGenericFindV4
             end
           end
         end
-        
+
         #Complete result XML
         id_list << '</Request_Ids>'
         id_list2 << '</Instance_Ids>'
@@ -107,7 +102,7 @@ class RemedyGenericFindV4
         error_message = error.inspect
         raise error if error_handling == "Raise Error"
       end
-    
+
     else
       error_message = @error
       raise @error if error_handling == "Raise Error"
@@ -122,15 +117,15 @@ class RemedyGenericFindV4
       <result name="Count">#{escape(count)}</result>
     </results>
     RESULTS
-    puts(results) if @debug_logging_enabled  
-  
+    puts(results) if @debug_logging_enabled
+
     # Return the results String
     return results
   end
 
-  # This method is an accessor for the @config[:forms] variable that caches 
-  # form definitions.  It checks to see if the specified form has been loaded 
-  # if so it returns it otherwise it needs to load the form and add it to the 
+  # This method is an accessor for the @config[:forms] variable that caches
+  # form definitions.  It checks to see if the specified form has been loaded
+  # if so it returns it otherwise it needs to load the form and add it to the
   # cache.
   def get_remedy_form(form_name)
     if @config[:forms][form_name].nil? || @disable_caching
@@ -141,7 +136,7 @@ class RemedyGenericFindV4
     end
     @config[:forms][form_name]
   end
-  
+
   ##############################################################################
   # General handler utility functions
   ##############################################################################
@@ -151,7 +146,7 @@ class RemedyGenericFindV4
   # method).  This will very frequently utilize task info items to do things
   # such as pre-load a Remedy form or generate a Remedy proxy user.
   def preinitialize_on_first_load(input_document, form_names)
-    # Build a map of handler properties (these can be used to determine when 
+    # Build a map of handler properties (these can be used to determine when
     # there are property changes)
     properties = {
       :server         => get_info_value(input_document, 'server'),
@@ -162,11 +157,11 @@ class RemedyGenericFindV4
       :authentication => get_info_value(input_document, 'authentication')
     }
 
-    # If this is the first time the handler has been run, or if the handler 
+    # If this is the first time the handler has been run, or if the handler
     # properties are changing
     if !self.class.class_variable_defined?('@@config') || @@config[:properties] != properties
-      puts("Info values have changed a new config is being generated.") if @debug_logging_enabled  
-      
+      puts("Info values have changed a new config is being generated.") if @debug_logging_enabled
+
       remedy_context = ArsModels::Context.new(
         :server         => get_info_value(input_document, 'server'),
         :username       => get_info_value(input_document, 'username'),
@@ -185,7 +180,7 @@ class RemedyGenericFindV4
         end
       }
     end
-    
+
     # Return the configuration
     @@config
   end
