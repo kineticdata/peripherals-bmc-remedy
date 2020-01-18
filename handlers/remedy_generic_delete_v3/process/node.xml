@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<taskDefinition id="remedy_generic_find" name="Remedy Generic Find" schema_version="1.0" version="4">
+<taskDefinition id="remedy_generic_delete" name="Remedy Generic Delete" schema_version="1.0" version="3">
     <author></author>
     <description>
-	    Retrieves request IDs (field 1) and Instance IDs (field 179) for Remedy entries for the form
-		entered using the query specified.
+	    Deletes a single Remedy entry related to the form entered with
+		the Request ID specified.
 	</description>
     <helpurl></helpurl>
     <visible>true</visible>
     <deferrable>false</deferrable>
     <parameters>
         <parameter id="error_handling" label="Error Handling" required="true"
-          tooltip="Determine what to return if an error is encountered."
-          menu="Error Message,Raise Error">Error Message</parameter>
+            tooltip="Determine what to return if an error is encountered."
+            menu="Error Message,Raise Error">Error Message</parameter>
         <parameter id="form" label="Remedy Form:" required="true"
-          tooltip="Remedy Form Name (not display name), eg. People is CTM:People"/>
-        <parameter id="query" label="Query:" required="true"
-          tooltip="The query to search by"/>
+            tooltip="Remedy Form Name (not display name), eg. People is CTM:People"/>
+        <parameter id="request_id" label="Request ID:" required="true"
+            tooltip="Request ID (Field 1) of record to delete"/>
     </parameters>
-    <handler name="remedy_generic_find" version="4">
+    <handler name="remedy_generic_delete" version="3">
         <infos>
             <info name="server">&lt;%= @info['server'] %&gt;</info>
             <info name="username">&lt;%= @info['username'] %&gt;</info>
@@ -32,13 +32,10 @@
             <parameter name="error_handling">&lt;%= @parameters.has_key?("error_handling") ?
                 @parameters["error_handling"] : "Raise Error" %&gt;</parameter>
             <parameter name="form">&lt;%= @parameters['form'] %&gt;</parameter>
-            <parameter name="query">&lt;%= @parameters['query'] %&gt;</parameter>
+			<parameter name="request_id">&lt;%= @parameters['request_id'] %&gt;</parameter>
         </parameters>
     </handler>
     <results format="xml">
-        <result name="Handler Error Message"/>
-        <result name="RequestIdList"/>
-        <result name="InstanceIdList"/>
-        <result name="Count"/>
+      <result name="Handler Error Message"/>
     </results>
 </taskDefinition>

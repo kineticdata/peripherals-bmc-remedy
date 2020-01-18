@@ -20,5 +20,4 @@ with a default value of 'KD_WEBUSER' add the following line:
   <info name="prognum" description="Remedy RPC Prognum">0</info>
   <info name="authentication" description="Remedy Authentication String"></info>
   <info name="enable_debug_logging" description="Enable debug logging if the value is set to 'Yes'.">No</info>
-  <info name="disable_caching" description="Disable caching if the value is set to 'Yes'. Disabling caching may negatively impact performance, but it is also necessary when using a single handler to interact with multiple Remedy environments.">No</info>
 </taskInfo>

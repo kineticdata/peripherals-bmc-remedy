@@ -1,0 +1,11 @@
+Remedy Generic Create V3 (2020-01-18)
+* Added ability to disable caching
+
+Remedy Generic Create v2.1 (2019-11-26)
+* Added error message/raise error error handling
+
+Remedy Generic Retrieve V2 (2013-07-16)
+ * Fixing bug to allow this to be used for multiple different
+   forms on the same task instance
+Remedy Generic Retrieve (2012-05-29)
+ * Initial version.  See README for details.

@@ -4,7 +4,7 @@ require 'rexml/document'
 # of the common Remedy operations.
 require 'ars_models'
 
-class RemedyGenericFindV4
+class RemedyGenericRetrieveV3
   # Prepare for execution by pre-loading Ars form definitions, building Hash
   # objects for necessary values, and validating the present state.  This method
   # sets the following instance variables:
@@ -53,75 +53,72 @@ class RemedyGenericFindV4
     end
   end
 
-  # Returns the request ids (field 1) and instance ids (field 179) for all records
-  # in the specified form that match the provided prameter of query.
-  #
   # This is a required method that is automatically called by the Kinetic Task
   # Engine.
   #
   # ==== Returns
   # An Xml formatted String representing the return variable results.
   def execute()
-
     error_handling = @parameters["error_handling"]
     error_message = nil
+    results_list = ""
+    field_list = ""
 
-    # If preinitialize fail then stop execution and rasie or return error
     if (@error.to_s.empty?)
-
       begin
-        # Retrieve a entries from specified form with given query
+        # Retrieve a single entry from specified form with given request id
         entry = get_remedy_form(@parameters['form']).find_entries(
-          :all,
-          :conditions => [%|#{@parameters['query']}|],
-          :fields => [1,179]
+          :single,
+          :conditions => [%|'1' = "#{@parameters['request_id']}"|],
+          :fields => :all
         )
 
-        #Begin building XML of fields
-        id_list = '<Request_Ids>'
-        id_list2 = '<Instance_Ids>'
-        count = 0
+        # Raise error if unable to locate the entry
+        if entry.nil?
+          error_message = "No matching entry on the #{@parameters['form']} form for the given field 1 [#{@parameters['request_id']}]"
+          raise error_message if error_handling == "Raise Error"
+        else
+          #Begin building XML of fields
+          field_list = '<field_list>'
 
-        if !entry.nil?
-          # Build up a list of all request ids returned
-          entry.each do |entry|
-            count = count + 1
-            if (entry[1])
-              id_list << '<RequestId>'+ entry[1] +'</RequestId>'
+          # Build up a list of all field names and values for this record
+          field_values = {}
+          entry.field_values.collect do |field_id, value|
+            field_values[get_remedy_form(@parameters['form']).field_for(field_id).name] = value
+            textvalue = value.to_s()
+            if textvalue.include? 'ArsModels'
+              if textvalue.include? 'DiaryFieldValue'
+                textvalue = value.text.to_s()
+              else
+                textvalue = value.value
+              end
             end
-            if (entry[179])
-              id_list2 << '<InstanceId>'+ entry[179] +'</InstanceId>'
-            end
+            #Build result XML
+            field_list << "<field id='#{get_remedy_form(@parameters['form']).field_for(field_id).name}'>#{textvalue}</field>"
           end
-        end
 
-        #Complete result XML
-        id_list << '</Request_Ids>'
-        id_list2 << '</Instance_Ids>'
+          #Complete result XML
+          field_list << '</field_list>'
+          puts("Field Values: #{field_values.inspect}") if @debug_logging_enabled
+          puts("Field Output: \n#{field_list}") if @debug_logging_enabled
+        end
       rescue Exception => error
         error_message = error.inspect
         raise error if error_handling == "Raise Error"
       end
-
     else
       error_message = @error
       raise @error if error_handling == "Raise Error"
     end
-
     # Build the results to be returned by this handler
-    results = <<-RESULTS
+    <<-RESULTS
     <results>
       <result name="Handler Error Message">#{escape(error_message)}</result>
-      <result name="RequestIdList">#{escape(id_list)}</result>
-      <result name="InstanceIdList">#{escape(id_list2)}</result>
-      <result name="Count">#{escape(count)}</result>
+      <result name="field_list">#{escape(field_list)}</result>
     </results>
     RESULTS
-    puts(results) if @debug_logging_enabled
-
-    # Return the results String
-    return results
   end
+
 
   # This method is an accessor for the @config[:forms] variable that caches
   # form definitions.  It checks to see if the specified form has been loaded

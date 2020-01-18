@@ -1,42 +1,21 @@
-# Require the REXML ruby library.
-require 'rexml/document'
-# Require the ArsModels ruby gem.  This is a Ruby helper library that wraps many
-# of the common Remedy operations.
-require 'ars_models'
+# Require the dependencies file to load the vendor libraries
+require File.expand_path(File.join(File.dirname(__FILE__), 'dependencies'))
 
-class RemedyGenericFindV4
-  # Prepare for execution by pre-loading Ars form definitions, building Hash
-  # objects for necessary values, and validating the present state.  This method
-  # sets the following instance variables:
-  # * @input_document - A REXML::Document object that represents the input Xml.
-  # * @debug_logging_enabled - A Boolean value indicating whether logging should
-  #   be enabled or disabled.
-  # * @parameters - A Hash of parameter names to parameter values.
-  #
-  # This is a required method that is automatically called by the Kinetic Task
-  # Engine.
-  #
-  # ==== Parameters
-  # * +input+ - The String of Xml that was built by evaluating the node.xml
-  #   handler template.
+
+# Define the handler class which should:
+#  * Be named in the format <GROUP><ITEM><ACTION>HandlerV<VERSION>
+#  * Include an initialize method that takes a single String of XML.
+#  * Include an execute method that returns XML in the expected format
+class RemedyGenericCreateV3
+  # The initialize method takes a String of XML.  This XML is defined in the
+  # process/node.xml file as the taskDefinition/handler element.  This method
+  # should setup (usually retrieve from the input xml) any instance variables
+  # that will be used by the handler, validate that the variables are valid, and
+  # optionally call a preinitialize_on_first_load method (if there are expensive
+  # operations that don't need to be executed with each task node instance).
   def initialize(input)
     # Set the input document attribute
     @input_document = REXML::Document.new(input)
-
-    # Determine if debug logging is enabled.
-    @debug_logging_enabled = get_info_value(@input_document, 'enable_debug_logging') == 'Yes'
-    puts("Logging enabled.") if @debug_logging_enabled
-
-    # Determine if caching is disabled.
-    @disable_caching = get_info_value(@input_document, 'disable_caching') == 'Yes'
-
-    # Store parameters in the node.xml in a hash attribute named @parameters.
-    @parameters = {}
-    REXML::XPath.match(@input_document, '/handler/parameters/parameter').each do |node|
-      @parameters[node.attribute('name').value] = node.text
-    end
-    puts("Parameters: #{@parameters.inspect}") if @debug_logging_enabled
-
 
     # Initialize the handler and pre-load form definitions using the credentials
     # supplied by the task info items.
@@ -51,76 +30,69 @@ class RemedyGenericFindV4
     rescue Exception => error
       @error = error
     end
+
+	 # Determine if debug logging is enabled.
+    @debug_logging_enabled = get_info_value(@input_document, 'enable_debug_logging') == 'Yes'
+    puts("Logging enabled.") if @debug_logging_enabled
+
+    # Determine if caching is disabled.
+    @disable_caching = get_info_value(@input_document, 'disable_caching') == 'Yes'
+
+    # Initialize the parameters hash.
+    @parameters = {}
+    # For each of the parameters in the node.xml file, add them to the hash
+    REXML::XPath.match(@input_document, '/handler/parameters/parameter').each do |node|
+      @parameters[node.attribute('name').value] = node.text
+    end
+	puts(format_hash("Parameters:", @parameters)) if @debug_logging_enabled
+
+		@field_values  = {}
   end
 
-  # Returns the request ids (field 1) and instance ids (field 179) for all records
-  # in the specified form that match the provided prameter of query.
-  #
-  # This is a required method that is automatically called by the Kinetic Task
-  # Engine.
-  #
-  # ==== Returns
-  # An Xml formatted String representing the return variable results.
+  # The execute method takes no parameters and should leverage the instance
+  # variables setup and validated by the initialize method to generate a result
+  # xml string.
   def execute()
 
     error_handling = @parameters["error_handling"]
     error_message = nil
+    entry_id = nil
 
     # If preinitialize fail then stop execution and rasie or return error
     if (@error.to_s.empty?)
-
       begin
-        # Retrieve a entries from specified form with given query
-        entry = get_remedy_form(@parameters['form']).find_entries(
-          :all,
-          :conditions => [%|#{@parameters['query']}|],
-          :fields => [1,179]
+        # Create the entry using the ArsModels form setup the first time this
+        # handler is executed.  The :field_values parameter takes a Hash of field
+        # names to value mappings (which was built in the #initialize method).  The
+        # :fields parameter is an optional Array of field values to return with the
+        # entry.  By default (when the :fields parameter is omitted), all field
+        # values are returned.  For large forms, the performance gained by
+        # specifying a smaller subset of fields can be significant.
+      	@field_values = JSON.parse(@parameters['field_values'])
+      	puts(format_hash("Field Values:", @field_values)) if @debug_logging_enabled
+
+        entry = get_remedy_form(@parameters['form']).create_entry!(
+          :field_values => @field_values,
+          :fields => []
         )
 
-        #Begin building XML of fields
-        id_list = '<Request_Ids>'
-        id_list2 = '<Instance_Ids>'
-        count = 0
-
-        if !entry.nil?
-          # Build up a list of all request ids returned
-          entry.each do |entry|
-            count = count + 1
-            if (entry[1])
-              id_list << '<RequestId>'+ entry[1] +'</RequestId>'
-            end
-            if (entry[179])
-              id_list2 << '<InstanceId>'+ entry[179] +'</InstanceId>'
-            end
-          end
-        end
-
-        #Complete result XML
-        id_list << '</Request_Ids>'
-        id_list2 << '</Instance_Ids>'
+        entry_id = entry.id
       rescue Exception => error
         error_message = error.inspect
         raise error if error_handling == "Raise Error"
       end
-
     else
       error_message = @error
       raise @error if error_handling == "Raise Error"
     end
 
-    # Build the results to be returned by this handler
-    results = <<-RESULTS
+    # Return the results
+    <<-RESULTS
     <results>
       <result name="Handler Error Message">#{escape(error_message)}</result>
-      <result name="RequestIdList">#{escape(id_list)}</result>
-      <result name="InstanceIdList">#{escape(id_list2)}</result>
-      <result name="Count">#{escape(count)}</result>
+      <result name="Entry Id">#{escape(entry_id)}</result>
     </results>
     RESULTS
-    puts(results) if @debug_logging_enabled
-
-    # Return the results String
-    return results
   end
 
   # This method is an accessor for the @config[:forms] variable that caches
@@ -136,10 +108,6 @@ class RemedyGenericFindV4
     end
     @config[:forms][form_name]
   end
-
-  ##############################################################################
-  # General handler utility functions
-  ##############################################################################
 
   # Preinitialize expensive operations that are not task node dependent (IE
   # don't change based on the input parameters passed via xml to the #initialize
@@ -193,7 +161,7 @@ class RemedyGenericFindV4
   # the future.  This method can be copied and reused between handlers.
   def escape(string)
     # Globally replace characters based on the ESCAPE_CHARACTERS constant
-    string.to_s.gsub(/[&"><]/) { |special| ESCAPE_CHARACTERS[special] } if string
+    string.to_s.gsub(/[&"><]/) { |special| ESCAPE_CHARACTERS[special] }
   end
   # This is a ruby constant that is used by the escape method
   ESCAPE_CHARACTERS = {'&'=>'&amp;', '>'=>'&gt;', '<'=>'&lt;', '"' => '&quot;'}
@@ -203,9 +171,18 @@ class RemedyGenericFindV4
   # a consistent format, these type of methods can be copied and reused between
   # handlers.
   def get_info_value(document, name)
-    # Retrieve the XML node representing the desired info value
+    # Retrieve the XML node representing the desird info value
     info_element = REXML::XPath.first(document, "/handler/infos/info[@name='#{name}']")
     # If the desired element is nil, return nil; otherwise return the text value of the element
     info_element.nil? ? nil : info_element.text
+  end
+
+    def format_hash(header, hash)
+    # Staring with the "header" parameter string, concatenate each of the
+    # parameter name/value pairs with a prefix intended to better display the
+    # results within the Kinetic Task log.
+    hash.inject(header) do |result, (key, value)|
+      result << "\n    #{key}: #{value}"
+    end
   end
 end
