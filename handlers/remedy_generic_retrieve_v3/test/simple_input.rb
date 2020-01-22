@@ -11,7 +11,7 @@
   },
   'parameters' => {
     'error_handling' => 'Error Message',
-	  'form' => '',
-    'query' => %|'7' = "Actgit stive"|
+    'form' => 'User',
+    'request_id' => '000000000000001'
   }
 }

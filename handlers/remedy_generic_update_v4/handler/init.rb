@@ -4,7 +4,7 @@ require 'rexml/document'
 # of the common Remedy operations.
 require 'ars_models'
 
-class RemedyGenericFindV4
+class RemedyGenericUpdateV4
   # Prepare for execution by pre-loading Ars form definitions, building Hash
   # objects for necessary values, and validating the present state.  This method
   # sets the following instance variables:
@@ -37,7 +37,6 @@ class RemedyGenericFindV4
     end
     puts("Parameters: #{@parameters.inspect}") if @debug_logging_enabled
 
-
     # Initialize the handler and pre-load form definitions using the credentials
     # supplied by the task info items.
     # Here we initialize with an empty forms array because this handler will be
@@ -53,74 +52,53 @@ class RemedyGenericFindV4
     end
   end
 
-  # Returns the request ids (field 1) and instance ids (field 179) for all records
-  # in the specified form that match the provided prameter of query.
-  #
   # This is a required method that is automatically called by the Kinetic Task
   # Engine.
   #
   # ==== Returns
   # An Xml formatted String representing the return variable results.
   def execute()
-
     error_handling = @parameters["error_handling"]
     error_message = nil
+    submission_id = nil
 
-    # If preinitialize fail then stop execution and rasie or return error
     if (@error.to_s.empty?)
-
       begin
-        # Retrieve a entries from specified form with given query
-        entry = get_remedy_form(@parameters['form']).find_entries(
-          :all,
-          :conditions => [%|#{@parameters['query']}|],
-          :fields => [1,179]
+      	@field_values = {}
+        @field_values = JSON.parse(@parameters['field_values'])
+
+        # Retrieve a single entry from specified form with given request id
+        submission = get_remedy_form(@parameters['form']).find_entries(
+          :single,
+          :conditions => [%|'1' = "#{@parameters['request_id']}"|],
+          :fields => nil
         )
 
-        #Begin building XML of fields
-        id_list = '<Request_Ids>'
-        id_list2 = '<Instance_Ids>'
-        count = 0
-
-        if !entry.nil?
-          # Build up a list of all request ids returned
-          entry.each do |entry|
-            count = count + 1
-            if (entry[1])
-              id_list << '<RequestId>'+ entry[1] +'</RequestId>'
-            end
-            if (entry[179])
-              id_list2 << '<InstanceId>'+ entry[179] +'</InstanceId>'
-            end
-          end
+        # Raise error if unable to locate the entry
+        if submission.nil?
+          error_message = "No matching entry on the #{@parameters['form']} form for the given field 1 [#{@parameters['request_id']}]"
+          raise error_message if error_handling == "Raise Error"
+        else
+          submission.update_attributes!(@field_values)
+          submission_id = submission.id
         end
-
-        #Complete result XML
-        id_list << '</Request_Ids>'
-        id_list2 << '</Instance_Ids>'
       rescue Exception => error
         error_message = error.inspect
         raise error if error_handling == "Raise Error"
       end
-
     else
       error_message = @error
       raise @error if error_handling == "Raise Error"
     end
 
     # Build the results to be returned by this handler
-    results = <<-RESULTS
+    <<-RESULTS
     <results>
       <result name="Handler Error Message">#{escape(error_message)}</result>
-      <result name="RequestIdList">#{escape(id_list)}</result>
-      <result name="InstanceIdList">#{escape(id_list2)}</result>
-      <result name="Count">#{escape(count)}</result>
+      <result name="request_id">#{escape(submission_id)}</result>
     </results>
     RESULTS
-    puts(results) if @debug_logging_enabled
 
-    # Return the results String
-    return results
   end
 
   # This method is an accessor for the @config[:forms] variable that caches
