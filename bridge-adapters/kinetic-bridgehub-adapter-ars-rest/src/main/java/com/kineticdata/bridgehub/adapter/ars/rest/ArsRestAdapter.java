@@ -332,8 +332,8 @@ public class ArsRestAdapter implements BridgeAdapter {
             object = (JSONObject)JSONValue.parse(output);
         } catch (ClassCastException e){
             JSONArray error = (JSONArray)JSONValue.parse(output);
-            throw new BridgeError("Error caught in retrieve: "
-                + ((JSONObject)error.get(0)).get("messageText"));
+            throw new BridgeError("Error caught in when attempting to parse "
+                + "response: " + ((JSONObject)error.get(0)).get("messageText"));
         } catch (Exception e) {
             throw new BridgeError("An unexpected error has occured " + e);
         }
@@ -482,11 +482,11 @@ public class ArsRestAdapter implements BridgeAdapter {
             }else if(responseCode == 401){
                 // If token has expired get fresh token
                 // TODO: Find way to test this code.
-                getToken();
+                token = getToken();
                 // If count is greater than 2 assume that bad credentials were
                 // provided.
                 if (count < 2) {
-                    getResource(url, count + 1);
+                    output = getResource(url, count + 1);
                 } else {
                     throw new BridgeError("401 unauthorized access");
                 }
