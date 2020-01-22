@@ -27,3 +27,7 @@ ARS \[bridge adapters\] (2019-12-23)
   \[kinetic-bridgehub-adapter-ars\] (2019-12-23)
     * fixed issue with multiple remedy instances using the same bridge adapter.
     Global forms were being set for performance reasons.
+
+ARS \[bridge adapters\] (2020-01-22)
+  \[kinetic-bridgehub-adapter-ars-rest\] (2020-01-22)
+    * PER-180 fixed auth bug issue.
