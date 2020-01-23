@@ -1,9 +1,9 @@
 {
   'info' => {
-    'server' => 'emu.kineticdata.com',
-    'username' => 'Allen',
-    'password' => 'Allen',
-    'port' => '3000',
+    'server' => '',
+    'username' => '',
+    'password' => '',
+    'port' => '',
     'prognum' => '',
     'authentication' => '',
     'enable_debug_logging' => 'Yes',
@@ -11,8 +11,8 @@
   },
   'parameters' => {
     'error_handling' => 'Error Message',
-    'form' => 'HPD:Help Desk',
-    'request_id' => 'INC000000007504',
-    'field_values' => '{"Detailed Decription":"Updated notes!"}'
+    'form' => '',
+    'request_id' => '',
+    'field_values' => ''
   }
 }
