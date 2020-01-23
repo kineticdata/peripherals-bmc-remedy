@@ -46,7 +46,7 @@ class RemedyGenericQueryRetrieveV3
         # variable could be concurrently changed by other threads -- by defining the
         # @config instance variable, the execution of this handler is "locked in" to
         # using that config for the entire execution)
-        @config = preinitialize_on_first_load(@input_document, [])
+        @config = preinitialize_on_first_load(@input_document, [@parameters['form']])
     rescue Exception => error
       @error = error
     end
@@ -120,7 +120,7 @@ class RemedyGenericQueryRetrieveV3
   # if so it returns it otherwise it needs to load the form and add it to the
   # cache.
   def get_remedy_form(form_name)
-    if @config[:forms][form_name].nil? || @disable_caching
+    if @config[:forms][form_name].nil?
       @config[:forms][form_name] = ArsModels::Form.find(form_name, :context => @config[:context])
     end
     if @config[:forms][form_name].nil?
@@ -138,43 +138,33 @@ class RemedyGenericQueryRetrieveV3
   # method).  This will very frequently utilize task info items to do things
   # such as pre-load a Remedy form or generate a Remedy proxy user.
   def preinitialize_on_first_load(input_document, form_names)
-    # Build a map of handler properties (these can be used to determine when
-    # there are property changes)
-    properties = {
+    remedy_context = ArsModels::Context.new(
       :server         => get_info_value(input_document, 'server'),
       :username       => get_info_value(input_document, 'username'),
       :password       => get_info_value(input_document, 'password'),
       :port           => get_info_value(input_document, 'port'),
       :prognum        => get_info_value(input_document, 'prognum'),
       :authentication => get_info_value(input_document, 'authentication')
-    }
+    )
 
-    # If this is the first time the handler has been run, or if the handler
-    # properties are changing
-    if !self.class.class_variable_defined?('@@config') || @@config[:properties] != properties
-      puts("Info values have changed a new config is being generated.") if @debug_logging_enabled
-
-      remedy_context = ArsModels::Context.new(
-        :server         => get_info_value(input_document, 'server'),
-        :username       => get_info_value(input_document, 'username'),
-        :password       => get_info_value(input_document, 'password'),
-        :port           => get_info_value(input_document, 'port'),
-        :prognum        => get_info_value(input_document, 'prognum'),
-        :authentication => get_info_value(input_document, 'authentication')
-      )
-
-      # Build up a new configuration
+    # Build up a new configuration
+    if @disable_caching
+      @config = {
+        #:properties => properties,
+        :context => remedy_context,
+        :forms => form_names.inject({}) do |hash, form_name|
+          hash.merge!(form_name => ArsModels::Form.find(form_name, :context => remedy_context))
+        end
+      }
+    else
       @@config = {
-        :properties => properties,
+        #:properties => properties,
         :context => remedy_context,
         :forms => form_names.inject({}) do |hash, form_name|
           hash.merge!(form_name => ArsModels::Form.find(form_name, :context => remedy_context))
         end
       }
     end
-
-    # Return the configuration
-    @@config
   end
 
   # This is a template method that is used to escape results values (returned in

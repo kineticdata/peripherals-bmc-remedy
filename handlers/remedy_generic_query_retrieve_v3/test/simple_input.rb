@@ -1,9 +1,9 @@
 {
   'info' => {
-    'server' => 'emu.kineticdata.com',
-    'username' => 'Allen',
-    'password' => 'Allen',
-    'port' => '3000',
+    'server' => '',
+    'username' => '',
+    'password' => '',
+    'port' => '',
     'prognum' => '',
     'authentication' => '',
     'enable_debug_logging' => 'Yes',

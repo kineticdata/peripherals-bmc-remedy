@@ -1,3 +1,6 @@
+Remedy Generic Find V4 (2020-01-23)
+* Updated disable caching logic to improve performance
+
 Remedy Generic Find V4 (2020-01-18)
 * Updated readme note about disabling cache
 * Removed logging message when cache is disabled
