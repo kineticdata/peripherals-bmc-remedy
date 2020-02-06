@@ -1,0 +1,15 @@
+Remedy Generic Create V3 (2020-01-23)
+* Updated disable caching logic to improve performance
+
+Remedy Generic Create V3 (2020-01-18)
+* Added ability to disable caching
+
+Remedy Generic Create V2 (2019-11-4)
+*added error message handling
+
+Remedy Generic Create v2 (2016-08-25)
+*Added debug logging capability. Added JSON library so will work in Task 3.
+
+Remedy Generic Create V2.1 (2018-05-23)
+* Added check for Task version before loading JSON dependency so it will work
+  with both Task 3 & 4.

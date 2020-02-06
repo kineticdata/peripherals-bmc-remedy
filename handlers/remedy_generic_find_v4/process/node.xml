@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <taskDefinition id="remedy_generic_find" name="Remedy Generic Find" schema_version="1.0" version="4">
-    <author>anne.ramey@kineticdata.com</author>
+    <author></author>
     <description>
 	    Retrieves request IDs (field 1) and Instance IDs (field 179) for Remedy entries for the form
 		entered using the query specified.
 	</description>
-    <helpurl>http://ktc.kineticdata.com/handler/remedy_generic_find</helpurl>
+    <helpurl></helpurl>
     <visible>true</visible>
     <deferrable>false</deferrable>
     <parameters>
         <parameter id="error_handling" label="Error Handling" required="true"
           tooltip="Determine what to return if an error is encountered."
           menu="Error Message,Raise Error">Error Message</parameter>
-        <parameter id="form" label="Remedy Form:" required="true" 
-		  tooltip="Remedy Form Name (not display name), eg. People is CTM:People"/>
-        <parameter id="query" label="Query:" required="true" 
-		  tooltip="The query to search by"/>
+        <parameter id="form" label="Remedy Form:" required="true"
+          tooltip="Remedy Form Name (not display name), eg. People is CTM:People"/>
+        <parameter id="query" label="Query:" required="true"
+          tooltip="The query to search by"/>
     </parameters>
     <handler name="remedy_generic_find" version="4">
         <infos>
@@ -25,14 +25,14 @@
             <info name="port">&lt;%= @info['port'] %&gt;</info>
             <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
             <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
-			<info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
-			<info name="disable_caching">&lt;%= @info['disable_caching'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+            <info name="disable_caching">&lt;%= @info['disable_caching'] %&gt;</info>
         </infos>
         <parameters>
             <parameter name="error_handling">&lt;%= @parameters.has_key?("error_handling") ?
                 @parameters["error_handling"] : "Raise Error" %&gt;</parameter>
             <parameter name="form">&lt;%= @parameters['form'] %&gt;</parameter>
-			<parameter name="query">&lt;%= @parameters['query'] %&gt;</parameter>
+            <parameter name="query">&lt;%= @parameters['query'] %&gt;</parameter>
         </parameters>
     </handler>
     <results format="xml">

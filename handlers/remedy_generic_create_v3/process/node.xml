@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="remedy_generic_create" name="Remedy Generic Create" schema_version="1.0" version="3">
+    <author>support@kineticdata.com</author>
+    <description>Creates a single Remedy entry given the JSON mapping of field values and form name.</description>
+    <helpurl/>
+    <visible>true</visible>
+    <deferrable>true</deferrable>
+    <parameters>
+        <parameter id="error_handling" label="Error Handling" required="true"
+          tooltip="Determine what to return if an error is encountered."
+          menu="Error Message,Raise Error">Error Message</parameter>
+        <parameter id="form" tooltip="Form Name" label="Form Name" required="true" />
+        <parameter id="field_values" tooltip="JSON mapping of field values" label="Field Values" required="true" />
+    </parameters>
+    <handler name="remedy_generic_create" version="3">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+            <info name="disable_caching">&lt;%= @info['disable_caching'] %&gt;</info>
+        </infos>
+        <parameters>
+          <parameter name="error_handling">&lt;%= @parameters.has_key?("error_handling") ?
+              @parameters["error_handling"] : "Raise Error" %&gt;</parameter>
+          <parameter name="form">&lt;%= @parameters['form'] %&gt;</parameter>
+          <parameter name="field_values">&lt;%= @parameters['field_values'] %&gt;</parameter>
+        </parameters>
+    </handler>
+    <results format="xml">
+        <result name="Handler Error Message"/>
+        <result name="Entry Id"/>
+    </results>
+</taskDefinition>

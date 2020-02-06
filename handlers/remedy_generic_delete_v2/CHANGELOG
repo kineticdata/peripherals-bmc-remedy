@@ -1,7 +1,9 @@
+Remedy Generic Create v2.1 (2019-11-26)
+* Added error message/raise error error handling
+
 V2 (2013-07-16)
  * Fixed a bug to allow this to be used for
    multiple forms in one task engine instance.
 
 Remedy Generic Delete (2012-05-29)
  * Initial version.  See README for details.
-

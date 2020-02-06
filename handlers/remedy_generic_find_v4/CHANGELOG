@@ -1,3 +1,10 @@
+Remedy Generic Find V4 (2020-01-23)
+* Updated disable caching logic to improve performance
+
+Remedy Generic Find V4 (2020-01-18)
+* Updated readme note about disabling cache
+* Removed logging message when cache is disabled
+
 Remedy Generic Find V4 (2019-04-22)
 * Updated readme and changelog
 
@@ -13,12 +20,12 @@ Remedy Generic Find (2012-05-29)
 
 V2
  *Added instance ID list to returned values.
- 
+
 V3
  *Generic Handler could not use the preinitialize_on_first_load method.  Instead get_remedy_form is used to load the form and add it to the cache
 
  V4
   *Added a count to the returned values.
-  
+
  V4 Update (2017-Jun-27)
  *Made it possible to return 0 values without causing/raising error.

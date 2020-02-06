@@ -6,11 +6,12 @@
     'port' => '',
     'prognum' => '',
     'authentication' => '',
-    'enable_debug_logging' => 'Yes'
+    'enable_debug_logging' => 'Yes',
+    'disable_caching' => 'No'
   },
   'parameters' => {
     'error_handling' => 'Error Message',
-	  'form' => 'KS_TSK_Tree',
-    'query' => '\'7\' = "Actgit stive"'
+	  'form' => 'CTM:People',
+    'query' => %|'Remedy Login ID' = "username"|
   }
 }

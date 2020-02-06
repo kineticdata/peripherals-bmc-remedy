@@ -1,0 +1,18 @@
+Remedy Generic Update V4 (2020-01-23)
+* Updated disable caching logic to improve performance
+
+Remedy Generic Update V4 (2020-01-18)
+* Added ability to disable caching
+
+Remedy Generic Update v3.1 (2019-11-26)
+* Changes for consistency
+
+V3 (2019-11-4)
+ * Adding error message handling
+V3 (2019-02-16)
+ * Updated to allow a JSON object to set multiple values at once.
+V2 (2013-07-16)
+ * Fixed a bug to allow this to be used for
+   multiple forms in one task engine instance.
+Remedy Generic Update (2012-05-29)
+ * Initial version.  See README for details.

@@ -1,0 +1,35 @@
+== Remedy Generic Update
+Updates the specified fields on the specified form for the
+specific request id.
+
+For more information, see the Detailed Description section below.
+
+=== Parameters
+[Error Handling]
+  Determines what to return if an error is encountered (Error Message or Raise
+  Error).
+[Remedy Form]
+	Remedy Form Name (not display name), eg. People is CTM:People
+[Request ID]
+	Request ID (Field 1) of record to update
+[Field Values]
+	JSON mapping of fields to set values
+
+=== Sample Configuration
+Error Handling::       Error Message
+Remedy Form::          CTM:People
+Request ID::           <%=@results['retrieve person']['Person ID']%>
+Field Values::         <%={"Email Address" => @answers['New Email'], "Nickname" => @answers['Nickname']}.to_json%>
+
+=== Results
+[Handler Error Message]
+  Error message if an error was encountered and Error Handling is set to "Error Message".
+[request_id]
+  The request id (field 1) of the updated record.
+
+=== Detailed Description
+This handler updates the request id specified in the Request ID parameter for
+the form specified in the Remedy Form parameter with data provided in the
+Field Values parameter.  Provide a JSON object as the Field Values input to
+update the appropriate fields.
+Example:  {"Field A":"Value A","Field B":"Value B"}
