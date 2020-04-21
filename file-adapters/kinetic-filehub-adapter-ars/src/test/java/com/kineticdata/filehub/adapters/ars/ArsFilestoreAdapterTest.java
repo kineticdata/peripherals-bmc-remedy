@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import org.apache.tika.io.IOUtils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -43,6 +45,26 @@ public class ArsFilestoreAdapterTest extends ArsTestBase {
     /*----------------------------------------------------------------------------------------------
      * TESTS
      *--------------------------------------------------------------------------------------------*/
+    @Test
+    public void test_retrieve_concurrency() throws Exception {
+        
+        int iterations = 50;
+        
+        List<CompletableFuture<ArsDocument>> futures = new ArrayList<>();
+        for (int i = 0; i < iterations; i++) {
+            futures.add(CompletableFuture.supplyAsync(() -> {
+               ArsDocument document = adapter.getDocument(
+                 "KTEST_FilehubArsAdapter_AttachmentForm/"+entryId+"/Attachment 1");
+               return document;
+            }));
+        }
+        
+        for(CompletableFuture<ArsDocument> future : futures) {
+            ArsDocument retrievedDoc = future.get(20, TimeUnit.SECONDS);
+            assertEquals("content.txt", retrievedDoc.getName());
+        }
+        
+    }
     
     @Test
     public void test_deleteDocument() throws Exception {

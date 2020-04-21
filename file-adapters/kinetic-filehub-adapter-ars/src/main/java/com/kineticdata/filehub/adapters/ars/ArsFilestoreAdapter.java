@@ -7,6 +7,7 @@ import com.bmc.arsys.api.Constants;
 import com.bmc.arsys.api.Entry;
 import com.bmc.arsys.api.Field;
 import com.bmc.arsys.api.LoggingInfo;
+import com.bmc.arsys.api.ProxyManager;
 import com.bmc.arsys.api.StatusInfo;
 import com.bmc.arsys.api.Timestamp;
 import com.bmc.arsys.api.Value;
@@ -91,18 +92,47 @@ public class ArsFilestoreAdapter implements FilestoreAdapter {
      * PROPERTIES
      *--------------------------------------------------------------------------------------------*/
     
-    private ARServerUser user;
+    private ARServerUser cacheUser;
+    private Map<String, String> propertyValues;
     
     private final LoadingCache<String,AttachmentFieldMap> cache = CacheBuilder.newBuilder()
         .build(new CacheLoader<String,AttachmentFieldMap>() {
             @Override
             public AttachmentFieldMap load(String formName) throws Exception {
-                updateLoggingConfig();
-                List<Field> fields = user.getListFieldObjects(formName);
-                logLastMessages();
+                List<Field> fields = cacheUser.getListFieldObjects(formName);
+                updateLoggingConfig(cacheUser);
+                logLastMessages(cacheUser);
                 return new AttachmentFieldMap(formName, fields);
             }
         });
+    
+    /*----------------------------------------------------------------------------------------------
+     * METHODS
+     *--------------------------------------------------------------------------------------------*/
+    
+    public ARServerUser buildUser() {
+        // Set the configurable properties
+        properties.setValues(propertyValues);
+        ARServerUser user = new ARServerUser();
+        user.setServer(propertyValues.get(Properties.SERVER));
+        user.setPort(Integer.valueOf(propertyValues.get(Properties.PORT)));
+        user.setUser(propertyValues.get(Properties.USERNAME));
+        user.setPassword(propertyValues.get(Properties.PASSWORD));
+        
+        // Try to configure logging
+        LoggingInfo loggingInfo = new LoggingInfo();
+        loggingInfo.setType(Constants.AR_DEBUG_SERVER_API | Constants.AR_DEBUG_SERVER_SQL);
+        loggingInfo.setWriteToFileOrStatus(Constants.AR_WRITE_TO_STATUS_LIST);
+        loggingInfo.enable(false);
+        try {
+            user.setLogging(loggingInfo);
+        }
+        catch (ARException e) {
+            LOGGER.warn("Failed to enable ARServerUser logging", e);
+        }
+        
+        return user;
+    }
 
     
     /*----------------------------------------------------------------------------------------------
@@ -117,24 +147,10 @@ public class ArsFilestoreAdapter implements FilestoreAdapter {
      */
     @Override
     public void initialize(Map<String, String> propertyValues) {
-        // Set the configurable properties
-        properties.setValues(propertyValues);
-        user = new ARServerUser();
-        user.setServer(propertyValues.get(Properties.SERVER));
-        user.setPort(Integer.valueOf(propertyValues.get(Properties.PORT)));
-        user.setUser(propertyValues.get(Properties.USERNAME));
-        user.setPassword(propertyValues.get(Properties.PASSWORD));
-        // Try to configure logging
-        LoggingInfo loggingInfo = new LoggingInfo();
-        loggingInfo.setType(Constants.AR_DEBUG_SERVER_API | Constants.AR_DEBUG_SERVER_SQL);
-        loggingInfo.setWriteToFileOrStatus(Constants.AR_WRITE_TO_STATUS_LIST);
-        loggingInfo.enable(false);
-        try {
-            user.setLogging(loggingInfo);
-        }
-        catch (ARException e) {
-            LOGGER.warn("Failed to enable ARServerUser logging", e);
-        }
+        this.propertyValues = propertyValues;
+        this.cacheUser = buildUser();
+        ProxyManager.setUseConnectionPooling(true);
+        ProxyManager.setConnectionLimits(40);
     }
 
     /**
@@ -166,6 +182,7 @@ public class ArsFilestoreAdapter implements FilestoreAdapter {
     public void deleteDocument(String path) {
         long start = System.currentTimeMillis();
         try {
+            ARServerUser user = buildUser();
             // Parse the path
             Route route = new Route(path);
             // Retrieve the field information
@@ -175,12 +192,12 @@ public class ArsFilestoreAdapter implements FilestoreAdapter {
                     "field from the \""+route.getForm()+"\" form.");
             }
             // Update the logging to enable/disable the arapi/arsql logging as necessary
-            updateLoggingConfig();
+            updateLoggingConfig(user);
             // Retrieve the entry
             Entry entry = user.getEntry(
                 route.getForm(), route.getEntryId(), new int[] {field.getFieldID()});
             // Log arapi/arsql log messages if applicable
-            logLastMessages();
+            logLastMessages(user);
             // Obtain a reference to the value
             AttachmentValue value = (AttachmentValue)entry.get(field.getFieldID()).getValue();
             // If the field value was found
@@ -200,7 +217,7 @@ public class ArsFilestoreAdapter implements FilestoreAdapter {
                 // Update the record
                 user.setEntry(route.getForm(), route.getEntryId(), entry, new Timestamp(0), 0);
                 // Log arapi/arsql log messages if applicable
-                logLastMessages();
+                logLastMessages(user);
             }
         } catch (Exception e) {
             throw new RuntimeException("Unable to retrieve document.", e);
@@ -213,6 +230,7 @@ public class ArsFilestoreAdapter implements FilestoreAdapter {
         long start = System.currentTimeMillis();
         ArsDocument result = null;
         try {
+            ARServerUser user = buildUser();
             // Parse the path
             Route route = new Route(path);
             // Retrieve the field information
@@ -222,12 +240,12 @@ public class ArsFilestoreAdapter implements FilestoreAdapter {
                     "field from the \""+route.getForm()+"\" form.");
             }
             // Update the logging to enable/disable the arapi/arsql logging as necessary
-            updateLoggingConfig();
+            updateLoggingConfig(user);
             // Retrieve the entry
             Entry entry = user.getEntry(
                 route.getForm(), route.getEntryId(), new int[] {field.getFieldID()});
             // Log arapi/arsql log messages if applicable
-            logLastMessages();
+            logLastMessages(user);
             // Obtain a reference to the value
             AttachmentValue value = (AttachmentValue)entry.get(field.getFieldID()).getValue();
             // If the field value was found
@@ -242,7 +260,7 @@ public class ArsFilestoreAdapter implements FilestoreAdapter {
                 // Set the blob content
                 value.setValue(user.getEntryBlob(route.getForm(), route.getEntryId(), field.getFieldID()));
                 // Log arapi/arsql log messages if applicable
-                logLastMessages();
+                logLastMessages(user);
             }
             // Prepare the result
             result = new ArsDocument(
@@ -259,6 +277,7 @@ public class ArsFilestoreAdapter implements FilestoreAdapter {
         long start = System.currentTimeMillis();
         List<ArsDocument> results = new ArrayList<>();
         try {
+            ARServerUser user = buildUser();
             // Parse the path
             Route route = new Route(path);
             // If the request is for the "root" path
@@ -290,12 +309,12 @@ public class ArsFilestoreAdapter implements FilestoreAdapter {
                         route.getFieldReference()+"\" field from the \""+route.getForm()+"\" form.");
                 }
                 // Update the logging to enable/disable the arapi/arsql logging as necessary
-                updateLoggingConfig();
+                updateLoggingConfig(user);
                 // Retrieve the entry
                 Entry entry = user.getEntry(
                     route.getForm(), route.getEntryId(), new int[] {field.getFieldID()});
                 // Log arapi/arsql log messages if applicable
-                logLastMessages();
+                logLastMessages(user);
                 // Obtain a reference to the value
                 AttachmentValue value = (AttachmentValue)entry.get(field.getFieldID()).getValue();
                 // If the field value was found
@@ -303,7 +322,7 @@ public class ArsFilestoreAdapter implements FilestoreAdapter {
                     // Set the blob content
                     value.setValue(user.getEntryBlob(route.getForm(), route.getEntryId(), field.getFieldID()));
                     // Log arapi/arsql log messages if applicable
-                    logLastMessages();
+                    logLastMessages(user);
                     // Prepare the result
                     results.add(new ArsDocument(
                         route.getForm(), route.getEntryId(), route.getFieldReference(), value));
@@ -334,6 +353,7 @@ public class ArsFilestoreAdapter implements FilestoreAdapter {
     public void putDocument(String path, InputStream inputStream, String contentType) {
         long start = System.currentTimeMillis();
         try {
+            ARServerUser user = buildUser();
             // Parse the path
             Route route = new Route(path);
             checkArgument(route.getFileName() != null, "Expected document path to be in the "+
@@ -352,7 +372,7 @@ public class ArsFilestoreAdapter implements FilestoreAdapter {
             // Update the record
             user.setEntry(route.getForm(), route.getEntryId(), entry, new Timestamp(0), 0);
             // Log arapi/arsql log messages if applicable
-            logLastMessages();
+            logLastMessages(user);
         } catch (Exception e) {
             throw new RuntimeException("Unable to retrieve document.", e);
         }
@@ -368,7 +388,7 @@ public class ArsFilestoreAdapter implements FilestoreAdapter {
      * HELPER METHODS
      *--------------------------------------------------------------------------------------------*/
     
-    public void logLastMessages() {
+    public void logLastMessages(ARServerUser user) {
         List<StatusInfo> messages = user.getLastStatus();
         if (messages != null) {
             for (StatusInfo info : messages) {
@@ -415,7 +435,7 @@ public class ArsFilestoreAdapter implements FilestoreAdapter {
         }
     }
     
-    public void updateLoggingConfig() throws ARException {
+    public void updateLoggingConfig(ARServerUser user) throws ARException {
         user.getLogging().enable(LOGGER.isTraceEnabled());
     }
     
