@@ -1,7 +1,10 @@
-Remedy Generic Create V4 (2020-01-18)
+Remedy Generic Update V4 (2020-01-23)
+* Updated disable caching logic to improve performance
+
+Remedy Generic Update V4 (2020-01-18)
 * Added ability to disable caching
 
-Remedy Generic Create v3.1 (2019-11-26)
+Remedy Generic Update v3.1 (2019-11-26)
 * Changes for consistency
 
 V3 (2019-11-4)
