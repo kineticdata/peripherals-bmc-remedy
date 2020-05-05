@@ -31,3 +31,7 @@ ARS \[bridge adapters\] (2019-12-23)
 ARS \[bridge adapters\] (2020-01-22)
   \[kinetic-bridgehub-adapter-ars-rest\] (2020-01-22)
     * PER-180 fixed auth bug issue.
+    
+ARS \[bridge adapters\] (2020-04-15)
+  \[kinetic-bridgehub-adapter-ars-rest\] (2020-04-15)
+    * fixed auth issue.
