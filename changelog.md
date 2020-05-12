@@ -28,8 +28,8 @@ ARS \[bridge adapters\] (2019-12-23)
     * fixed issue with multiple remedy instances using the same bridge adapter.
     Global forms were being set for performance reasons.
 
-ARS \[bridge adapters\] (12-27-19)
-  \[kinetic-bridgehub-adapter-ars\] (12-27-19) 
+ARS \[bridge adapters\] (2019-12-27)
+  \[kinetic-bridgehub-adapter-ars\] (2019-12-27) 
     * Removed nexus from the POM.  We're using s3 to store dependencies now.
 
 ARS \[bridge adapters\] (2020-01-22)
@@ -39,3 +39,7 @@ ARS \[bridge adapters\] (2020-01-22)
 ARS \[bridge adapters\] (2020-04-15)
   \[kinetic-bridgehub-adapter-ars-rest\] (2020-04-15)
     * fixed auth issue.
+
+ARS \[bridge adapters\] (2020-05-12)
+  \[kinetic-bridgehub-adapter-ars-rest\] (2020-05-12)
+    * PER-188 replace spaces for %20 in path segment of qualification mapping

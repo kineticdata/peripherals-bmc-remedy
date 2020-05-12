@@ -72,8 +72,7 @@ public class ArsRestAdapter implements BridgeAdapter {
     private String origin;
     private ArsRestQualificationParser parser;
     private ArsRestApiHelper arsApiHelper;
-    private String token;
-
+    
     /*---------------------------------------------------------------------------------------------
      * SETUP METHODS
      *-------------------------------------------------------------------------------------------*/
@@ -209,7 +208,7 @@ public class ArsRestAdapter implements BridgeAdapter {
                 throw new BridgeError ("Retrieve must return a single result."
                     + " Multiple results found.");
             } else if (entries.size() == 1){
-                obj = (JSONObject)entries.get(0);
+                obj = (JSONObject)((JSONObject)entries.get(0)).get("values");
                 
                 Set<Object> removeKeySet = buildKeySet(fields, obj);
                 obj.keySet().removeAll(removeKeySet);

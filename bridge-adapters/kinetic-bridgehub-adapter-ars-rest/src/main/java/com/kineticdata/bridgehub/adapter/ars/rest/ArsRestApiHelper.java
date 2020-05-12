@@ -96,8 +96,8 @@ public class ArsRestApiHelper {
             } 
         }
         catch (IOException e) {
-            throw new BridgeError(
-                "Unable to make a connection to the Azure service server.", e);
+            throw new BridgeError("Unable to make a connection to the REST"
+                + " Service", e);
         }
         
         return output;

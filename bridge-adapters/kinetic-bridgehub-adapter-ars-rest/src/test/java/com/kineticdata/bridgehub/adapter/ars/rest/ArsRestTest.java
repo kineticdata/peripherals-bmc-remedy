@@ -125,6 +125,35 @@ public class ArsRestTest extends BridgeAdapterTestBase{
     }
     
     @Test
+    public void test_retrieve_single() throws Exception{
+        BridgeError error = null;
+        
+        // Create the Bridge Request
+        List<String> fields = new ArrayList<String>();
+        fields.add("Hourly Rate");
+        fields.add("Last Modified Date");
+        
+        BridgeRequest request = new BridgeRequest();
+        request.setStructure("Entry");
+        request.setFields(fields);
+        request.setQuery("entry/CTM:People?q='Remedy Login ID'=\"<%=parameter[\"Login ID\"]%>\"");
+        
+        Map parameters = new HashMap();
+        parameters.put("Login ID", "marcin.zarycki@kineticdata.com");
+        request.setParameters(parameters);
+        
+        Record record = null;
+        try {
+            record =  getAdapter().retrieve(request);
+        } catch (BridgeError e) {
+            error = e;
+        }
+        
+        assertNull(error);
+        assertTrue(record.getRecord().size() > 0);
+    }
+    
+    @Test
     public void test_search() throws Exception{
         BridgeError error = null;
         

@@ -45,7 +45,7 @@ public class ArsRestQualificationParser extends QualificationParser {
         // Split the api path from the rest of the string
         String[] parts = queryString.split("[?]",2);
         
-        return UrlEscapers.urlPathSegmentEscaper().escape(parts[0]);
+        return parts[0].replace(" ", "%20");
     }
     
     

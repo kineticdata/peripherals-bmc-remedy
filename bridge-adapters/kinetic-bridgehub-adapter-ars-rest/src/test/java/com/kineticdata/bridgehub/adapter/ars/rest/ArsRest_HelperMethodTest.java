@@ -19,6 +19,6 @@ public class ArsRest_HelperMethodTest {
         ArsRestQualificationParser helper = new ArsRestQualificationParser();
         
         String path = helper.parsePath("entry/HPD:Help Desk");
-        assertEquals("entry%2FHPD:Help%20Desk", path);
+        assertEquals("entry/HPD:Help%20Desk", path);
     }
 }
