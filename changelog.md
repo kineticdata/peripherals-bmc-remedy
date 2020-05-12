@@ -43,3 +43,5 @@ ARS \[bridge adapters\] (2020-04-15)
 ARS \[bridge adapters\] (2020-05-12)
   \[kinetic-bridgehub-adapter-ars-rest\] (2020-05-12)
     * PER-188 replace spaces for %20 in path segment of qualification mapping
+  \[kinetic-bridgehub-adapter-ars-rest\] (2020-05-12)
+    * PER-189 return result consistent between retrieve and search
