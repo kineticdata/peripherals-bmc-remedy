@@ -12,7 +12,6 @@ import com.kineticdata.commons.v1.config.ConfigurablePropertyMap;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import org.apache.http.HttpEntity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,20 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.http.Consts;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,8 +71,8 @@ public class ArsRestAdapter implements BridgeAdapter {
     private String password;
     private String origin;
     private ArsRestQualificationParser parser;
-    private String token;
-
+    private ArsRestApiHelper arsApiHelper;
+    
     /*---------------------------------------------------------------------------------------------
      * SETUP METHODS
      *-------------------------------------------------------------------------------------------*/
@@ -98,9 +85,10 @@ public class ArsRestAdapter implements BridgeAdapter {
         password = properties.getValue(Properties.PROPERTY_PASSWORD);
         origin = properties.getValue(Properties.PROPERTY_ORIGIN);
         
+        arsApiHelper = new ArsRestApiHelper(origin, username, password);
         parser = new ArsRestQualificationParser();
         
-        token = getToken();
+        arsApiHelper.getToken();
     }
 
     @Override
@@ -156,9 +144,7 @@ public class ArsRestAdapter implements BridgeAdapter {
         Map<String, String> parameters = parser.getParameters(request.getQuery());
         
         // Retrieve the objects based on the structure from the source
-        String output = getResource(getUrl(request, parameters));
-        logger.trace("Count Output: "+output);
-        JSONObject object = parseResponse(output);
+        JSONObject object = arsApiHelper.executeRequest(getUrl(request, parameters));
         
         // Get domain specific data.
         JSONArray entries = (JSONArray)object.get("entries");
@@ -195,9 +181,7 @@ public class ArsRestAdapter implements BridgeAdapter {
         Map<String, String> parameters = parser.getParameters(request.getQuery());
         
         // Retrieve the objects based on the structure from the source
-        String output = getResource(getUrl(request, parameters));
-        logger.trace("Retrieve Output: "+output);
-        JSONObject object = parseResponse(output);
+        JSONObject object = arsApiHelper.executeRequest(getUrl(request, parameters));
         
         List<String> fields = request.getFields();
         if (fields == null) {
@@ -224,7 +208,7 @@ public class ArsRestAdapter implements BridgeAdapter {
                 throw new BridgeError ("Retrieve must return a single result."
                     + " Multiple results found.");
             } else if (entries.size() == 1){
-                obj = (JSONObject)entries.get(0);
+                obj = (JSONObject)((JSONObject)entries.get(0)).get("values");
                 
                 Set<Object> removeKeySet = buildKeySet(fields, obj);
                 obj.keySet().removeAll(removeKeySet);
@@ -274,9 +258,7 @@ public class ArsRestAdapter implements BridgeAdapter {
         metadata.clear();
         
         // Retrieve the objects based on the structure from the source
-        String output = getResource(getUrl(request, parameters));
-        logger.trace("Search Output: " + output);
-        JSONObject object = parseResponse(output);
+        JSONObject object = arsApiHelper.executeRequest(getUrl(request, parameters));
 
         // Get domain specific data.
         JSONArray entries = (JSONArray)object.get("entries");
@@ -324,23 +306,6 @@ public class ArsRestAdapter implements BridgeAdapter {
     /*----------------------------------------------------------------------------------------------
      * HELPER METHODS
      *--------------------------------------------------------------------------------------------*/
-    private JSONObject parseResponse(String output) throws BridgeError{
-                
-        JSONObject object = new JSONObject();
-        try {
-            // Parse the response string into a JSONObject
-            object = (JSONObject)JSONValue.parse(output);
-        } catch (ClassCastException e){
-            JSONArray error = (JSONArray)JSONValue.parse(output);
-            throw new BridgeError("Error caught in when attempting to parse "
-                + "response: " + ((JSONObject)error.get(0)).get("messageText"));
-        } catch (Exception e) {
-            throw new BridgeError("An unexpected error has occured " + e);
-        }
-        
-        return object;
-    }
-    
     // Set the offset that will be used in subsequent requests for pagination
     protected void setOffset(Map<String, String> metadata, 
         Map<String, String> parameters) {
@@ -450,91 +415,6 @@ public class ArsRestAdapter implements BridgeAdapter {
         
         return String.format("%s/api/arsys/v1/%s?%s", origin, 
             parser.parsePath(request.getQuery()), str);
-    }
-    
-    private String getResource(String url) throws BridgeError {
-        return getResource(url, 0);
-    }
-    
-    // Count Search and Retrieve get the resoucre the same and use the same output object.
-    private String getResource(String url, int count) throws BridgeError {
-        String output = "";
-        
-        try (
-            CloseableHttpClient client = HttpClients.createDefault()
-        ) {
-            HttpResponse response;
-            HttpGet get = new HttpGet(url);  
-            
-            get.setHeader("Authorization", "AR-JWT " + token);
-            get.setHeader("Content-Type", "application/json");
-            get.setHeader("Accept", "application/json");
-            
-            // Make the call to the source to retrieve data and convert the response
-            // from a HttpEntity object into a Java String
-            response = client.execute(get);
-            HttpEntity entity = response.getEntity();
-            output = EntityUtils.toString(entity);
-            int responseCode = response.getStatusLine().getStatusCode();
-            logger.trace("Request response code: " + responseCode);
-            if(responseCode == 404){
-                throw new BridgeError("404 Page not found at "+url+".");
-            }else if(responseCode == 401){
-                // If token has expired get fresh token
-                // TODO: Find way to test this code.
-                token = getToken();
-                // If count is greater than 2 assume that bad credentials were
-                // provided.
-                if (count < 2) {
-                    output = getResource(url, count + 1);
-                } else {
-                    throw new BridgeError("401 unauthorized access");
-                }
-            }
-            
-        } catch (IOException e) {
-            logger.error("An unexpected IO exception was encountered calling the"
-                + " core API.", e);
-            throw new BridgeError(
-                "Unable to make a connection to the ARS server.");
-        }
-
-        return output;
-    }
-    
-    // Get a JWT to be used with subsequent requests.
-    private String getToken () throws BridgeError {
-         String url = origin + "/api/jwt/login";
-        
-        // Initialize the HTTP Client, Response, and Get objects.
-        HttpClient client = HttpClients.createDefault();
-        HttpResponse response;
-        HttpPost httpPost = new HttpPost(url);
-
-        // Create entity with username and pass for use in the Post.
-        List<NameValuePair> form = new ArrayList<>();
-        form.add(new BasicNameValuePair("username", username));
-        form.add(new BasicNameValuePair("password", password));
-        UrlEncodedFormEntity requestEntity = new UrlEncodedFormEntity(form, Consts.UTF_8);
-        
-        httpPost.setEntity(requestEntity);
-        httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
-            
-        // Make the call to the REST source to retrieve data and convert the 
-        // response from an HttpEntity object into a Java string so more response
-        // parsing can be done.
-        String token = "";
-        try {
-            response = client.execute(httpPost);
-            HttpEntity entity = response.getEntity();
-            token = EntityUtils.toString(entity);
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-            throw new BridgeError("Unable to make a connection to the REST"
-                + " Service");
-        }
-        
-        return token;
     }
     
     private LinkedHashMap<String, String> 

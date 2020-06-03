@@ -2,6 +2,7 @@ package com.kineticdata.bridgehub.adapter.ars.rest;
 
 import com.kineticdata.bridgehub.adapter.BridgeError;
 import com.kineticdata.bridgehub.adapter.QualificationParser;
+import com.google.common.net.UrlEscapers;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ public class ArsRestQualificationParser extends QualificationParser {
         // Split the api path from the rest of the string
         String[] parts = queryString.split("[?]",2);
         
-        return parts[0];
+        return parts[0].replace(" ", "%20");
     }
     
     

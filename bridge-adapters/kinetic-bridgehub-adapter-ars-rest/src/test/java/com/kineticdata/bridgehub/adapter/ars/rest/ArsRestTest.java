@@ -35,21 +35,6 @@ public class ArsRestTest extends BridgeAdapterTestBase{
     public void test_count() throws Exception{
         BridgeError error = null;
         
-        Map<String,String> configValues = new LinkedHashMap<String,String>();
-        configValues.put("Username","");
-        configValues.put("Password", "");
-        configValues.put("URL Origin","");
-        
-        BridgeAdapter adapter = new ArsRestAdapter();
-        adapter.setProperties(configValues);
-        try {
-            adapter.initialize();
-        } catch (BridgeError e) {
-            error = e;
-        }
-        
-        assertNull(error);
-        
         // Create the Bridge Request
         List<String> fields = new ArrayList<String>();
         fields.add("id");
@@ -60,12 +45,12 @@ public class ArsRestTest extends BridgeAdapterTestBase{
         request.setQuery("entry/CTM:People?q='Remedy Login ID'=\"<%=parameter[\"Id\"]%>\"");
         
         Map parameters = new HashMap();
-        parameters.put("Id", "_tiggeb");
+        parameters.put("Id", "kinetic_integration_user");
         request.setParameters(parameters);
         
         Count count = null;
         try {
-            count = adapter.count(request);
+            count = getAdapter().count(request);
         } catch (BridgeError e) {
             error = e;
         }
@@ -77,22 +62,7 @@ public class ArsRestTest extends BridgeAdapterTestBase{
     @Test
     public void test_invalid_field() throws Exception{
         BridgeError error = null;
-        
-        Map<String,String> configValues = new LinkedHashMap<String,String>();
-        configValues.put("Username","");
-        configValues.put("Password", "");
-        configValues.put("URL Origin","");
-        
-        BridgeAdapter adapter = new ArsRestAdapter();
-        adapter.setProperties(configValues);
-        try {
-            adapter.initialize();
-        } catch (BridgeError e) {
-            error = e;
-        }
-        
-        assertNull(error);
-        
+
         // Create the Bridge Request
         List<String> fields = new ArrayList<String>();
         fields.add("id");
@@ -106,24 +76,25 @@ public class ArsRestTest extends BridgeAdapterTestBase{
         parameters.put("Id", "_tiggebz");
         request.setParameters(parameters);
         
+        error = null;
         try {
-            adapter.count(request);
+            getAdapter().count(request);
         } catch (BridgeError e) {
             error = e;
         }
         assertNotNull(error);
         
-        error = null;
+         error = null;
         try {
-            adapter.retrieve(request);
+            getAdapter().retrieve(request);
         } catch (BridgeError e) {
             error = e;
         }
         assertNotNull(error);
-        
+
         error = null;
         try {
-            adapter.search(request);
+            getAdapter().search(request);
         } catch (BridgeError e) {
             error = e;
         }
@@ -134,34 +105,46 @@ public class ArsRestTest extends BridgeAdapterTestBase{
     public void test_retrieve() throws Exception{
         BridgeError error = null;
         
-        Map<String,String> configValues = new LinkedHashMap<String,String>();
-        configValues.put("Username","");
-        configValues.put("Password", "");
-        configValues.put("URL Origin","");
+        // Create the Bridge Request
+        List<String> fields = new ArrayList<String>();
         
-        BridgeAdapter adapter = new ArsRestAdapter();
-        adapter.setProperties(configValues);
+        BridgeRequest request = new BridgeRequest();
+        request.setStructure("Entry");
+        request.setFields(fields);
+        request.setQuery("entry/CST:CHSAttributes/000000000003430/attach/Schematic");
+        
+        Record record = null;
         try {
-            adapter.initialize();
+            record =  getAdapter().retrieve(request);
         } catch (BridgeError e) {
             error = e;
         }
         
         assertNull(error);
+        assertTrue(record.getRecord().size() > 0);
+    }
+    
+    @Test
+    public void test_retrieve_single() throws Exception{
+        BridgeError error = null;
         
         // Create the Bridge Request
         List<String> fields = new ArrayList<String>();
-        fields.add("First Name");
-        fields.add("Last Name");
+        fields.add("Hourly Rate");
+        fields.add("Last Modified Date");
         
         BridgeRequest request = new BridgeRequest();
         request.setStructure("Entry");
         request.setFields(fields);
-        request.setQuery("entry/CTM:People/PPL000000074125");
+        request.setQuery("entry/CTM:People?q='Remedy Login ID'=\"<%=parameter[\"Login ID\"]%>\"");
+        
+        Map parameters = new HashMap();
+        parameters.put("Login ID", "marcin.zarycki@kineticdata.com");
+        request.setParameters(parameters);
         
         Record record = null;
         try {
-            record = adapter.retrieve(request);
+            record =  getAdapter().retrieve(request);
         } catch (BridgeError e) {
             error = e;
         }
@@ -173,19 +156,6 @@ public class ArsRestTest extends BridgeAdapterTestBase{
     @Test
     public void test_search() throws Exception{
         BridgeError error = null;
-        
-        Map<String,String> configValues = new LinkedHashMap<String,String>();
-        configValues.put("Username","");
-        configValues.put("Password", "");
-        configValues.put("URL Origin","");
-        
-        BridgeAdapter adapter = new ArsRestAdapter();
-        adapter.setProperties(configValues);
-        try {
-            adapter.initialize();
-        } catch (BridgeError e) {
-            error = e;
-        }
         
         assertNull(error);
         
@@ -201,7 +171,7 @@ public class ArsRestTest extends BridgeAdapterTestBase{
         
         RecordList records = null;
         try {
-            records = adapter.search(request);
+            records = getAdapter().search(request);
         } catch (BridgeError e) {
             error = e;
         }
@@ -213,22 +183,7 @@ public class ArsRestTest extends BridgeAdapterTestBase{
     @Test
     public void test_search_sort() throws Exception{
         BridgeError error = null;
-        
-        Map<String,String> configValues = new LinkedHashMap<String,String>();
-        configValues.put("Username","");
-        configValues.put("Password", "");
-        configValues.put("URL Origin","");
-        
-        BridgeAdapter adapter = new ArsRestAdapter();
-        adapter.setProperties(configValues);
-        try {
-            adapter.initialize();
-        } catch (BridgeError e) {
-            error = e;
-        }
-        
-        assertNull(error);
-        
+
         // Create the Bridge Request
         List<String> fields = new ArrayList<String>();
         fields.add("First Name");
@@ -241,7 +196,7 @@ public class ArsRestTest extends BridgeAdapterTestBase{
         
         RecordList records = null;
         try {
-            records = adapter.search(request);
+            records = getAdapter().search(request);
         } catch (BridgeError e) {
             error = e;
         }
@@ -253,22 +208,7 @@ public class ArsRestTest extends BridgeAdapterTestBase{
     @Test
     public void test_search_sort_metadata() throws Exception{
         BridgeError error = null;
-        
-        Map<String,String> configValues = new HashMap<String,String>();
-        configValues.put("Username","");
-        configValues.put("Password", "");
-        configValues.put("URL Origin","");
-        
-        BridgeAdapter adapter = new ArsRestAdapter();
-        adapter.setProperties(configValues);
-        try {
-            adapter.initialize();
-        } catch (BridgeError e) {
-            error = e;
-        }
-        
-        assertNull(error);
-        
+
         // Create the Bridge Request
         List<String> fields = new ArrayList<String>();
         fields.add("First Name");
@@ -285,7 +225,7 @@ public class ArsRestTest extends BridgeAdapterTestBase{
         
         RecordList records = null;
         try {
-            records = adapter.search(request);
+            records = getAdapter().search(request);
         } catch (BridgeError e) {
             error = e;
         }
@@ -297,22 +237,7 @@ public class ArsRestTest extends BridgeAdapterTestBase{
     @Test
     public void test_search_sort_metadata_2() throws Exception{
         BridgeError error = null;
-        
-        Map<String,String> configValues = new HashMap<String,String>();
-        configValues.put("Username","");
-        configValues.put("Password", "");
-        configValues.put("URL Origin","");
-        
-        BridgeAdapter adapter = new ArsRestAdapter();
-        adapter.setProperties(configValues);
-        try {
-            adapter.initialize();
-        } catch (BridgeError e) {
-            error = e;
-        }
-        
-        assertNull(error);
-        
+
         // Create the Bridge Request
         List<String> fields = new ArrayList<String>();
         fields.add("First Name");
@@ -330,7 +255,7 @@ public class ArsRestTest extends BridgeAdapterTestBase{
         
         RecordList records = null;
         try {
-            records = adapter.search(request);
+            records = getAdapter().search(request);
         } catch (BridgeError e) {
             error = e;
         }
