@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="remedy_generic_query_retrieve" name="Remedy Generic Query Retrieve" schema_version="1.0" version="4">
+    <author>anne.ramey@kineticdata.com</author>
+    <description>
+      This handler returns all the fields of the first matching entry for the specified Remedy form name and query, or a json of all the matching results
+	</description>
+    <helpurl></helpurl>
+    <visible>true</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+        <parameter id="error_handling" label="Error Handling" required="true"
+            tooltip="Determine what to return if an error is encountered."
+            menu="Error Message,Raise Error">Error Message</parameter>
+        <parameter id="form" label="Remedy Form:" required="true"
+		        tooltip="Remedy Form Name (not display name), eg. People is CTM:People"/>
+        <parameter id="request_query" label="Query:" required="true"
+		        tooltip="Advanced Search Query of the record to retrieve"/>
+        <parameter id="return_type" label="Return Type:" required="true"
+    		        tooltip="Valid Values: Single, All. This will determine what is returned. Defaults to Single"/>
+    </parameters>
+    <handler name="remedy_generic_query_retrieve" version="4">
+        <infos>
+            <info name="server">&lt;%= @info['server'] %&gt;</info>
+            <info name="username">&lt;%= @info['username'] %&gt;</info>
+            <info name="password">&lt;%= @info['password'] %&gt;</info>
+            <info name="port">&lt;%= @info['port'] %&gt;</info>
+            <info name="prognum">&lt;%= @info['prognum'] %&gt;</info>
+            <info name="authentication">&lt;%= @info['authentication'] %&gt;</info>
+            <info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+            <info name="disable_caching">&lt;%= @info['disable_caching'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name="error_handling">&lt;%= @parameters.has_key?("error_handling") ?
+                @parameters["error_handling"] : "Raise Error" %&gt;</parameter>
+            <parameter name="form">&lt;%= @parameters['form'] %&gt;</parameter>
+            <parameter name="request_query">&lt;%= @parameters['request_query'] %&gt;</parameter>
+            <parameter name="return_type">&lt;%= @parameters.has_key?("return_type") ?
+                @parameters["return_type"] : "Single" %&gt;</parameter>
+        </parameters>
+    </handler>
+    <results format="xml">
+        <result name="Handler Error Message"/>
+        <result name="#FIELD NAME PLACE HOLDER#"/>
+        <result name="Results"/>
+    </results>
+</taskDefinition>
