@@ -24,7 +24,7 @@ Request ID:             <%=@results['retrieve user']['Request ID']%>
 === Results
 [Handler Error Message]
 	Error message if an error was encountered and Error Handling is set to "Error Message".
-[<Remedy Field Name>]
+[Remedy Field Name]
   The value of the Remedy field. (There will be one result for each field retrieved.)
 
 === Detailed Description
