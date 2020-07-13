@@ -6,7 +6,6 @@
 package com.kineticdata.bridgehub.adapter.ars.rest;
 
 import com.kineticdata.bridgehub.adapter.BridgeError;
-import static com.kineticdata.bridgehub.adapter.ars.rest.ArsRestAdapter.logger;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +13,6 @@ import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -44,7 +42,9 @@ public class ArsRestApiHelper {
         this.password = password;
     } 
     
-    public JSONObject executeRequest (String url) throws BridgeError{
+    public JSONObject executeRequest (String path) throws BridgeError{
+        String url = origin + path;
+        
         return executeRequest (url, 0);
     }
     

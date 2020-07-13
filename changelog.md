@@ -45,3 +45,7 @@ ARS \[bridge adapters\] (2020-05-12)
     * PER-188 replace spaces for %20 in path segment of qualification mapping
   \[kinetic-bridgehub-adapter-ars-rest\] (2020-05-12)
     * PER-189 return result consistent between retrieve and search
+
+ARS \[bridge adapters\] (2020-07-13)
+  \[kinetic-bridgehub-adapter-ars-rest\]
+    * PER-193 Refactor adapter to use structure pattern.  In the process fix issue found in last review.
