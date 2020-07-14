@@ -154,6 +154,35 @@ public class ArsRestTest extends BridgeAdapterTestBase{
         assertTrue(record.getRecord().size() > 0);
     }
     
+        @Test
+    public void test_retrieve_json_path() throws Exception{
+        BridgeError error = null;
+        
+        // Create the Bridge Request
+        List<String> fields = new ArrayList<String>();
+        fields.add("$['Hourly Rate'].currency");
+        fields.add("Site Zip/Postal Code");
+        
+        BridgeRequest request = new BridgeRequest();
+        request.setStructure("Entry > CTM:People");
+        request.setFields(fields);
+        request.setQuery("q='Remedy Login ID'=\"<%=parameter[\"Login ID\"]%>\"");
+        
+        Map parameters = new HashMap();
+        parameters.put("Login ID", "test_user");
+        request.setParameters(parameters);
+        
+        Record record = null;
+        try {
+            record =  getAdapter().retrieve(request);
+        } catch (BridgeError e) {
+            error = e;
+        }
+        
+        assertNull(error);
+        assertTrue(record.getRecord().size() > 0);
+    }
+    
     @Test
     public void test_search() throws Exception{
         BridgeError error = null;

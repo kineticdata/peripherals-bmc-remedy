@@ -1,5 +1,8 @@
 package com.kineticdata.bridgehub.adapter.ars.rest;
 
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.JsonPathException;
 import com.kineticdata.bridgehub.adapter.BridgeAdapter;
 import com.kineticdata.bridgehub.adapter.BridgeError;
 import com.kineticdata.bridgehub.adapter.BridgeRequest;
@@ -221,12 +224,13 @@ public class ArsRestAdapter implements BridgeAdapter {
         
         Record record = new Record();
         if (obj != null) {
-            // Set object to user defined fields
-            Set<Object> removeKeySet = buildKeySet(fields, obj);
-            obj.keySet().removeAll(removeKeySet);
-
-            // Create a Record object from the JSONObject with removed keys
-            record = new Record(obj);
+//            // Set object to user defined fields
+//            Set<Object> removeKeySet = buildKeySet(fields, obj);
+//            obj.keySet().removeAll(removeKeySet);
+//
+//            // Create a Record object from the JSONObject with removed keys
+//            record = new Record(obj);
+            record = buildRecord(fields, obj);
         } else if (entries != null) {
             // Throw error is multiple results found.
             if (entries.size() > 1) {
@@ -234,11 +238,14 @@ public class ArsRestAdapter implements BridgeAdapter {
                     + " Multiple results found.");
             } else if (entries.size() == 1){
                 obj = (JSONObject)((JSONObject)entries.get(0)).get("values");
+//                
+//                Set<Object> removeKeySet = buildKeySet(fields, obj);
+//                obj.keySet().removeAll(removeKeySet);
+//
+//                record = new Record(obj);
                 
-                Set<Object> removeKeySet = buildKeySet(fields, obj);
-                obj.keySet().removeAll(removeKeySet);
-
-                record = new Record(obj);
+                
+                record = buildRecord(fields, obj);
             }
         } else {
             throw new BridgeError ("An unexpected error has occured.");
@@ -336,6 +343,33 @@ public class ArsRestAdapter implements BridgeAdapter {
     /*----------------------------------------------------------------------------------------------
      * HELPER METHODS
      *--------------------------------------------------------------------------------------------*/
+    protected Record buildRecord (List<String> fields, JSONObject jsonobj) {
+        
+        if(fields.isEmpty()){
+            fields.addAll(jsonobj.keySet());
+        }
+        
+        JSONObject obj = new JSONObject();
+        DocumentContext jsonContext = JsonPath.parse(jsonobj); 
+        
+        fields.stream().forEach(field -> {
+            // either use JsonPath or just add the field value.
+            if (field.startsWith("$.") || field.startsWith("$[")) {
+                try {
+                    obj.put(field, jsonContext.read(field));
+                } catch (JsonPathException e) {
+                    throw new JsonPathException(String.format("There was an issue"
+                        + " reading %s", field), e);
+                }
+            } else {
+                obj.put(field, jsonobj.get(field));
+            }
+        });
+        
+        Record record = new Record(obj, fields);
+        return record;
+    }
+    
     // Set the offset that will be used in subsequent requests for pagination
     protected void setOffset(Map<String, String> metadata, 
         Map<String, String> parameters) {
@@ -471,7 +505,7 @@ public class ArsRestAdapter implements BridgeAdapter {
         AdapterMapping mapping = MAPPINGS.get(structure);
         if (mapping == null) {
             throw new BridgeError("Invalid Structure: '" 
-                + structure + "' is not a valid structure");
+                + structure + "' is not a valid structure.");
         }
         return mapping;
     }
