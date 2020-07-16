@@ -20,6 +20,7 @@ ___
 
 ___
 ## Notes
+* [JsonPath](https://github.com/json-path/JsonPath#path-examples) can be used to access nested values. The root of the path is values.
 * Attributes mappings are case sensitive.
 * Fields used in queries to Remedy are case sensitive.
 * In reference the Adhoc structure:

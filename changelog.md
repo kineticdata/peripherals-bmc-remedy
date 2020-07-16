@@ -49,3 +49,7 @@ ARS \[bridge adapters\] (2020-05-12)
 ARS \[bridge adapters\] (2020-07-13)
   \[kinetic-bridgehub-adapter-ars-rest\]
     * PER-193 Refactor adapter to use structure pattern.  In the process fix issue found in last review.
+    
+ARS \[bridge adapters\] (2020-07-16)
+  \[kinetic-bridgehub-adapter-ars-rest\]
+    * PER-193 Added JsonPath library.
