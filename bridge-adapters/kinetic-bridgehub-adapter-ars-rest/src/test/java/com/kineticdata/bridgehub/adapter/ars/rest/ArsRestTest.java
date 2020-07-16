@@ -29,6 +29,27 @@ public class ArsRestTest extends BridgeAdapterTestBase{
     }
     
     @Test
+    public void test_no_fields() throws Exception{
+        BridgeError error = null;
+        
+        assertNull(error);
+        
+        BridgeRequest request = new BridgeRequest();
+        request.setStructure("Entry > CTM:People");
+        request.setQuery("");
+        
+        RecordList records = null;
+        try {
+            records = getAdapter().search(request);
+        } catch (BridgeError e) {
+            error = e;
+        }
+        
+        assertNull(error);
+        assertTrue(records.getRecords().size() > 0);
+    }
+    
+    @Test
     public void test_count() throws Exception{
         BridgeError error = null;
         

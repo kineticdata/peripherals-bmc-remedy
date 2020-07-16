@@ -15,15 +15,12 @@ import com.kineticdata.commons.v1.config.ConfigurablePropertyMap;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -87,7 +84,7 @@ public class ArsRestAdapter implements BridgeAdapter {
 
     private final ConfigurablePropertyMap properties = new ConfigurablePropertyMap(
         new ConfigurableProperty(Properties.PROPERTY_USERNAME).setIsRequired(true),
-        new ConfigurableProperty(Properties.PROPERTY_PASSWORD).setIsRequired(true).setIsSensitive(true),
+        new ConfigurableProperty(Properties.PROPERTY_PASSWORD).setIsSensitive(true),
         new ConfigurableProperty(Properties.PROPERTY_ORIGIN).setIsRequired(true)
             .setDescription("The scheme://hostname:port of the Ars Server")
     );
@@ -209,44 +206,32 @@ public class ArsRestAdapter implements BridgeAdapter {
         
         // Retrieve the objects based on the structure from the source
         JSONObject object = apiHelper.executeRequest(getUrl(path, parameters));
-        
-        List<String> fields = request.getFields();
-        if (fields == null) {
-            fields = new ArrayList();
-        }
-        
-        // Get domain specific data.  If "multiple" were requested than obj will
-        // be null and entries will get populated.
+
+        // Get domain specific data.
         // TODO: consider using mapper for single/multiple similar to kinetic
         // core
         JSONObject obj = (JSONObject)(object).get("values");
         JSONArray entries = (JSONArray)object.get("entries");
         
+        // If "multiple" were requested than obj will be null and entries will 
+        // get populated.
         Record record = new Record();
-        if (obj != null) {
-//            // Set object to user defined fields
-//            Set<Object> removeKeySet = buildKeySet(fields, obj);
-//            obj.keySet().removeAll(removeKeySet);
-//
-//            // Create a Record object from the JSONObject with removed keys
-//            record = new Record(obj);
-            record = buildRecord(fields, obj);
-        } else if (entries != null) {
-            // Throw error is multiple results found.
+        if (entries != null) {
+            // Throw error if multiple results found.
             if (entries.size() > 1) {
                 throw new BridgeError ("Retrieve must return a single result."
                     + " Multiple results found.");
+            } else if (entries.size() == 0) {
+                // empty retrieve condition
+                return new Record();
             } else if (entries.size() == 1){
                 obj = (JSONObject)((JSONObject)entries.get(0)).get("values");
-//                
-//                Set<Object> removeKeySet = buildKeySet(fields, obj);
-//                obj.keySet().removeAll(removeKeySet);
-//
-//                record = new Record(obj);
-                
-                
-                record = buildRecord(fields, obj);
             }
+        }
+        if (obj != null) {
+            List<String> fields = getFields(request.getFields() == null ? 
+                new ArrayList() : request.getFields(), obj);
+            record = buildRecord(fields, obj);
         } else {
             throw new BridgeError ("An unexpected error has occured.");
         }
@@ -302,30 +287,18 @@ public class ArsRestAdapter implements BridgeAdapter {
 
         // Create a List of records that will be used to make a RecordList object
         List<Record> recordList = new ArrayList<Record>();
-
-        // If the user doesn't enter any values for fields we return all of the fields
-        List<String> fields = request.getFields();
-        if (fields == null) {
-            fields = new ArrayList();
-        }
-        
+        List<String> fields = request.getFields() == null ? new ArrayList() : 
+            request.getFields();
         if(entries.isEmpty() != true){
-            JSONObject firstObj = (JSONObject)entries.get(0);
-
-            // Get domain specific data.
-            JSONObject entry = (JSONObject)(firstObj).get("values");
-            // Set object to user defined fields
-            Set<Object> removeKeySet = buildKeySet(fields, entry);
-
+            fields = getFields(fields, 
+                (JSONObject)((JSONObject)entries.get(0)).get("values"));
             // Iterate through the response objects and make a new Record for each.
             for (Object o : entries) {
-                entry = (JSONObject)((JSONObject)o).get("values");
-
-                entry.keySet().removeAll(removeKeySet);
-        
+                JSONObject obj = (JSONObject)((JSONObject)o).get("values");
+                
                 Record record;
-                if (object != null) {
-                    record = new Record(entry);
+                if (obj != null) {
+                    record = buildRecord(fields, obj);;
                 } else {
                     record = new Record();
                 }
@@ -343,17 +316,29 @@ public class ArsRestAdapter implements BridgeAdapter {
     /*----------------------------------------------------------------------------------------------
      * HELPER METHODS
      *--------------------------------------------------------------------------------------------*/
-    protected Record buildRecord (List<String> fields, JSONObject jsonobj) {
-        
+    protected List<String> getFields(List<String> fields, JSONObject jsonobj) {
+        // if no fields were provided then all fields will be returned. 
         if(fields.isEmpty()){
             fields.addAll(jsonobj.keySet());
         }
         
+        return fields;
+    }
+    
+    /**
+     * Build a Record.  If no fields are provided all fields will be returned.
+     * 
+     * @param fields
+     * @param jsonobj
+     * @return Record
+     */
+    protected Record buildRecord (List<String> fields, JSONObject jsonobj) {
         JSONObject obj = new JSONObject();
         DocumentContext jsonContext = JsonPath.parse(jsonobj); 
         
         fields.stream().forEach(field -> {
-            // either use JsonPath or just add the field value.
+            // either use JsonPath or just add the field value.  We're assuming
+            // all JsonPath usages will begin with $[ or $.. 
             if (field.startsWith("$.") || field.startsWith("$[")) {
                 try {
                     obj.put(field, jsonContext.read(field));
@@ -369,8 +354,14 @@ public class ArsRestAdapter implements BridgeAdapter {
         Record record = new Record(obj, fields);
         return record;
     }
-    
-    // Set the offset that will be used in subsequent requests for pagination
+
+    /**
+     * Set the offset that will be used in subsequent requests for pagination.
+     * This method mutates the parameters Map.
+     * 
+     * @param metadata
+     * @param parameters
+     */
     protected void setOffset(Map<String, String> metadata, 
         Map<String, String> parameters) {
      
@@ -389,8 +380,13 @@ public class ArsRestAdapter implements BridgeAdapter {
             LOGGER.error("Error parsing int: ", e);
         }
     }
-    
-    // Set limit if none exists or ensure that limit is in acceptable range.
+
+    /**
+     * Set limit if none exists or ensure that limit is in acceptable range.
+     * This method mutates the parameters Map.
+     * 
+     * @param parameters
+     */
     // TODO: consider if limit is on metadata.
     protected void addLimit(Map<String, String> parameters) {
         int limit = 1000;
@@ -412,28 +408,6 @@ public class ArsRestAdapter implements BridgeAdapter {
         }
     }
     
-    // Create a set of keys to remove from object prior to creating Record.
-    // TODO: consider using fields(foo,bar) to only request required fields from
-    // api.  This would eliminate the need to manipulate return objects
-    protected Set<Object> buildKeySet(List<String> fields, JSONObject obj) {
-        if(fields.isEmpty()){
-            fields.addAll(obj.keySet());
-        }
-            
-        // If specific fields were specified then we remove all of the 
-        // nonspecified properties from the object.
-        Set<Object> removeKeySet = new HashSet<Object>();
-        for(Object key: obj.keySet()){
-            if(fields.contains(key)){
-                continue;
-            }else{
-                LOGGER.trace("Remove Key: "+key);
-                removeKeySet.add(key);
-            }
-        }
-        return removeKeySet;
-    }
-    
     private LinkedHashMap<String, String> 
         getSortOrderItems (Map<String, String> uncastSortOrderItems)
         throws IllegalArgumentException{
@@ -448,6 +422,11 @@ public class ArsRestAdapter implements BridgeAdapter {
         return (LinkedHashMap)uncastSortOrderItems;
     }
         
+    /**
+     *
+     * @param responseData
+     * @return
+     */
     protected JSONArray getResponseData(Object responseData) {
         JSONArray responseArray = new JSONArray();
         
