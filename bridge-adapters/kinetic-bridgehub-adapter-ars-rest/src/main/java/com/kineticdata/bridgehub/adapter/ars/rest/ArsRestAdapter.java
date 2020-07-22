@@ -298,7 +298,7 @@ public class ArsRestAdapter implements BridgeAdapter {
                 
                 Record record;
                 if (obj != null) {
-                    record = buildRecord(fields, obj);;
+                    record = buildRecord(fields, obj);
                 } else {
                     record = new Record();
                 }
