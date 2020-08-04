@@ -8,8 +8,8 @@
     
     <name>kinetic-bridgehub-adapter-ars-rest</name>
     <scm>
-        <connection>scm:git:https://github.com/kineticdata/peripherals-atlassian-jira.git</connection>
-        <developerConnection>scm:git:https://github.com/kineticdata/peripherals-atlassian-jira.git</developerConnection>
+        <connection>scm:git:https://github.com/kineticdata/peripherals-bmc-remedy.git</connection>
+        <developerConnection>scm:git:https://github.com/kineticdata/peripherals-bmc-remedy.git</developerConnection>
     </scm>
     
     <distributionManagement>
