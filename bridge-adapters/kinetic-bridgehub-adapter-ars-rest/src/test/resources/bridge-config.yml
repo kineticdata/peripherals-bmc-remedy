@@ -4,7 +4,7 @@
 Bridge Configuration:
     Username: ""
     Password: ""
-    URL Origin: "http://ars91.kineticdata.com:8008"
+    URL Origin: ""
 
 # Setting the different request configurations for the Standard Bridgehub tests
     # Structure: Structure string
@@ -14,11 +14,11 @@ Bridge Configuration:
     # Single Value Query: A bridge query that ALWAYS return one value
     # Multiple Value Query: A bridge query that returns multiple values
 Test Request Configuration:
-    Structure: "Entry"
+    Structure: "Entry > CTM:People"
     Fields: "id,values"
-    Empty Value Query: "entry/CTM:People?q='Remedy Login ID'=\"_tiggebx\""
-    Single Value Query: "entry/CTM:People/PPL000000000205"
-    Multiple Value Query: "entry/CTM:People"
+    Empty Value Query: "q='Remedy Login ID'=\"test_user_x\""
+    Single Value Query: "entry_id=PPL000000000205"
+    Multiple Value Query: ""
 
 # Configuration of the various metadata options
     # Pagination Type: Possible values (string) - offset,token,none

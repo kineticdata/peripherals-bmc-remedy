@@ -6,7 +6,6 @@
 package com.kineticdata.bridgehub.adapter.ars.rest;
 
 import com.kineticdata.bridgehub.adapter.BridgeError;
-import static com.kineticdata.bridgehub.adapter.ars.rest.ArsRestAdapter.logger;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +13,6 @@ import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -44,7 +42,9 @@ public class ArsRestApiHelper {
         this.password = password;
     } 
     
-    public JSONObject executeRequest (String url) throws BridgeError{
+    public JSONObject executeRequest (String path) throws BridgeError{
+        String url = origin + path;
+        
         return executeRequest (url, 0);
     }
     
@@ -73,11 +73,7 @@ public class ArsRestApiHelper {
             int responseCode = response.getStatusLine().getStatusCode();
             LOGGER.trace("Request response code: " + responseCode);
             
-            HttpEntity entity = response.getEntity();
-            
-            // Confirm that response is a JSON object
-            output = parseResponse(EntityUtils.toString(entity));
-            
+            // First check if token is still valid
             if(responseCode == 401){
                 LOGGER.debug("401 recieved attempting to get new token.");
                 // If token has expired get fresh token
@@ -90,6 +86,11 @@ public class ArsRestApiHelper {
                         + "new token without success.");
                 }
             }
+            
+            HttpEntity entity = response.getEntity();
+            // Confirm that response is a JSON object
+            output = parseResponse(EntityUtils.toString(entity));
+            
             // Handle all other faild repsonses
             if (responseCode >= 400 && responseCode != 401) {
                 handleFailedReqeust(responseCode);
@@ -165,7 +166,7 @@ public class ArsRestApiHelper {
             object = (JSONObject)JSONValue.parse(output);
         } catch (ClassCastException e){
             JSONArray error = (JSONArray)JSONValue.parse(output);
-            throw new BridgeError("Error caught in retrieve: "
+            throw new BridgeError("Server responded with: "
                 + ((JSONObject)error.get(0)).get("messageText"));
         } catch (Exception e) {
             throw new BridgeError("An unexpected error has occured " + e);
