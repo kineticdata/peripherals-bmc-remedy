@@ -1,3 +1,6 @@
+Remedy Generic Query Retrieve V2 (2020-9-29)
+* Updated the textvalue conditions to a more generic method to prevent an issue when the value of 'ArsModels' was in a text field.
+
 Remedy Generic Query Retrieve V3 (2020-01-23)
 * Updated disable caching logic to improve performance
 
