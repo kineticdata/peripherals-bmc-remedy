@@ -53,3 +53,11 @@ ARS \[bridge adapters\] (2020-07-13)
 ARS \[bridge adapters\] (2020-07-16)
   \[kinetic-bridgehub-adapter-ars-rest\]
     * PER-193 Added JsonPath library.
+
+ARS \[handlers\] (2020-09-30)
+  \[remedy_generic_query_retrieve_v2\] (2020-09-30)
+    * Bug Fix
+  \[remedy_generic_query_retrieve_v3\] (2020-09-30)
+    * Bug Fix
+  \[remedy_generic_query_retrieve_v4\] (2020-09-30)
+    * Bug Fix

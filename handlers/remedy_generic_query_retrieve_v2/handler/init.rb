@@ -74,14 +74,14 @@ class RemedyGenericQueryRetrieveV2
           # Build up a list of all field names and values for this record
           field_values = entry.field_values.collect do |field_id, value|
             "#{get_remedy_form(@parameters['form']).field_for(field_id).name}: #{value}"
-            textvalue = value.to_s()
-            if textvalue.include? 'ArsModels'
-              if textvalue.include? 'DiaryFieldValue'
-                textvalue = value.text.to_s()
-              else
-                textvalue = value.value
-              end
-            end
+			textvalue = if value.respond_to?(:text)
+			  value.text.to_s
+			elsif value.respond_to?(:value)
+			  value.value.to_s
+			else
+			  value.to_s
+			end
+
             #Build result XML
             field_list << '<result name="'+escape(get_remedy_form(@parameters['form']).field_for(field_id).name)+'">'+ escape(textvalue) +'</result>'
           end

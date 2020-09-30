@@ -10,7 +10,7 @@
   },
   'parameters' => {
     'error_handling' => 'Error Message',
-	  'form' => 'SIT:Site Alias Company LookUp',
-    'request_query' => %|'Site' = "Site 1"|
+	  'form' => '',
+    'request_query' => %|'Incident Number' = "INC000000xxxxxx"|
   }
 }
