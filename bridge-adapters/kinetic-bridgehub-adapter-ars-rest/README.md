@@ -23,6 +23,7 @@ ___
 * [JsonPath](https://github.com/json-path/JsonPath#path-examples) can be used to access nested values. The root of the path is values.
 * Attributes mappings are case sensitive.
 * Fields used in queries to Remedy are case sensitive.
+* The Bridge Adapter limits the number of records returned to 1000.  This can be overridden to return fewer records.
 * In reference the Adhoc structure:
   * The Adhoc qualification mapping is split into two segments
     * ex: path?query
