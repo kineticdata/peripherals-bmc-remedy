@@ -14,7 +14,7 @@ ___
 ___
 ## Example Qualification Mapping
 * Adhoc Structure: 
-  * entry/CMT:People?q='Remedy Login ID'="_fooBar"
+  * /entry/CMT:People?q='Remedy Login ID'="_fooBar"
 * Entry > CMT:People Structure:
   * q='Remedy Login ID'="_fooBar"
 
