@@ -26,7 +26,7 @@ import org.junit.Test;
 public class ArsRest_HelperMethodTest {
     @Test
     public void test_space_encode() {
-        ArsRestQualificationParser helper = new ArsRestQualificationParser();
+        ArsRestV2QualificationParser helper = new ArsRestV2QualificationParser();
         
         String path = helper.parsePath("entry/HPD:Help Desk");
         assertEquals("entry/HPD:Help%20Desk", path);
@@ -34,7 +34,7 @@ public class ArsRest_HelperMethodTest {
     
     @Test
     public void test_get_parameters() throws BridgeError {
-        ArsRestAdapter helper = new ArsRestAdapter();
+        ArsRestV2Adapter helper = new ArsRestV2Adapter();
         
         AdapterMapping mapping = helper.getMapping("Entry");
         
@@ -60,7 +60,7 @@ public class ArsRest_HelperMethodTest {
     @Test
     public void test_get_mapping_error() throws BridgeError {
         BridgeError error = null;
-        ArsRestAdapter helper = new ArsRestAdapter();
+        ArsRestV2Adapter helper = new ArsRestV2Adapter();
         
         try {
             helper.getMapping("Foo");
@@ -73,7 +73,7 @@ public class ArsRest_HelperMethodTest {
     
     @Test
     public void test_build_record() {
-        ArsRestAdapter helper = new ArsRestAdapter();
+        ArsRestV2Adapter helper = new ArsRestV2Adapter();
         
         List<String> list = new ArrayList();
         list.add("$['Hourly Rate'].currency");
