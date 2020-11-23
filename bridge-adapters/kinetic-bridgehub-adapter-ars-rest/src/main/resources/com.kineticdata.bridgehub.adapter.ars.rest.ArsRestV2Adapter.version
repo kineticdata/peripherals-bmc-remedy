@@ -1,4 +1,4 @@
 build=${buildNumber}
 buildDate=${buildDate}
 timestamp=${timestamp}
-version=1.0.2
+version=${project.version}

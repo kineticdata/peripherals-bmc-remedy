@@ -10,7 +10,7 @@ Bridge Configuration:
     # Structure: Structure string
     # Fields: At least two comma separated fields related to the structure
         # NOTE: If order is supported, the first two fields in the string must be sortable
-    # Empty Value Query: A bridge query that NEVER returns any values
+    # Empty Value Querys: A bridge query that NEVER returns any values
     # Single Value Query: A bridge query that ALWAYS return one value
     # Multiple Value Query: A bridge query that returns multiple values
 Test Request Configuration:

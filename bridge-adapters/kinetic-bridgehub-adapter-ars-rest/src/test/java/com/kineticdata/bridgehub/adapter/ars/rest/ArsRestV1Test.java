@@ -1,13 +1,16 @@
 package com.kineticdata.bridgehub.adapter.ars.rest;
 
+import com.kineticdata.bridgehub.adapter.BridgeAdapter;
 import com.kineticdata.bridgehub.adapter.BridgeAdapterTestBase;
 import com.kineticdata.bridgehub.adapter.BridgeError;
 import com.kineticdata.bridgehub.adapter.BridgeRequest;
 import com.kineticdata.bridgehub.adapter.Count;
 import com.kineticdata.bridgehub.adapter.Record;
 import com.kineticdata.bridgehub.adapter.RecordList;
+import com.kineticdata.bridgehub.adapter.ars.rest.ArsRestAdapter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.Test;
@@ -16,7 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class ArsRestTest extends BridgeAdapterTestBase{
+public class ArsRestV1Test extends BridgeAdapterTestBase{
         
     @Override
     public Class getAdapterClass() {
@@ -25,28 +28,7 @@ public class ArsRestTest extends BridgeAdapterTestBase{
     
     @Override
     public String getConfigFilePath() {
-        return "src/test/resources/bridge-config.yml";
-    }
-    
-    @Test
-    public void test_no_fields() throws Exception{
-        BridgeError error = null;
-        
-        assertNull(error);
-        
-        BridgeRequest request = new BridgeRequest();
-        request.setStructure("Entry > CTM:People");
-        request.setQuery("");
-        
-        RecordList records = null;
-        try {
-            records = getAdapter().search(request);
-        } catch (BridgeError e) {
-            error = e;
-        }
-        
-        assertNull(error);
-        assertTrue(records.getRecords().size() > 0);
+        return "src/test/resources/bridge-v1-config.yml";
     }
     
     @Test
@@ -58,13 +40,13 @@ public class ArsRestTest extends BridgeAdapterTestBase{
         fields.add("id");
         
         BridgeRequest request = new BridgeRequest();
-        request.setStructure("Entry > CTM:People");
+        request.setStructure("Entry");
         request.setFields(fields);
-        request.setQuery("q='Remedy Login ID'=\"<%=parameter[\"Id\"]%>\"");
+        request.setQuery("entry/CTM:People?q='Remedy Login ID'=\"<%=parameter[\"Id\"]%>\"");
         
-        request.setParameters(new HashMap<String, String>() {{ 
-            put("Id", "test_user");
-        }});
+        Map parameters = new HashMap();
+        parameters.put("Id", "kinetic_integration_user");
+        request.setParameters(parameters);
         
         Count count = null;
         try {
@@ -83,16 +65,16 @@ public class ArsRestTest extends BridgeAdapterTestBase{
 
         // Create the Bridge Request
         List<String> fields = new ArrayList<String>();
-        fields.add("id-x");
+        fields.add("id");
         
         BridgeRequest request = new BridgeRequest();
-        request.setStructure("Entry > CTM:People");
+        request.setStructure("Entry");
         request.setFields(fields);
-        request.setQuery("q='Remedy Login sID'=\"<%=parameter[\"Id\"]%>\"");
+        request.setQuery("entry/CTM:People?q='Remedy Login sID'=\"<%=parameter[\"Id\"]%>\"");
         
-        request.setParameters(new HashMap<String, String>() {{ 
-            put("Id", "test_user");
-        }});
+        Map parameters = new HashMap();
+        parameters.put("Id", "_tiggebz");
+        request.setParameters(parameters);
         
         error = null;
         try {
@@ -120,20 +102,16 @@ public class ArsRestTest extends BridgeAdapterTestBase{
     }
     
     @Test
-    public void test_retrieve_single() throws Exception{
+    public void test_retrieve() throws Exception{
         BridgeError error = null;
         
         // Create the Bridge Request
         List<String> fields = new ArrayList<String>();
         
         BridgeRequest request = new BridgeRequest();
-        request.setStructure("Entry > CST:CHSAttributes");
+        request.setStructure("Entry");
         request.setFields(fields);
-        request.setQuery("entry_id=<%=parameter[\"Id\"]%>");
-        
-        request.setParameters(new HashMap<String, String>() {{ 
-            put("Id", "000000000003430");
-        }});
+        request.setQuery("entry/CST:CHSAttributes/000000000003430/attach/Schematic");
         
         Record record = null;
         try {
@@ -147,7 +125,7 @@ public class ArsRestTest extends BridgeAdapterTestBase{
     }
     
     @Test
-    public void test_retrieve() throws Exception{
+    public void test_retrieve_single() throws Exception{
         BridgeError error = null;
         
         // Create the Bridge Request
@@ -156,41 +134,12 @@ public class ArsRestTest extends BridgeAdapterTestBase{
         fields.add("Last Modified Date");
         
         BridgeRequest request = new BridgeRequest();
-        request.setStructure("Entry > CTM:People");
+        request.setStructure("Entry");
         request.setFields(fields);
-        request.setQuery("q='Remedy Login ID'=\"<%=parameter[\"Login ID\"]%>\"");
+        request.setQuery("entry/CTM:People?q='Remedy Login ID'=\"<%=parameter[\"Login ID\"]%>\"");
         
         Map parameters = new HashMap();
-        parameters.put("Login ID", "test_user");
-        request.setParameters(parameters);
-        
-        Record record = null;
-        try {
-            record =  getAdapter().retrieve(request);
-        } catch (BridgeError e) {
-            error = e;
-        }
-        
-        assertNull(error);
-        assertTrue(record.getRecord().size() > 0);
-    }
-    
-        @Test
-    public void test_retrieve_json_path() throws Exception{
-        BridgeError error = null;
-        
-        // Create the Bridge Request
-        List<String> fields = new ArrayList<String>();
-        fields.add("$['Hourly Rate'].currency");
-        fields.add("Site Zip/Postal Code");
-        
-        BridgeRequest request = new BridgeRequest();
-        request.setStructure("Entry > CTM:People");
-        request.setFields(fields);
-        request.setQuery("q='Remedy Login ID'=\"<%=parameter[\"Login ID\"]%>\"");
-        
-        Map parameters = new HashMap();
-        parameters.put("Login ID", "test_user");
+        parameters.put("Login ID", "marcin.zarycki@kineticdata.com");
         request.setParameters(parameters);
         
         Record record = null;
@@ -216,65 +165,9 @@ public class ArsRestTest extends BridgeAdapterTestBase{
         fields.add("Last Name");
         
         BridgeRequest request = new BridgeRequest();
-        request.setStructure("Entry > CTM:People");
+        request.setStructure("Entry");
         request.setFields(fields);
-        request.setQuery("");
-        
-        RecordList records = null;
-        try {
-            records = getAdapter().search(request);
-        } catch (BridgeError e) {
-            error = e;
-        }
-        
-        assertNull(error);
-        assertTrue(records.getRecords().size() > 0);
-    }
-    
-    @Test
-    public void test_search_adhoc() throws Exception{
-        BridgeError error = null;
-        
-        assertNull(error);
-        
-        // Create the Bridge Request
-        List<String> fields = new ArrayList<String>();
-        fields.add("First Name");
-        fields.add("Last Name");
-        
-        BridgeRequest request = new BridgeRequest();
-        request.setStructure("Adhoc");
-        request.setFields(fields);
-        request.setQuery("/entry/CTM:People");
-        
-        RecordList records = null;
-        try {
-            records = getAdapter().search(request);
-        } catch (BridgeError e) {
-            error = e;
-        }
-        
-        assertNull(error);
-        assertTrue(records.getRecords().size() > 0);
-    }
-        
-    @Test
-    public void test_search_adhoc_parameters() throws Exception{
-        BridgeError error = null;
-        
-        // Create the Bridge Request
-        List<String> fields = new ArrayList<String>();
-        fields.add("First Name");
-        fields.add("Last Name");
-        
-        BridgeRequest request = new BridgeRequest();
-        request.setStructure("Adhoc");
-        request.setFields(fields);
-        request.setQuery("/entry/CTM:People?q='Remedy Login ID'  LIKE \"<%=parameter[\"Login ID\"]%>\"&sort=Last+Name.desc,First+Name.desc");
-        
-        Map parameters = new HashMap();
-        parameters.put("Login ID", "_%");
-        request.setParameters(parameters);
+        request.setQuery("entry/CTM:People");
         
         RecordList records = null;
         try {
@@ -297,9 +190,9 @@ public class ArsRestTest extends BridgeAdapterTestBase{
         fields.add("Last Name");
         
         BridgeRequest request = new BridgeRequest();
-        request.setStructure("Entry > CTM:People");
+        request.setStructure("Entry");
         request.setFields(fields);
-        request.setQuery("sort=Last+Name.desc,First+Name.desc");
+        request.setQuery("entry/CTM:People?sort=Last+Name.desc,First+Name.desc");
         
         RecordList records = null;
         try {
@@ -322,9 +215,9 @@ public class ArsRestTest extends BridgeAdapterTestBase{
         fields.add("Last Name");
         
         BridgeRequest request = new BridgeRequest();
-        request.setStructure("Entry > CTM:People");
+        request.setStructure("Entry");
         request.setFields(fields);
-        request.setQuery("");
+        request.setQuery("entry/CTM:People");
         
         Map <String, String> metadata = new HashMap<>();
         metadata.put("order", "<%=field[\"Last Name\"]%>:DESC");       
@@ -351,9 +244,9 @@ public class ArsRestTest extends BridgeAdapterTestBase{
         fields.add("Last Name");
         
         BridgeRequest request = new BridgeRequest();
-        request.setStructure("Entry > CTM:People");
+        request.setStructure("Entry");
         request.setFields(fields);
-        request.setQuery("");
+        request.setQuery("entry/CTM:People");
         
         Map <String, String> metadata = new HashMap<>();
         metadata.put("order", "<%=field[\"Last Name\"]%>:DESC"
