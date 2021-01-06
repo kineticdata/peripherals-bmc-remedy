@@ -61,3 +61,7 @@ ARS \[handlers\] (2020-09-30)
     * Bug Fix
   \[remedy_generic_query_retrieve_v4\] (2020-09-30)
     * Bug Fix
+	
+ARS \[handlers\] (2021-01-06)
+  \[ars9_generic_query_retrieve_v1\] (2021-01-06)
+    * Updated escape method.
