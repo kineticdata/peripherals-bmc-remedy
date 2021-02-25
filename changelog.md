@@ -65,3 +65,8 @@ ARS \[handlers\] (2020-09-30)
 ARS \[handlers\] (2021-01-06)
   \[ars9_generic_query_retrieve_v1\] (2021-01-06)
     * Updated escape method.
+
+ARS \[bridge-adapter\] (2020-02-25)
+  \[kinetic-bridgehub-adapter-ars\]
+    * PER-204 fixed issue that caused field to large for sort error to be thrown.
+    * versioned adapter to v1.0.4

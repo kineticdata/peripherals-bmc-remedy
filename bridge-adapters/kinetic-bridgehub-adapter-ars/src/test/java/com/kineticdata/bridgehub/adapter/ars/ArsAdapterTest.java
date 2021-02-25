@@ -128,11 +128,7 @@ public class ArsAdapterTest extends BridgeAdapterTestBase {
         BridgeRequest request = new BridgeRequest();
         request.setStructure("AATest");
         request.setFields(new ArrayList<String>(){{ 
-            add("1000 Characters"); 
             add("10000 Characters");
-            add("1001 Characters");
-            add("256 Characters");
-            add("Short Description");
         }});
         request.setQuery("1=1");
         
