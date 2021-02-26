@@ -93,7 +93,7 @@ class Ars9GenericQueryRetrieveV1
     
   field_values = record_parsed["entries"][0]["values"].each do |key, value|
   #Build result XML
-  @results+= "<result name='#{key}'>#{escape(value)}</result>"
+  @results+= "<result name='#{escape(key)}'>#{escape(value)}</result>"
   end
 
 	
@@ -163,7 +163,7 @@ class Ars9GenericQueryRetrieveV1
   
   def escape(string)
     # Globally replace characters based on the ESCAPE_CHARACTERS constant
-    string.to_s.gsub(/[&"><]/) { |special| ESCAPE_CHARACTERS[special] } if string
+    string.to_s.gsub(/[&"><'#]/) { |special| ESCAPE_CHARACTERS[special] } if string
   end
   # This is a ruby constant that is used by the escape method
   ESCAPE_CHARACTERS = {
@@ -172,11 +172,6 @@ class Ars9GenericQueryRetrieveV1
     ">" => "&gt;",
     "'" => "&#39;",
     '"' => "&quot;",
-    "/" => "&#47;",
-    "#" => "&#35;",
-    " " => "&nbsp;",
-    "\\" => "&#92;",
-    "\r" => "<br>",
-    "\n" => "<br>"
+    "#" => "&#35;"
   }
 end

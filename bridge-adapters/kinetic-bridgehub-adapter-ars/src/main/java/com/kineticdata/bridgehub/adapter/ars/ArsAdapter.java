@@ -255,7 +255,7 @@ public class ArsAdapter implements BridgeAdapter {
                         sortFields.put(fieldMap.getFieldId(fieldName), "ASC");
                     } else if (type == DataType.CHAR.toInt()) {
                         CharacterFieldLimit cFieldLimit = (CharacterFieldLimit)field.getFieldLimit();
-                        if (cFieldLimit.getMaxLength() > 0) {
+                        if (cFieldLimit.getMaxLength() > 0 && cFieldLimit.getMaxLength() <= 1000) {
                             sortFields.put(fieldMap.getFieldId(fieldName), "ASC");
                         }
                     }

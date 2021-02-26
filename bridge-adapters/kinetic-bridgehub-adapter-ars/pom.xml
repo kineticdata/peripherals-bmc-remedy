@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.kineticdata.bridgehub.adapter</groupId>
     <artifactId>kinetic-bridgehub-adapter-ars</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <packaging>jar</packaging>
 
     <name>kinetic-bridgehub-adapter-ars</name>
@@ -29,8 +29,16 @@
             <url>https://s3.amazonaws.com/maven-repo-public-kineticdata.com/releases</url>
         </repository>
         <repository>
-            <id>z2_com.kineticdata.public</id>
+            <id>z2_com.kineticdata.private</id>
+            <url>s3://maven-repo-private-kineticdata.com/releases</url>
+        </repository>
+        <repository>
+            <id>z3_com.kineticdata.public</id>
             <url>https://s3.amazonaws.com/maven-repo-public-kineticdata.com/snapshots</url>
+        </repository>
+        <repository>
+            <id>z4_com.kineticdata.private</id>
+            <url>s3://maven-repo-private-kineticdata.com/snapshots</url>
         </repository>
     </repositories>
 
@@ -62,6 +70,12 @@
             <version>1.7.10</version>
         </dependency>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.30</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
             <version>1.1.1</version>
@@ -69,8 +83,8 @@
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
     </properties>
 

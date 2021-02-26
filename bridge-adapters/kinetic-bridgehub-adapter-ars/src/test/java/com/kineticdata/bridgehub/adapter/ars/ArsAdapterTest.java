@@ -5,6 +5,9 @@ import com.kineticdata.bridgehub.adapter.BridgeAdapterTestBase;
 import com.kineticdata.bridgehub.adapter.BridgeError;
 import com.kineticdata.bridgehub.adapter.BridgeRequest;
 import com.kineticdata.bridgehub.adapter.Count;
+import com.kineticdata.bridgehub.adapter.RecordList;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import static org.junit.Assert.assertEquals;
@@ -117,4 +120,27 @@ public class ArsAdapterTest extends BridgeAdapterTestBase {
 //        
 //        assertNull(error);
 //    }
+
+    @Test
+    public void test_search_exception() {
+        RuntimeException error = null;
+        
+        BridgeRequest request = new BridgeRequest();
+        request.setStructure("AATest");
+        request.setFields(new ArrayList<String>(){{ 
+            add("10000 Characters");
+        }});
+        request.setQuery("1=1");
+        
+        RecordList rl = null;
+        try {
+            rl = getAdapter().search(request);
+        } catch (RuntimeException e) {
+            error = e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        
+        assertNull(error);
+    }
 }
