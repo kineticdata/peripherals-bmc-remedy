@@ -24,27 +24,39 @@ class BmcItsm7IncidentWorkInfoCreateCeV1
   def initialize(input)
     # Set the input document attribute
     @input_document = REXML::Document.new(input)
-    
-  preinitialize_on_first_load_remote(
-      @input_document,
-      ['HPD:WorkLog', 'HPD:Help Desk']
-    )
-  
+
     # Determine if debug logging is enabled.
     @debug_logging_enabled = get_info_value(@input_document, 'enable_debug_logging') == 'Yes'
     puts("Logging enabled.") if @debug_logging_enabled
-  
-  # Store the info values in a Hash of info names to values.
+
+    # Determine if caching is disabled.
+    @disable_caching = get_info_value(@input_document, 'disable_caching') == 'Yes'
+    puts("Disable Caching: #{@disable_caching}.") if @debug_logging_enabled
+
+    begin
+      # Obtain a unchangable reference to the configuration (the @@config class
+      # variable could be concurrently changed by other threads -- by defining the
+      # @config instance variable, the execution of this handler is "locked in" to
+      # using that config for the entire execution)
+      @config = preinitialize_on_first_load_remote(
+        @input_document,
+        ['HPD:WorkLog', 'HPD:Help Desk']
+      )
+    rescue Exception => error
+      @error = error
+    end
+
+    # Store the info values in a Hash of info names to values.
     @info_values = {}
     REXML::XPath.each(@input_document,"/handler/infos/info") do |item|
       @info_values[item.attributes['name']] = item.text
     end
-  puts(format_hash("Handler Info Values:", @info_values)) if @debug_logging_enabled
-  
+    puts(format_hash("Handler Info Values:", @info_values)) if @debug_logging_enabled
+
     # Store parameters in the node.xml in a hash attribute named @parameters.
     @parameters = {}
     REXML::XPath.match(@input_document, '/handler/parameters/parameter').each do |node|
-      @parameters[node.attribute('name').value] = node.text
+      @parameters[node.attribute('name').value] = node.text.to_s.strip
     end
     puts(format_hash("Handler Parameters:", @parameters)) if @debug_logging_enabled
 
@@ -53,6 +65,7 @@ class BmcItsm7IncidentWorkInfoCreateCeV1
     REXML::XPath.match(@input_document, '/handler/fields/field').each do |node|
       @field_values[node.attribute('name').value] = node.text
     end
+    puts(format_hash("Field Values:", @field_values)) if @debug_logging_enabled
 
     # Validate the required field values that are set from node parameters
     # contain a value and raise an exception if one or more are missing.
@@ -73,11 +86,10 @@ class BmcItsm7IncidentWorkInfoCreateCeV1
   # ==== Returns
   # An Xml formatted String representing the return variable results.
   def execute
-    @parameters = {}
-    REXML::XPath.each(@input_document, "/handler/parameters/parameter") do |item|
-      @parameters[item.attributes["name"]] = item.text.to_s.strip
-    end
-    
+    error_handling = @parameters["error_handling"]
+    error_message = nil
+    entry_id = nil
+
     space_slug = @parameters["space_slug"].empty? ? @info_values["space_slug"] : @parameters["space_slug"]
     if @info_values['api_server'].include?("${space}")
       server = @info_values['api_server'].gsub("${space}", space_slug)
@@ -86,68 +98,82 @@ class BmcItsm7IncidentWorkInfoCreateCeV1
     else
       server = @info_values['api_server']
     end
-    
-    
-    # For attachment_question_menu_label 1, 2, and 3: if there is a value, retrieve
-    # the attachment with the get_attachment() method and store the attachment in
-    # @field_values.
-    if @parameters['attachment_input_type'] == "Field"
-      @field_values['z2AF Work Log01'] = create_attachment_from_field(@parameters['attachment_field_1'], server) if !@parameters['attachment_field_1'].empty?
-      @field_values['z2AF Work Log02'] = create_attachment_from_field(@parameters['attachment_field_2'], server) if !@parameters['attachment_field_2'].empty?
-      @field_values['z2AF Work Log03'] = create_attachment_from_field(@parameters['attachment_field_3'], server) if !@parameters['attachment_field_3'].empty?
+    server = "#{server}/" if !server.end_with?("/")
+
+
+    if (@error.to_s.empty?)
+      begin
+        # For attachment_question_menu_label 1, 2, and 3: if there is a value, retrieve
+        # the attachment with the get_attachment() method and store the attachment in
+        # @field_values.
+        if @parameters['attachment_input_type'] == "Field"
+          @field_values['z2AF Work Log01'] = create_attachment_from_field(@parameters['attachment_field_1'], server) if !@parameters['attachment_field_1'].empty?
+          @field_values['z2AF Work Log02'] = create_attachment_from_field(@parameters['attachment_field_2'], server) if !@parameters['attachment_field_2'].empty?
+          @field_values['z2AF Work Log03'] = create_attachment_from_field(@parameters['attachment_field_3'], server) if !@parameters['attachment_field_3'].empty?
+        else
+          @field_values['z2AF Work Log01'] = create_attachment_from_json(@parameters['attachment_json_1']) if !@parameters['attachment_json_1'].empty?
+          @field_values['z2AF Work Log02'] = create_attachment_from_json(@parameters['attachment_json_2']) if !@parameters['attachment_json_2'].empty?
+          @field_values['z2AF Work Log03'] = create_attachment_from_json(@parameters['attachment_json_3']) if !@parameters['attachment_json_3'].empty?
+        end
+
+        # If parameter include_review_request is set to "Yes", prepend the review request
+        # URL string to the 'Detailed Description' field, using the review_request_string()
+        # method to build the URL.
+        if @parameters['include_review_request'] == "Yes"
+          @field_values['Detailed Description'].insert(0, review_request_string(
+              @parameters['submission_id'], server))
+        end
+
+        # If parameter include_question_answers is set to "Yes", prepend the question
+        # answers formatted string to the 'Detailed Description' field, using the
+        # question_answers_string() method to build the question answer pairs string.
+        if @parameters['include_question_answers'] == "Yes"
+          @field_values['Detailed Description'] << question_answers_string(
+            @parameters['submission_id'], server)
+        end
+
+
+        # Retrieve the HPD:Help desk entry that will be associated with the HPD:WorkLog
+        # entry.  This entry is retrieved using the incident_number parameter and the
+        # request id of the entry is used.
+        #incident_entry = @@remedy_forms_remote['HPD:Help Desk'].find_entries(
+        incident_entry = get_remedy_form('HPD:Help Desk').find_entries(
+          :single,
+          :conditions => [%|'Incident Number' = "#{@parameters['incident_number']}"|],
+          :fields     => []
+        )
+        if incident_entry.nil?
+          raise(%|Could not find entry on HPD:Help Desk with 'Incident Number'="#{@parameters['incident_number']}"|)
+        end
+        @field_values['Incident Entry ID'] = incident_entry.id
+
+        # Log the final values that will be used to create the CHG:WorkLog record.
+        puts(format_hash("Field Values:", @field_values)) if @debug_logging_enabled
+
+        # Create the HPD:WorkLog record using the @field_values hash that was built
+        # up.  Pass empty array to the fields argument because no fields are necessary
+        # to build the results XML.
+        @field_values.delete_if {|key, value| value.nil? }
+        #entry = @@remedy_forms_remote['HPD:WorkLog'].create_entry!(
+        entry = get_remedy_form('HPD:WorkLog').create_entry!(
+          :field_values => @field_values,
+          :fields       => []
+        )
+        entry_id = entry.id
+      rescue Exception => error
+        error_message = error.inspect
+        raise error if error_handling == "Raise Error"
+      end
     else
-      @field_values['z2AF Work Log01'] = create_attachment_from_json(@parameters['attachment_json_1']) if !@parameters['attachment_json_1'].empty?
-      @field_values['z2AF Work Log02'] = create_attachment_from_json(@parameters['attachment_json_2']) if !@parameters['attachment_json_2'].empty?
-      @field_values['z2AF Work Log03'] = create_attachment_from_json(@parameters['attachment_json_3']) if !@parameters['attachment_json_3'].empty?  
+      error_message = @error
+      raise @error if error_handling == "Raise Error"
     end
-  
-    # If parameter include_review_request is set to "Yes", prepend the review request
-    # URL string to the 'Detailed Description' field, using the review_request_string()
-    # method to build the URL.
-    if @parameters['include_review_request'] == "Yes"
-      @field_values['Detailed Description'].insert(0, review_request_string(
-          @parameters['submission_id'], server))
-    end
-    
-    # If parameter include_question_answers is set to "Yes", prepend the question
-    # answers formatted string to the 'Detailed Description' field, using the
-    # question_answers_string() method to build the question answer pairs string.
-    if @parameters['include_question_answers'] == "Yes"
-      @field_values['Detailed Description'] << question_answers_string(
-        @parameters['submission_id'], server)
-    end
-    
 
-
-    # Retrieve the HPD:Help desk entry that will be associated with the HPD:WorkLog
-    # entry.  This entry is retrieved using the incident_number parameter and the
-    # request id of the entry is used.
-    incident_entry = @@remedy_forms_remote['HPD:Help Desk'].find_entries(
-      :single,
-      :conditions => [%|'Incident Number' = "#{@parameters['incident_number']}"|],
-      :fields     => []
-    )
-    if incident_entry.nil?
-      raise(%|Could not find entry on HPD:Help Desk with 'Incident Number'="#{@parameters['incident_number']}"|)
-    end
-    @field_values['Incident Entry ID'] = incident_entry.id
-
-    # Log the final values that will be used to create the CHG:WorkLog record.
-    puts(format_hash("Field Values:", @field_values)) if @debug_logging_enabled
-
-    # Create the HPD:WorkLog record using the @field_values hash that was built
-    # up.  Pass empty array to the fields argument because no fields are necessary
-    # to build the results XML.
-    @field_values.delete_if {|key, value| value.nil? }
-    entry = @@remedy_forms_remote['HPD:WorkLog'].create_entry!(
-      :field_values => @field_values,
-      :fields       => []
-    )
-    
     # Build the results xml that will be returned by this handler.
     results = <<-RESULTS
     <results>
-      <result name="Entry Id">#{escape(entry.id)}</result>
+      <result name="Handler Error Message">#{escape(error_message)}</result>
+      <result name="Entry Id">#{escape(entry_id)}</result>
     </results>
     RESULTS
     puts("Results: \n#{results}") if @debug_logging_enabled
@@ -214,16 +240,16 @@ class BmcItsm7IncidentWorkInfoCreateCeV1
 
     return attachment_field
   end
-  
+
   def create_attachment_from_field(field_name, server)
     # Call the Kinetic Request CE API
     begin
       # Submission API Route including Values
       # /{spaceSlug}/app/api/v1/submissions/{submissionId}}?include=...
-    
+
       submission_api_route = server + 'app/api/v1' +
-        '/submissions/' + URI.escape(@parameters['submission_id']) + '/?include=values' 
-    puts("Submission API Route: \n#{submission_api_route}") if @debug_logging_enabled
+        '/submissions/' + URI.escape(@parameters['submission_id']) + '/?include=values'
+      puts("Submission API Route: \n#{submission_api_route}") if @debug_logging_enabled
       # Retrieve the Submission Values
       submission_result = RestClient::Resource.new(
         submission_api_route,
@@ -250,7 +276,7 @@ class BmcItsm7IncidentWorkInfoCreateCeV1
               '/' + index.to_s +
               '/' + URI.escape(file_info['name']) +
               '/url'
-      puts("Attachment Download API Route: \n#{attachment_download_api_route}") if @debug_logging_enabled
+              puts("Attachment Download API Route: \n#{attachment_download_api_route}") if @debug_logging_enabled
 
 
             # Retrieve the URL to download the attachment from Kinetic Request CE.
@@ -278,24 +304,26 @@ class BmcItsm7IncidentWorkInfoCreateCeV1
     rescue RestClient::ResourceNotFound => error
       raise StandardError, error.response
     end
-  
+
   if files.nil?
       puts("No File in Field: \n#{field_name}") if @debug_logging_enabled
           return nil
     else
-    puts("Using File URL: \n#{files[0]["url"]}") if @debug_logging_enabled
-    puts("Using File Name: \n#{files[0]["name"]}") if @debug_logging_enabled
-      attachment = RestClient::Resource.new(files[0]["url"]).get
+      puts("Using File URL: \n#{files[0]["url"]}") if @debug_logging_enabled
+      puts("Using File Name: \n#{files[0]["name"]}") if @debug_logging_enabled
+      attachment = RestClient::Resource.new(
+        files[0]["url"],
+        user: get_info_value(@input_document, 'api_username'),
+        password: get_info_value(@input_document, 'api_password')
+      ).get
 
-    attachment_field = ArsModels::FieldValues::AttachmentFieldValue.new()
-    attachment_field.name = files[0]["name"]
-    attachment_field.base64_content = Base64.encode64(attachment.body)
-    attachment_field.size = attachment.body.size()
+      attachment_field = ArsModels::FieldValues::AttachmentFieldValue.new()
+      attachment_field.name = files[0]["name"]
+      attachment_field.base64_content = Base64.encode64(attachment.body)
+      attachment_field.size = attachment.body.size()
 
-    return attachment_field
+      return attachment_field
     end
-    
-  
   end
 
   # Returns a String URL for the review request page for the given submission.
@@ -310,9 +338,9 @@ class BmcItsm7IncidentWorkInfoCreateCeV1
     reviewLink = "#{server}submissions/#{submission_id}?review\n\n"
     puts("Using review link: #{reviewLink}") if @debug_logging_enabled
     return reviewLink
-    
+
   end
-  
+
   # Returns a String of question answer pairs.  The question answer data is retrieved
   # from KS_SRV_QuestionAnswerJoin using the customer_survey_instance_id parameter.
   #
@@ -323,10 +351,10 @@ class BmcItsm7IncidentWorkInfoCreateCeV1
   def question_answers_string(submission_id, server)
      begin
       # API Route
-      api_route = server + 
+      api_route = server +
                   'app/api/v1/submissions/' + submission_id +
                   '/?include=values'
-      puts "API ROUTE: #{api_route}"
+      puts "API ROUTE: #{api_route}" if @debug_logging_enabled
 
       resource = RestClient::Resource.new(api_route,
                                           user: @info_values['api_username'],
@@ -337,7 +365,7 @@ class BmcItsm7IncidentWorkInfoCreateCeV1
 
       # Build values variable
       submission = JSON.parse(result)
-      values = submission['submission']['values']       
+      values = submission['submission']['values']
 
 
     # If the credentials are invalid
@@ -355,8 +383,8 @@ class BmcItsm7IncidentWorkInfoCreateCeV1
       results += "    " + question + ":  \n"
     elsif answer.kind_of?(Array)
       # Get name in the case of an Attachment Field
-    name = JSON.parse(answer.to_json).first['name']
-      if !name.nil? # Field contains and Attachment
+      name = JSON.parse(answer.to_json).empty? ? nil : JSON.parse(answer.to_json).first['name']
+      if !name.nil? # Field contains an Attachment
         results += "    " + question + ":  " + escape(name) + "\n"
       else # Field is an Array such as a checkbox field
         results += "    " + question + ":  " + escape(answer.join(" , ")) + "\n"
@@ -365,8 +393,6 @@ class BmcItsm7IncidentWorkInfoCreateCeV1
        results += "    " + question + ":  " + escape(answer) + "\n"
       end
     }
-
-    
 
   # Return the results String
     return results
@@ -377,31 +403,51 @@ class BmcItsm7IncidentWorkInfoCreateCeV1
   # General handler utility functions
   ##############################################################################
 
+  # This method is an accessor for the @config[:forms] variable that caches
+  # form definitions.  It checks to see if the specified form has been loaded
+  # if so it returns it otherwise it needs to load the form and add it to the
+  # cache.
+  def get_remedy_form(form_name)
+    if @config[:forms][form_name].nil?
+      @config[:forms][form_name] = ArsModels::Form.find(form_name, :context => @config[:context])
+    end
+    if @config[:forms][form_name].nil?
+      raise "Could not find form " + form_name
+    end
+    @config[:forms][form_name]
+  end
+
 
   def preinitialize_on_first_load_remote(input_document, form_names)
-    # Unless this method has already been called...
-    unless self.class.class_variable_defined?('@@preinitialized_remote')
-      # Initialize a remedy context (login) account to execute the Remedy queries.
-      @@remedy_context_remote = ArsModels::Context.new(
-        :server         => get_info_value(input_document, 'ars_server'),
-        :username       => get_info_value(input_document, 'ars_username'),
-        :password       => get_info_value(input_document, 'ars_password'),
-        :port           => get_info_value(input_document, 'ars_port'),
-        :prognum        => get_info_value(input_document, 'ars_prognum'),
-        :authentication => get_info_value(input_document, 'ars_authentication')
-      )
-      # Initialize the remedy forms that will be used by this handler.
-      @@remedy_forms_remote = form_names.inject({}) do |hash, form_name|
-        hash.merge!(form_name => ArsModels::Form.find(form_name, :context => @@remedy_context_remote))
-      end
-      # Store that we are preinitialized so that this method is not called twice.
-      @@preinitialized_remote = true
+    remedy_context = ArsModels::Context.new(
+      :server         => get_info_value(input_document, 'ars_server'),
+      :username       => get_info_value(input_document, 'ars_username'),
+      :password       => get_info_value(input_document, 'ars_password'),
+      :port           => get_info_value(input_document, 'ars_port'),
+      :prognum        => get_info_value(input_document, 'ars_prognum'),
+      :authentication => get_info_value(input_document, 'ars_authentication')
+    )
+
+    # Build up a new configuration
+    if @disable_caching
+      @config = {
+        #:properties => properties,
+        :context => remedy_context,
+        :forms => form_names.inject({}) do |hash, form_name|
+          hash.merge!(form_name => ArsModels::Form.find(form_name, :context => remedy_context))
+        end
+      }
+    else
+      @@config = {
+        #:properties => properties,
+        :context => remedy_context,
+        :forms => form_names.inject({}) do |hash, form_name|
+          hash.merge!(form_name => ArsModels::Form.find(form_name, :context => remedy_context))
+        end
+      }
     end
   end
-  
-  
-  
-  
+
   # This is a template method that is used to escape results values (returned in
   # execute) that would cause the XML to be invalid.  This method is not
   # necessary if values do not contain character that have special meaning in
