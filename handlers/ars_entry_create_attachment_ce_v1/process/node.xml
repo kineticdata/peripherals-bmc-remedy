@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<taskDefinition id="entry_create_with_attachment" name="ARS Rest Attachment" schema_version="1.0" version="1">
+<taskDefinition id="ars_entry_create_attachment_ce" name="ARS Rest Attachment" schema_version="1.0" version="1">
     <author></author>
     <description>
         Create an entry in the form specified
@@ -28,7 +28,7 @@
         <parameter id="submission_id" label="Submission ID:" required="true"
             tooltip="The id of the CE submission to retrieve answers for."/> 
     </parameters>
-    <handler name="entry_create_with_attachment" version="1">
+    <handler name="ars_entry_create_attachment_ce" version="1">
         <infos>
             <info name="api_password">&lt;%= @info['api_password'] %&gt;</info>
             <info name="api_server">&lt;%= @info['api_server'] %&gt;</info>

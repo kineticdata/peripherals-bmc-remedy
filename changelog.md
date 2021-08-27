@@ -70,3 +70,11 @@ ARS \[bridge-adapter\] (2021-02-25)
   \[kinetic-bridgehub-adapter-ars\]
     * PER-204 fixed issue that caused field to large for sort error to be thrown.
     * versioned adapter to v1.0.4
+
+ARS \[handlers\] (2021-08-27)
+  \[ars9_generic_create_v1\] 
+    * PER-224 cleaned up code formatting
+  \[bmc_itsm7_work_order_work_info_create_ce_v1\] 
+    * PER-224 cleaned up code formatting
+  \[ars_entry_create_attachment_ce_v1\]
+    * PER-224 initial create

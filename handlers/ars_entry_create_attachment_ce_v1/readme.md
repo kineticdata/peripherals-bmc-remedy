@@ -1,5 +1,5 @@
-## ARS9 Generic Create
-Creates a single Remedy entry given the JSON mapping of field values and form name.
+## Ars Entry Create Attachment Ce
+Creates a single Remedy entry (with attachment optional) given the JSON mapping of field values and form name.  Attachments are retrieved from filehub referenced by a submission id.  
 
 ### Parameters
 [Error Handling]
@@ -44,13 +44,17 @@ Field Values::
 
 ### Results
 [Handler Error Message]
-   Error, if one is found
+  * Error, if one is found
+  
 [Results]
-  Success or failure of specified create as returned by the ARS REST API.
+  * Success or failure of specified create as returned by the ARS REST API.
+  
 [Record Location]
-  Resulting record location (url) as returned by the ARS REST API.
+  * Resulting record location (url) as returned by the ARS REST API.
+  
 [Record Id]
-  Id of the created record.
+  * Id of the created record.
+  
 
 ### Detailed Description
 * This handler takes a json as input of a format like
@@ -77,5 +81,6 @@ in the Field Values parameter:
 }.to_json
 %>
 ```
-* It is assumed that all attachment fields on the connect form will have only on 
-attachment.
+* It is assumed that all attachment fields on the connect form will have only on attachment.
+
+* Only three attachment can be mapped between a Kinetic Data submission and an ARS entry.  The mapping must be a one to one between fields.  This means the Kinetic Data form must have three attachment fields to attach three documents to a entry.

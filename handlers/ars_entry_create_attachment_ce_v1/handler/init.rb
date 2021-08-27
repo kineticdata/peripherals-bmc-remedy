@@ -1,7 +1,7 @@
 # Require the dependencies file to load the vendor libraries
 require File.expand_path(File.join(File.dirname(__FILE__), "dependencies"))
 
-class EntryCreateWithAttachmentV1
+class ArsEntryCreateAttachmentCeV1
 
   CORE_API_ROUTE = '/app/api/v1'
 
