@@ -25,7 +25,7 @@
         <parameter id="work_info_submit_date" required="false" label="Work Info Submit Date:"
                    tooltip="Sets the Date of the Incident Work Info entry." />
 		<parameter id="attachment_input_type" label="Attachment Input Type" required="true"
-  tooltip="Choose Field if the input for the attachment info as a Field Name or choose JSON if the input is an attachment's JSON from the Get Attachment Info handler. Note that if Field is specified, the fields entered should only allow one attachment." menu="Field,JSON">Field</parameter>
+                    tooltip="Choose Field if the input for the attachment info as a Field Name or choose JSON if the input is an attachment's JSON from the Get Attachment Info handler. Note that if Field is specified, the fields entered should only allow one attachment." menu="Field,JSON">Field</parameter>
         <parameter id="attachment_field_1" required="false" label="Attachment Field 1:"
                    tooltip="The Field Name of an attachment question to retrieve an attachment from." dependsOnId="attachment_input_type" dependsOnValue="Field"/>
         <parameter id="attachment_field_2" required="false" label="Attachment Field 2:"
@@ -45,7 +45,7 @@
         <parameter id="view_access" required="true" label="View Access:"
                    tooltip="Sets the Incident Work Info entry to Public or Internal.">Public</parameter>
 		<parameter id="submission_id" label="Submission ID:" required="true"
-            tooltip="The id of the CE submission to retrieve answers for."/>
+                    tooltip="The id of the CE submission to retrieve answers for."/>
 		<parameter id="space_slug" required="false" label="Space Slug:"
                    tooltip="Can be used to override the info parameter provided."></parameter>
     </parameters>
@@ -78,8 +78,7 @@
             <parameter name='attachment_json_2'>&lt;%= @parameters['attachment_json_2'] %&gt;</parameter>
 			<parameter name='attachment_json_3'>&lt;%= @parameters['attachment_json_3'] %&gt;</parameter>
             <parameter name='secure_work_log'>&lt;%= @parameters['secure_work_log'] %&gt;</parameter>
-            <parameter name='view_access'>&lt;%= @parameters['view_access'] %&gt;</parameter>
-            
+            <parameter name='view_access'>&lt;%= @parameters['view_access'] %&gt;</parameter>    
         </parameters>
         <fields>
             <!-- HPD:WorkLog -->

@@ -106,7 +106,7 @@ class BmcItsm7IncidentWorkInfoCreateCeV1
     # method to build the URL.
     if @parameters['include_review_request'] == "Yes"
       @field_values['Detailed Description'].insert(0, review_request_string(
-          @parameters['submission_id'], server))
+      @parameters['submission_id'], server))
     end
     
     # If parameter include_question_answers is set to "Yes", prepend the question
@@ -114,7 +114,7 @@ class BmcItsm7IncidentWorkInfoCreateCeV1
     # question_answers_string() method to build the question answer pairs string.
     if @parameters['include_question_answers'] == "Yes"
       @field_values['Detailed Description'] << question_answers_string(
-        @parameters['submission_id'], server)
+      @parameters['submission_id'], server)
     end
     
 
@@ -250,7 +250,7 @@ class BmcItsm7IncidentWorkInfoCreateCeV1
               '/' + index.to_s +
               '/' + URI.escape(file_info['name']) +
               '/url'
-      puts("Attachment Download API Route: \n#{attachment_download_api_route}") if @debug_logging_enabled
+            puts("Attachment Download API Route: \n#{attachment_download_api_route}") if @debug_logging_enabled
 
 
             # Retrieve the URL to download the attachment from Kinetic Request CE.

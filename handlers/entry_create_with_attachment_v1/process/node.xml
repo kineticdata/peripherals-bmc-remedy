@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskDefinition id="entry_create_with_attachment" name="ARS Rest Attachment" schema_version="1.0" version="1">
+    <author></author>
+    <description>
+        Create an entry in the form specified
+    </description>
+    <helpurl></helpurl>
+    <visible>false</visible>
+    <deferrable>false</deferrable>
+    <parameters>
+	    <parameter id="error_handling" label="Error Handling" required="true" 
+            tooltip="Determine what to return if an error is encountered." 
+            menu="Error Message,Raise Error">Error Message</parameter>
+		<parameter id="form" tooltip="Form Name" label="Form Name" required="true" />
+        <parameter id="field_values" tooltip="JSON mapping of field values" label="Field Values" required="true" />
+        <parameter id="attachment_field_1" required="false" label="Attachment Field 1:"
+            tooltip="The Field Name of an attachment question to retrieve an attachment from."/>
+        <parameter id="attachment_field_2" required="false" label="Attachment Field 2:"
+            tooltip="The Field Name of an attachment question to retrieve an attachment from."/>
+        <parameter id="attachment_field_3" required="false" label="Attachment Field 3:"
+            tooltip="The Field Name of an attachment question to retrieve an attachment from."/> 
+        <parameter id="ars_attachment_field_1" required="false" label="ARS Attachment Field 1:" 
+            tooltip="The ARS Field Name of an attachment question to send an attachment to."/>
+        <parameter id="ars_attachment_field_2" required="false" label="ARS Attachment Field 2:" 
+            tooltip="The ARS Field Name of an attachment question to send an attachment to."/>
+        <parameter id="ars_attachment_field_3" required="false" label="ARS Attachment Field 3:" 
+            tooltip="The ARS Field Name of an attachment question to send an attachment to."/> 
+        <parameter id="submission_id" label="Submission ID:" required="true"
+            tooltip="The id of the CE submission to retrieve answers for."/> 
+    </parameters>
+    <handler name="entry_create_with_attachment" version="1">
+        <infos>
+            <info name="api_password">&lt;%= @info['api_password'] %&gt;</info>
+            <info name="api_server">&lt;%= @info['api_server'] %&gt;</info>
+            <info name="api_username">&lt;%= @info['api_username'] %&gt;</info>
+            
+            <info name="ars_password">&lt;%= @info['ars_password'] %&gt;</info>
+            <info name="ars_server">&lt;%= @info['ars_server'] %&gt;</info>
+            <info name="ars_username">&lt;%= @info['ars_username'] %&gt;</info>
+			<info name="enable_debug_logging">&lt;%= @info['enable_debug_logging'] %&gt;</info>
+        </infos>
+        <parameters>
+            <parameter name="error_handling">&lt;%= @parameters.has_key?("error_handling") ? @parameters["error_handling"] : "Raise Error" %&gt;</parameter>
+            <parameter name="form">&lt;%= @parameters['form'] %&gt;</parameter>
+            <parameter name="field_values">&lt;%= @parameters['field_values'] %&gt;</parameter>
+            <parameter name='attachment_field_1'>&lt;%= @parameters['attachment_field_1'] %&gt;</parameter>
+            <parameter name='attachment_field_2'>&lt;%= @parameters['attachment_field_2'] %&gt;</parameter>
+			<parameter name='attachment_field_3'>&lt;%= @parameters['attachment_field_3'] %&gt;</parameter>
+			<parameter name='ars_attachment_field_1'>&lt;%= @parameters['ars_attachment_field_1'] %&gt;</parameter>
+            <parameter name='ars_attachment_field_2'>&lt;%= @parameters['ars_attachment_field_2'] %&gt;</parameter>
+			<parameter name='ars_attachment_field_3'>&lt;%= @parameters['ars_attachment_field_3'] %&gt;</parameter>
+            <parameter name='submission_id'>&lt;%= @parameters['submission_id'] %&gt;</parameter>
+        </parameters>   
+    </handler>
+    <results format="xml">
+        <result name="Handler Error Message"></result>
+		<result name="Result"></result>
+        <result name="Record Location"></result>
+        <result name="Record ID"></result>
+    </results>
+</taskDefinition>

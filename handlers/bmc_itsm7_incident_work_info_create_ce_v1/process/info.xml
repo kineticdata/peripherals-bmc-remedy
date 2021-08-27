@@ -14,11 +14,11 @@ with a default value of 'Demo' add the following line:
 -->
 <taskInfo version="1.0">
     <info name="api_server" description="Kinetic Request CE API Web Application">http://server:port/kinetic</info>
-  <info name="api_username" description="Name of user account that has permission to use the API"></info>
-  <info name="api_password" description="Password for the API user" type="encrypted"></info>
-  <info name="space_slug" description="Slug of the Space where the User will be created."></info>
+    <info name="api_username" description="Name of user account that has permission to use the API"></info>
+    <info name="api_password" description="Password for the API user" type="encrypted"></info>
+    <info name="space_slug" description="Slug of the Space where the User will be created."></info>
 	
-	<info name="ars_server"  description="Remedy Server Name or IP Address"></info>
+	  <info name="ars_server"  description="Remedy Server Name or IP Address"></info>
     <info name="ars_username" description="Remedy Login Name"></info>
     <info name="ars_password" type="encrypted" description="Remedy Password"></info>
     <info name="ars_port" description="Remedy TCP Port">0</info>
