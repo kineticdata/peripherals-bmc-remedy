@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<taskDefinition id="ars_entry_create_attachment_ce" name="ARS Rest Attachment" schema_version="1.0" version="1">
+<taskDefinition id="ars_entry_create_attachment_ce" name="ARS REST Generic Create With Attachment CE" schema_version="1.0" version="1">
     <author></author>
     <description>
-        Create an entry in the form specified
+        Creates an entry in the ARS form specified with attachments from a CE submission.
     </description>
     <helpurl></helpurl>
     <visible>false</visible>
