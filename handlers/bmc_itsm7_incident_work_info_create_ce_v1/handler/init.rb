@@ -278,7 +278,6 @@ class BmcItsm7IncidentWorkInfoCreateCeV1
               '/url'
             puts("Attachment Download API Route: \n#{attachment_download_api_route}") if @debug_logging_enabled
 
-
             # Retrieve the URL to download the attachment from Kinetic Request CE.
             # This URL will only be valid for a short amount of time before it expires
             # (usually about 5 seconds).

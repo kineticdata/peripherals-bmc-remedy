@@ -21,18 +21,18 @@
             tooltip="The ARS attachment field name to create the attachment in."/> 
         <parameter id="submission_id" label="Submission ID:" required="true"
             tooltip="The submission id of the CE submission to retrieve the answers for."/> 
-        <parameter id="attachment_field_1" required="false" label="Attachment Field 1 Name:"
+        <parameter id="ce_attachment_field_1" required="false" label="The CE Attachment Field 1 Name:"
             tooltip="The field name of the attachment element to retrieve the attachment from."/>
-        <parameter id="attachment_field_2" required="false" label="Attachment Field 2 Name:"
+        <parameter id="ce_attachment_field_2" required="false" label="The CE Attachment Field 2 Name:"
             tooltip="The field name of the attachment element to retrieve the attachment from."/>
-        <parameter id="attachment_field_3" required="false" label="Attachment Field 3 Name:"
+        <parameter id="ce_attachment_field_3" required="false" label="The CE Attachment Field 3 Name:"
             tooltip="The field name of the attachment element to retrieve the attachment from."/>
     </parameters>
     <handler name="ars_entry_create_attachment_ce" version="1">
         <infos>
-            <info name="api_password">&lt;%= @info['api_password'] %&gt;</info>
-            <info name="api_server">&lt;%= @info['api_server'] %&gt;</info>
-            <info name="api_username">&lt;%= @info['api_username'] %&gt;</info>
+            <info name="ce_api_password">&lt;%= @info['ce_api_password'] %&gt;</info>
+            <info name="ce_api_server">&lt;%= @info['ce_api_server'] %&gt;</info>
+            <info name="ce_api_username">&lt;%= @info['ce_api_username'] %&gt;</info>
             
             <info name="ars_password">&lt;%= @info['ars_password'] %&gt;</info>
             <info name="ars_server">&lt;%= @info['ars_server'] %&gt;</info>
@@ -43,9 +43,9 @@
             <parameter name="error_handling">&lt;%= @parameters.has_key?("error_handling") ? @parameters["error_handling"] : "Raise Error" %&gt;</parameter>
             <parameter name="form">&lt;%= @parameters['form'] %&gt;</parameter>
             <parameter name="field_values">&lt;%= @parameters['field_values'] %&gt;</parameter>
-            <parameter name='attachment_field_1'>&lt;%= @parameters['attachment_field_1'] %&gt;</parameter>
-            <parameter name='attachment_field_2'>&lt;%= @parameters['attachment_field_2'] %&gt;</parameter>
-			<parameter name='attachment_field_3'>&lt;%= @parameters['attachment_field_3'] %&gt;</parameter>
+            <parameter name='ce_attachment_field_1'>&lt;%= @parameters['ce_attachment_field_1'] %&gt;</parameter>
+            <parameter name='ce_attachment_field_2'>&lt;%= @parameters['ce_attachment_field_2'] %&gt;</parameter>
+			<parameter name='ce_attachment_field_3'>&lt;%= @parameters['ce_attachment_field_3'] %&gt;</parameter>
 			<parameter name='ars_attachment_field_1'>&lt;%= @parameters['ars_attachment_field_1'] %&gt;</parameter>
             <parameter name='ars_attachment_field_2'>&lt;%= @parameters['ars_attachment_field_2'] %&gt;</parameter>
 			<parameter name='ars_attachment_field_3'>&lt;%= @parameters['ars_attachment_field_3'] %&gt;</parameter>

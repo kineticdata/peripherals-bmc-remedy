@@ -3,7 +3,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), "dependencies"))
 
 class ArsEntryCreateAttachmentCeV1
 
-  CORE_API_ROUTE = '/app/api/v1'
+  CE_API_ROUTE = '/app/api/v1'
 
   # Prepare for execution by building Hash objects for necessary values,
   # and validating the present state.  This method sets the following instance variables:
@@ -63,7 +63,7 @@ class ArsEntryCreateAttachmentCeV1
     @error_handling  = @parameters["error_handling"]
 
     # CORE configuration
-    core_server =  @info_values['api_server'].chomp("/")
+    ce_server =  @info_values['ce_api_server'].chomp("/")
 
    # ARS configuration
 	  ars_username     = URI.encode(@info_values["ars_username"])
@@ -99,28 +99,28 @@ class ArsEntryCreateAttachmentCeV1
       ars_request_body = {}
 
       # Get file attachments and add to the ARS create request
-      if @parameters["attachment_field_1"]
+      if @parameters["ce_attachment_field_1"]
         # download attachment field 1
-        file_attachment_1 = download_core_attachment(
-          core_server, @parameters['submission_id'], @parameters["attachment_field_1"])
+        file_attachment_1 = download_ce_attachment(
+          ce_server, @parameters['submission_id'], @parameters["ce_attachment_field_1"])
         # add the name of the file to ARS attachment field 1
         ars_field_values[@parameters["ars_attachment_field_1"]] = File.basename(file_attachment_1)
         # add the file as an attachment to the request body
         ars_request_body["attach-#{@parameters["ars_attachment_field_1"]}"] = File.new(file_attachment_1, 'rb')
       end
-      if @parameters["attachment_field_2"]
+      if @parameters["ce_attachment_field_2"]
         # download attachment field 2
-        file_attachment_2 = download_core_attachment(
-          core_server, @parameters['submission_id'], @parameters["attachment_field_2"])
+        file_attachment_2 = download_ce_attachment(
+          ce_server, @parameters['submission_id'], @parameters["ce_attachment_field_2"])
         # add the name of the file to ARS attachment field 2
         ars_field_values[@parameters["ars_attachment_field_2"]] = File.basename(file_attachment_2)
         # add the file as an attachment to the request body
         ars_request_body["attach-#{@parameters["ars_attachment_field_2"]}"] = File.new(file_attachment_2, 'rb')
       end
-      if @parameters["attachment_field_3"]
+      if @parameters["ce_attachment_field_3"]
         # download attachment field 3
-        file_attachment_3 = download_core_attachment(
-          core_server, @parameters['submission_id'], @parameters["attachment_field_3"])
+        file_attachment_3 = download_ce_attachment(
+          ce_server, @parameters['submission_id'], @parameters["ce_attachment_field_3"])
         # add the name of the file to ARS attachment field 3
         ars_field_values[@parameters["ars_attachment_field_3"]] = File.basename(file_attachment_3)
         # add the file as an attachment to the request body
@@ -227,21 +227,21 @@ class ArsEntryCreateAttachmentCeV1
 
   # downloads an attachment from core and saves the file
   # returns the file path
-  def download_core_attachment(server, submission_id, field_name)
+  def download_ce_attachment(server, submission_id, field_name)
     filepath = nil
 
     # Call the Kinetic Request CE API
     begin
       # Submission API Route including Values
       # /{spaceSlug}/app/api/v1/submissions/{submissionId}}?include=...
-      submission_api_route = "#{server}#{CORE_API_ROUTE}/submissions/#{URI.escape(submission_id)}/?include=values"
+      submission_api_route = "#{server}#{CE_API_ROUTE}/submissions/#{URI.escape(submission_id)}/?include=values"
       puts("Core submission API Route: \n#{submission_api_route}") if @debug_logging_enabled
       
       # Retrieve the Submission Values
       submission_response = RestClient::Resource.new(
         submission_api_route,
-        user: @info_values['api_username'],
-        password: @info_values['api_password']
+        user: @info_values['ce_api_username'],
+        password: @info_values['ce_api_password']
       ).get
 
       # If the submission exists
@@ -256,7 +256,7 @@ class ArsEntryCreateAttachmentCeV1
           attachment_name = file_info["name"]
           puts("Core attachment found: #{attachment_name}") if @debug_logging_enabled
           attachment_download_api_route = server +
-            CORE_API_ROUTE +
+            CE_API_ROUTE +
             '/submissions/' + URI.escape(submission_id) +
             '/files/' + URI.escape(field_name) +
             '/' + '0' +
@@ -268,8 +268,8 @@ class ArsEntryCreateAttachmentCeV1
           # Download file
           attachment_download_result = RestClient::Resource.new(
             attachment_download_api_route,
-            user: @info_values['api_username'],
-            password: @info_values['api_password']
+            user: @info_values['ce_api_username'],
+            password: @info_values['ce_api_password']
           ).get()
 
           unless attachment_download_result.nil?
@@ -278,8 +278,8 @@ class ArsEntryCreateAttachmentCeV1
             puts "Core downloading attachment: #{file_info['name']} from #{file_url}" if @debug_logging_enabled
             attachment_content = RestClient::Resource.new(
                   file_url,
-                  user: @info_values['api_username'],
-                  password: @info_values['api_password']
+                  user: @info_values['ce_api_username'],
+                  password: @info_values['ce_api_password']
                 ).get()
 
             # escape the attachment name - may need to add more characters?
