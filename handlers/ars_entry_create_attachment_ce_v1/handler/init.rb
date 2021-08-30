@@ -65,7 +65,7 @@ class ArsEntryCreateAttachmentCeV1
     @error_handling  = @parameters["error_handling"]
 
     # CORE configuration
-    core_server =  @info_values['api_server'].chomp!("/")
+    core_server =  @info_values['api_server'].chomp("/")
 
    # ARS configuration
 	  ars_username     = URI.encode(@info_values["ars_username"])

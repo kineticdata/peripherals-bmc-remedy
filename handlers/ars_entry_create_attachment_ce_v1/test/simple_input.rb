@@ -12,7 +12,7 @@
     'error_handling'      => "Error Message",
 	  'form'                => "KS_SRV_Helper",
     'field_values'        => '{
-      "Character Field1": "Test 35"
+      "Character Field1": "Test 36"
     }',
     'attachment_field_1'  => "Attachment 1",
     'attachment_field_2'  => "",
