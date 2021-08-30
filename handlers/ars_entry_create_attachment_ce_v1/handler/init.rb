@@ -78,14 +78,13 @@ class ArsEntryCreateAttachmentCeV1
 	  ars_request_id = ""
 
     begin
-      puts(format_hash("Field Values:", ars_field_values)) if @debug_logging_enabled
-
-
       # Reference for creating ARS entry w/attachments
       #
       # https://bmcsites.force.com/casemgmt/sc_KnowledgeArticle?sfdcid=kA33n000000XqnpCAC&type=ProductDescription
       
     
+      puts(format_hash("Initial ARS Field Values:", ars_field_values)) if @debug_logging_enabled
+
       # Remove any empty or nil values
       ars_field_values.reject!{ |key,value| (value.nil? or value.empty?) }
 
@@ -98,7 +97,8 @@ class ArsEntryCreateAttachmentCeV1
       # form field values, and the attachments
       ars_request_body = {}
 
-      # Get file attachments and add to the ARS create request
+      # Get attachments and add to the name to the ARS field values, and 
+      # the file content to the request body
       if @parameters["ce_attachment_field_1"]
         # download attachment field 1
         file_attachment_1 = download_ce_attachment(
@@ -126,6 +126,8 @@ class ArsEntryCreateAttachmentCeV1
         # add the file as an attachment to the request body
         ars_request_body["attach-#{@parameters["ars_attachment_field_3"]}"] = File.new(file_attachment_3, 'rb')
       end
+
+      puts(format_hash("Final ARS Field Values:", ars_field_values)) if @debug_logging_enabled
 
       # entry field values
       entry_file = File.join(Dir::tmpdir, "entry.json")
