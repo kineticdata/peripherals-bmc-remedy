@@ -5,32 +5,33 @@ Creates a single Remedy entry (with attachment optional) given the JSON mapping 
 [Error Handling]
   * Error message if an error was encountered and Error Handling is set to "Error Message". 
 
-[Form Name]
-  * Name of Remedy form to load data into
+[ARS Form Name]
+  * The ARS form name that the record will be created in.
 
-[Field Values]
-  * JSON mapping of field values
+[ARS Field Values]
+  * JSON mapping of ARS field names along with the desired values.
 
-[Attachment Field 1]
-  * The Field Name of an attachment question to retrieve an attachment from.
+[ARS Attachment Field 1 Name]
+  * The ARS attachment field name to create the attachment in.
 
-[Attachment Field 2]
-  * The Field Name of an attachment question to retrieve an attachment from.
+[ARS Attachment Field 2 Name]
+  * The ARS attachment field name to create the attachment in.
 
-[Attachment Field 3]
-  * The Field Name of an attachment question to retrieve an attachment from.
+[ARS Attachment Field 3 Name]
+  * The ARS attachment field name to create the attachment in.
 
-[ARS Attachment Field 1]
-  * The ARS Field Name of an attachment question to retrieve an attachment from.
+[CE Attachment Field 1 Name]
+  * The CE submission field name to retrieve the attachment from.
 
-[ARS Attachment Field 2]
-  * The ARS Field Name of an attachment question to retrieve an attachment from.
+[CE Attachment Field 2 Name]
+  * The CE submission field name to retrieve the attachment from.
 
-[ARS Attachment Field 3]
-  * The ARS Field Name of an attachment question to retrieve an attachment from.
+[CE Attachment Field 3 Name]
+  * The CE submission field name to retrieve the attachment from.
 
 [Submission ID]
   * The id of the CE submission to retrieve answers for.
+  
 #### Sample Configuration
 Error Handling: Error Message
 Form Name:: HPD:LoadTemplate

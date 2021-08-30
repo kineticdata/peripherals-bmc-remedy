@@ -11,29 +11,30 @@
 	    <parameter id="error_handling" label="Error Handling" required="true" 
             tooltip="Determine what to return if an error is encountered." 
             menu="Error Message,Raise Error">Error Message</parameter>
-		<parameter id="form" tooltip="The ARS form name that the record will be created on." label="ARS Form Name" required="true" />
-        <parameter id="field_values" tooltip="JSON mapping of ARS field names along with the desired values." label="ARS Field Values" required="true" />
-        <parameter id="ars_attachment_field_1" required="false" label="ARS Attachment Field 1 Name:" 
+		<parameter id="form" label="ARS Form Name" required="true"
+            tooltip="The ARS form name that the record will be created in."/>
+        <parameter id="field_values" label="ARS Field Values" required="true"
+            tooltip="JSON mapping of ARS field names along with the desired values."/>
+        <parameter id="ars_attachment_field_1" label="ARS Attachment Field 1 Name:" required="false" 
             tooltip="The ARS attachment field name to create the attachment in."/>
-        <parameter id="ars_attachment_field_2" required="false" label="ARS Attachment Field 2 Name:" 
+        <parameter id="ars_attachment_field_2" label="ARS Attachment Field 2 Name:" required="false"
             tooltip="The ARS attachment field name to create the attachment in."/>
-        <parameter id="ars_attachment_field_3" required="false" label="ARS Attachment Field 3 Name:" 
+        <parameter id="ars_attachment_field_3" label="ARS Attachment Field 3 Name:" required="false"
             tooltip="The ARS attachment field name to create the attachment in."/> 
         <parameter id="submission_id" label="Submission ID:" required="true"
             tooltip="The submission id of the CE submission to retrieve the answers for."/> 
-        <parameter id="ce_attachment_field_1" required="false" label="The CE Attachment Field 1 Name:"
-            tooltip="The field name of the attachment element to retrieve the attachment from."/>
-        <parameter id="ce_attachment_field_2" required="false" label="The CE Attachment Field 2 Name:"
-            tooltip="The field name of the attachment element to retrieve the attachment from."/>
-        <parameter id="ce_attachment_field_3" required="false" label="The CE Attachment Field 3 Name:"
-            tooltip="The field name of the attachment element to retrieve the attachment from."/>
+        <parameter id="ce_attachment_field_1" label="CE Attachment Field 1 Name:" required="false"
+            tooltip="The CE submission field name to retrieve the attachment from."/>
+        <parameter id="ce_attachment_field_2" label="CE Attachment Field 2 Name:" required="false"
+            tooltip="The CE submission field name to retrieve the attachment from."/>
+        <parameter id="ce_attachment_field_3" label="CE Attachment Field 3 Name:" required="false"
+            tooltip="The CE submission field name to retrieve the attachment from."/>
     </parameters>
     <handler name="ars_entry_create_attachment_ce" version="1">
         <infos>
             <info name="ce_api_password">&lt;%= @info['ce_api_password'] %&gt;</info>
             <info name="ce_api_server">&lt;%= @info['ce_api_server'] %&gt;</info>
             <info name="ce_api_username">&lt;%= @info['ce_api_username'] %&gt;</info>
-            
             <info name="ars_password">&lt;%= @info['ars_password'] %&gt;</info>
             <info name="ars_server">&lt;%= @info['ars_server'] %&gt;</info>
             <info name="ars_username">&lt;%= @info['ars_username'] %&gt;</info>

@@ -14,11 +14,10 @@ with a default value of 'Demo' add the following line:
 -->
 <taskInfo version="1.0">
   <info name="ce_api_server" description="Kinetic Request CE API Web Application">http://server:port/kinetic</info>
-  <info name="ce_api_username" description="CE Name of user account that has permission to use the API"></info>
-  <info name="ce_api_password" description="CE Password for the API user" type="encrypted"></info>
-
-  <info name="ars_server" description="The ARS API application, if running task locally could be http://localhost:8008/">http://server:port/api</info>
-  <info name="ars_username" description="ARS Name of user account that has permission to use the API"></info>
-  <info name="ars_password" description="ARS Password for the API user" type="encrypted"></info>
+  <info name="ce_api_username" description="Name of the CE user account that has permission to use the API"></info>
+  <info name="ce_api_password" description="Password for the CE user" type="encrypted"></info>
+  <info name="ars_server" description="The ARS API application, if running locally could be http://localhost:8008/">http://server:port/api</info>
+  <info name="ars_username" description="Name of the ARS user account that has permission to use the API"></info>
+  <info name="ars_password" description="Password for the ARS user" type="encrypted"></info>
   <info name="enable_debug_logging" description="Enable debug logging if the value is set to 'Yes'.">No</info>
 </taskInfo>
