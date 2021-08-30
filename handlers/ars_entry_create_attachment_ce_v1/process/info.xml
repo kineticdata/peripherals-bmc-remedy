@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file contains a list of all configurable values used by the task node.
+
+The name of the parameter is defined by applying the 'name' attribute to the
+info tag.  For example, to define a parameter named 'username' add the
+following line:
+  <info name="username" description="Remedy Login Name"></info>
+
+Default values may be defined by placing the value of the parameter
+within the info tags.  For example, to define a parameter named 'username'
+with a default value of 'Demo' add the following line:
+  <info name="username" description="Remedy Login Name">Demo</info>
+-->
+<taskInfo version="1.0">
+  <info name="ce_api_server" description="Kinetic Request CE API Web Application">http://server:port/kinetic</info>
+  <info name="ce_api_username" description="Name of the CE user account that has permission to use the API"></info>
+  <info name="ce_api_password" description="Password for the CE user" type="encrypted"></info>
+  <info name="ars_server" description="The ARS API application, if running locally could be http://localhost:8008/">http://server:port/api</info>
+  <info name="ars_username" description="Name of the ARS user account that has permission to use the API"></info>
+  <info name="ars_password" description="Password for the ARS user" type="encrypted"></info>
+  <info name="enable_debug_logging" description="Enable debug logging if the value is set to 'Yes'.">No</info>
+</taskInfo>
