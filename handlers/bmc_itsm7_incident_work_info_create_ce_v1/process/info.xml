@@ -13,17 +13,18 @@ with a default value of 'Demo' add the following line:
   <info name="username" description="Remedy Login Name">Demo</info>
 -->
 <taskInfo version="1.0">
-    <info name="api_server" description="Kinetic Request CE API Web Application">http://server:port/kinetic</info>
-    <info name="api_username" description="Name of user account that has permission to use the API"></info>
-    <info name="api_password" description="Password for the API user" type="encrypted"></info>
-    <info name="space_slug" description="Slug of the Space where the User will be created."></info>
-	
-	  <info name="ars_server"  description="Remedy Server Name or IP Address"></info>
-    <info name="ars_username" description="Remedy Login Name"></info>
-    <info name="ars_password" type="encrypted" description="Remedy Password"></info>
-    <info name="ars_port" description="Remedy TCP Port">0</info>
-    <info name="ars_prognum" description="Remedy RPC Prognum">0</info>
-    <info name="ars_authentication" description="Remedy Authentication String"></info>
-	
-    <info name="enable_debug_logging" description="Enable debug logging if the value is set to 'Yes'.">No</info>
+  <info name="api_server" description="Kinetic Request CE API Web Application">http://server:port/kinetic</info>
+  <info name="api_username" description="Name of user account that has permission to use the API"></info>
+  <info name="api_password" description="Password for the API user" type="encrypted"></info>
+  <info name="space_slug" description="Slug of the Space where the User will be created."></info>
+
+	<info name="ars_server"  description="Remedy Server Name or IP Address"></info>
+  <info name="ars_username" description="Remedy Login Name"></info>
+  <info name="ars_password" type="encrypted" description="Remedy Password"></info>
+  <info name="ars_port" description="Remedy TCP Port">0</info>
+  <info name="ars_prognum" description="Remedy RPC Prognum">0</info>
+  <info name="ars_authentication" description="Remedy Authentication String"></info>
+
+  <info name="enable_debug_logging" description="Enable debug logging if the value is set to 'Yes'.">No</info>
+  <info name="disable_caching" description="Disable caching if the value is set to 'Yes'. Disabling caching may negatively impact performance, but it is also necessary when using a single handler to interact with multiple Remedy environments.">No</info>
 </taskInfo>
