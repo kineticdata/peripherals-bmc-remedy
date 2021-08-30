@@ -276,11 +276,7 @@ class BmcItsm7IncidentWorkInfoCreateCeV1
               '/' + index.to_s +
               '/' + URI.escape(file_info['name']) +
               '/url'
-<<<<<<< HEAD
             puts("Attachment Download API Route: \n#{attachment_download_api_route}") if @debug_logging_enabled
-=======
-              puts("Attachment Download API Route: \n#{attachment_download_api_route}") if @debug_logging_enabled
->>>>>>> develop
 
 
             # Retrieve the URL to download the attachment from Kinetic Request CE.
