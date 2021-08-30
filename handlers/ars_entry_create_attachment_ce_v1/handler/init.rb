@@ -52,8 +52,6 @@ class ArsEntryCreateAttachmentCeV1
 
   
   
-  # Updates the value of the fields on the User record
-  #
   # This is a required method that is automatically called by the Kinetic Task
   # Engine.
   #
@@ -79,51 +77,60 @@ class ArsEntryCreateAttachmentCeV1
     ars_record_location = ""
 	  ars_request_id = ""
 
-    # Download attachments from Kinetic Core and save as temp files
-    file_attachment_1 = @parameters["attachment_field_1"].nil? ? nil :
-      download_core_attachment(core_server, @parameters['submission_id'], @parameters["attachment_field_1"])
-    file_attachment_2 = @parameters["attachment_field_2"].nil? ? nil :
-      download_core_attachment(core_server, @parameters['submission_id'], @parameters["attachment_field_2"])
-    file_attachment_3 = @parameters["attachment_field_3"].nil? ? nil :
-      download_core_attachment(core_server, @parameters['submission_id'], @parameters["attachment_field_3"])
-
-
     begin
       puts(format_hash("Field Values:", ars_field_values)) if @debug_logging_enabled
+
+
+      # Reference for creating ARS entry w/attachments
+      #
+      # https://bmcsites.force.com/casemgmt/sc_KnowledgeArticle?sfdcid=kA33n000000XqnpCAC&type=ProductDescription
+      
     
       # Remove any empty or nil values
       ars_field_values.reject!{ |key,value| (value.nil? or value.empty?) }
 
       # Walk the field values hash to check for a Null keyword - nil,
-      # indicating the null value should be sent
+      # indicating the field value should be sent as null rather than
+      # being skipped
       ars_field_values.each_key { |key| ars_field_values[key] = nil if ars_field_values[key] == "nil" }
 
       # Create the request body that will consist of multiple parts for the 
       # form field values, and the attachments
       ars_request_body = {}
 
-      # Add Ars attachment field names to file names
-      ars_field_values[@parameters["ars_attachment_field_1"]] = 
-          File.basename(file_attachment_1) if file_attachment_1
-      ars_field_values[@parameters["ars_attachment_field_2"]] = 
-          File.basename(file_attachment_1) if file_attachment_2
-      ars_field_values[@parameters["ars_attachment_field_3"]] = 
-          File.basename(file_attachment_1) if file_attachment_3
+      # Get file attachments and add to the ARS create request
+      if @parameters["attachment_field_1"]
+        # download attachment field 1
+        file_attachment_1 = download_core_attachment(
+          core_server, @parameters['submission_id'], @parameters["attachment_field_1"])
+        # add the name of the file to ARS attachment field 1
+        ars_field_values[@parameters["ars_attachment_field_1"]] = File.basename(file_attachment_1)
+        # add the file as an attachment to the request body
+        ars_request_body["attach-#{@parameters["ars_attachment_field_1"]}"] = File.new(file_attachment_1, 'rb')
+      end
+      if @parameters["attachment_field_2"]
+        # download attachment field 2
+        file_attachment_2 = download_core_attachment(
+          core_server, @parameters['submission_id'], @parameters["attachment_field_2"])
+        # add the name of the file to ARS attachment field 2
+        ars_field_values[@parameters["ars_attachment_field_2"]] = File.basename(file_attachment_2)
+        # add the file as an attachment to the request body
+        ars_request_body["attach-#{@parameters["ars_attachment_field_2"]}"] = File.new(file_attachment_2, 'rb')
+      end
+      if @parameters["attachment_field_3"]
+        # download attachment field 3
+        file_attachment_3 = download_core_attachment(
+          core_server, @parameters['submission_id'], @parameters["attachment_field_3"])
+        # add the name of the file to ARS attachment field 3
+        ars_field_values[@parameters["ars_attachment_field_3"]] = File.basename(file_attachment_3)
+        # add the file as an attachment to the request body
+        ars_request_body["attach-#{@parameters["ars_attachment_field_3"]}"] = File.new(file_attachment_3, 'rb')
+      end
 
       # entry field values
       entry_file = File.join(Dir::tmpdir, "entry.json")
-      File.open(entry_file, "w") { |f| f.write( { 
-        "values" => ars_field_values, 
-      }.to_json) }
+      File.open(entry_file, "w") { |f| f.write( { "values" => ars_field_values }.to_json) }
       ars_request_body["entry"] = File.new(entry_file, 'r')
-
-      # attachments
-      ars_request_body["attach-#{@parameters["ars_attachment_field_1"]}"] = 
-          File.new(file_attachment_1, 'rb') if file_attachment_1
-      ars_request_body["attach-#{@parameters["ars_attachment_field_2"]}"] = 
-          File.new(file_attachment_2, 'rb') if file_attachment_2
-      ars_request_body["attach-#{@parameters["ars_attachment_field_3"]}"] = 
-          File.new(file_attachment_3, 'rb') if file_attachment_3
 
       # Generate the URL to create the ARS entry
       ars_request_url = "#{ars_server}/arsys/v1/entry/#{ars_form}"
@@ -159,15 +166,15 @@ class ArsEntryCreateAttachmentCeV1
       # parse the record ID off the location
       ars_request_id = ars_record_location.split('/').last
     
-    rescue RestClient::Exception => e
-      @error_message = "Error creating ARS entry:" + 
-      "\n\tResponse Code: #{e.response.code}\n\tResponse: #{e.response.body}"
+    rescue RestClient::RequestTimeout => e
+      @error_message = "Timeout creating ARS entry: #{e}" 
       
       # Raise the error if instructed to, otherwise will fall through to
       # return an error message.
       raise if @error_handling == "Raise Error"
-    rescue RestClient::RequestTimeout => e
-      @error_message = "Timeout creating ARS entry: #{e}" 
+    rescue RestClient::Exception => e
+      @error_message = "Error creating ARS entry:" + 
+      "\n\tResponse Code: #{e.response.code}\n\tResponse: #{e.response.body}"
       
       # Raise the error if instructed to, otherwise will fall through to
       # return an error message.
@@ -207,7 +214,7 @@ class ArsEntryCreateAttachmentCeV1
   def delete_file(filepath)
     begin
       File.delete(filepath) if filepath
-      puts %|Deleted the downloaded file "#{filepath}"| if @debug_logging_enabled
+      puts %|Deleted the file "#{filepath}"| if @debug_logging_enabled
     rescue Exception => e
       puts %|Failed to delete file "#{filepath}": #{e.inspect}|
     end
