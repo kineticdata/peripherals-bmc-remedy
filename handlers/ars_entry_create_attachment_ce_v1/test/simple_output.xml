@@ -1,0 +1,6 @@
+<results format="xml">
+  <result name="Result">Successful</result>
+  <result name="Record Location" type="Regexp">^http[s]?:\/\/(.*)\/api\/arsys\/v1\/entry\/(.*)\/\d{15}$</result>
+  <result name="Record ID" type="Regexp">^\d{15}$</result>
+  <result name="Handler Error Message"></result>
+</results>

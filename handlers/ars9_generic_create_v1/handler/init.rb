@@ -62,83 +62,82 @@ class Ars9GenericCreateV1
   def execute()
   
     error_message=""
-	results=""
+	  results=""
     return_location = ""
-	newitem_request_id=""
+	  newitem_request_id=""
     @error_handling  = @parameters["error_handling"]
-	api_username    = URI.encode(@info_values["api_username"])
+	  api_username    = URI.encode(@info_values["api_username"])
     api_password    = @info_values["api_password"]
     api_server      = @info_values["api_server"]
     @field_values = JSON.parse(@parameters['field_values'])
-	puts(format_hash("Field Values:", @field_values)) if @debug_logging_enabled
+	  puts(format_hash("Field Values:", @field_values)) if @debug_logging_enabled
     form = URI.encode(@parameters['form'])
 
     # get access token
     token = get_access_token(api_server, api_username, api_password)
     if token.length == 3  # for example 401 404 500...
-	    if @error_handling == "Raise Error"
-	      raise "HTTP ERROR #{token}"
-		else  
-	      error_message = "HTTP ERROR #{token}"
-		  results="Failed"
-		end
-	else
+      if @error_handling == "Raise Error"
+        raise "HTTP ERROR #{token}"
+      else  
+        error_message = "HTTP ERROR #{token}"
+        results="Failed"
+      end
+    else
       # format the headers with the token
-  	  headers = {:content_type => 'application/json', :authorization => "AR-JWT "+token}
-	  puts(format_hash("Headers: ", headers)) if @debug_logging_enabled
-	  
-	  if error_message==""
-	  
-	  @field_values.reject!{|key,value|
-        (value.nil? or value.empty?)
-      }
-	  # walk the field values hash to check for a Null keyword - nil
-      @field_values.each_key {|key|
-        if (@field_values[key] == "nil")
-		  @field_values[key] = nil
-        end
-      }
-	  request = { "values" => @field_values}
-	  puts(format_hash("Body: ", request)) if @debug_logging_enabled
-	  request = request.to_json
-	
-	  create_route = "#{api_server}/arsys/v1/entry/#{form}"
-	  puts("CREATE ROUTE: #{create_route}") if @debug_logging_enabled
-	  
-	  
-      response = RestClient::Request.new({
-        method: :post,
-        url: "#{create_route}",
-        payload: request,
-	    headers: headers
-      }).execute do |response, request, result|
+      headers = {:content_type => 'application/json', :authorization => "AR-JWT "+token}
+      puts(format_hash("Headers: ", headers)) if @debug_logging_enabled
+      
+      if error_message==""
+      
+        @field_values.reject!{|key,value|
+          (value.nil? or value.empty?)
+        }
+        # walk the field values hash to check for a Null keyword - nil
+        @field_values.each_key {|key|
+          if (@field_values[key] == "nil")
+            @field_values[key] = nil
+          end
+        }
+        request = { "values" => @field_values}
+        puts(format_hash("Body: ", request)) if @debug_logging_enabled
+        request = request.to_json
+      
+        create_route = "#{api_server}/arsys/v1/entry/#{form}"
+        puts("CREATE ROUTE: #{create_route}") if @debug_logging_enabled
+      
+        response = RestClient::Request.new({
+          method: :post,
+          url: "#{create_route}",
+          payload: request,
+          headers: headers
+        }).execute do |response, request, result|
           puts (response.body)
-		if response.code == 201
-		  results="Successful"
-		  # response.headers contains the url location of the newly created record
-	      puts(format_hash("Returned Headers: ", response.headers)) if @debug_logging_enabled
-	      return_location = response.headers[:location]
-	      puts("Return Location: #{return_location}") if @debug_logging_enabled
-	
-          #parse the record ID off the location
-          location_details = return_location.split('/')
-          newitem_request_id = location_details.last
-		  #get the record 
-	      #newitem_resource = RestClient::Resource.new(return_location)
-	      #newitem_reponse = newitem_resource.get(:authorization => "AR-JWT "+token)
-	      #newitem_parsed = JSON.parse(newitem_reponse)
-          #puts("New Item: #{newitem_parsed}") if @debug_logging_enabled
-		   
-		else	
-		if @error_handling == "Raise Error"
-            raise "ERROR: #{response.code} #{JSON.parse(response.body)[0]['messageText']}"
-		  else  
-	        error_message = "ERROR: #{response.code} #{JSON.parse(response.body)[0]['messageText']}"
-		    results="Failed"
-		  end
+          if response.code == 201
+            results="Successful"
+            # response.headers contains the url location of the newly created record
+            puts(format_hash("Returned Headers: ", response.headers)) if @debug_logging_enabled
+            return_location = response.headers[:location]
+            puts("Return Location: #{return_location}") if @debug_logging_enabled
+      
+            #parse the record ID off the location
+            location_details = return_location.split('/')
+            newitem_request_id = location_details.last
+            #get the record 
+            #newitem_resource = RestClient::Resource.new(return_location)
+            #newitem_reponse = newitem_resource.get(:authorization => "AR-JWT "+token)
+            #newitem_parsed = JSON.parse(newitem_reponse)
+            #puts("New Item: #{newitem_parsed}") if @debug_logging_enabled
+          
+          else	
+            if @error_handling == "Raise Error"
+              raise "ERROR: #{response.code} #{JSON.parse(response.body)[0]['messageText']}"
+            else  
+              error_message = "ERROR: #{response.code} #{JSON.parse(response.body)[0]['messageText']}"
+              results="Failed"
+            end
+          end
         end
       end
-	  end
     end
 
     # Return the results
@@ -160,32 +159,31 @@ class Ars9GenericCreateV1
       'username' => username,
       'password' => password
     }
-	puts('Logging in') if @debug_logging_enabled
-	begin
-	#this method will not raise an error if the call does not work.
-    response = RestClient::Request.new({
-      method: :post,
-      url: "#{api_server}/jwt/login",
-      payload: params,
-	  headers: { :content_type => :'application/x-www-form-urlencoded' }
-    }).execute do |response, request, result|
-      results = response.code
-	  #if sucessful code will be 200 and the body will be the token for further calls
-	  #if there is an error response.body will contain the errror in HTML
-	  if response.code == 200
-        puts(result.body) if @debug_logging_enabled
-        return result.body
-	  else
-	    return response.code.to_s
+    puts('Logging in') if @debug_logging_enabled
+    begin
+      #this method will not raise an error if the call does not work.
+      response = RestClient::Request.new({
+        method: :post,
+        url: "#{api_server}/jwt/login",
+        payload: params,
+        headers: { :content_type => :'application/x-www-form-urlencoded' }
+      }).execute do |response, request, result|
+        results = response.code
+        #if sucessful code will be 200 and the body will be the token for further calls
+        #if there is an error response.body will contain the errror in HTML
+        if response.code == 200
+          puts(result.body) if @debug_logging_enabled
+          return result.body
+        else
+          return response.code.to_s
+        end
       end
+    rescue Errno::ECONNREFUSED
+      return "408"
     end
-	rescue Errno::ECONNREFUSED
-	  return "408"
-	end
     #this way if there is a problem with the URL or server the command does not fail gracefully
-	#loginResource = RestClient::Resource.new(api_server+"/jwt/login")
+	  #loginResource = RestClient::Resource.new(api_server+"/jwt/login")
     #result = loginResource.post(params, :content_type => 'application/x-www-form-urlencoded')
-	#
   end
   
 
