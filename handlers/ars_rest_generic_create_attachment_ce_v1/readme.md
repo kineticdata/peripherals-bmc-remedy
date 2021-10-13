@@ -1,4 +1,4 @@
-## Ars Entry Create Attachment Ce
+## Ars Rest Generic Create Attachment Ce
 Creates a single Remedy entry (with attachment optional) given the JSON mapping of field values and form name.  Attachments are retrieved from filehub referenced by a submission id.  
 
 ### Parameters
