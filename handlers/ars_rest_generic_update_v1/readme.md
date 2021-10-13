@@ -1,4 +1,4 @@
-== ARS9 Generic Update
+== ARS REST Generic Update
 Updates a single Remedy entry given the entry id, JSON mapping of field values,
  and form name.
 

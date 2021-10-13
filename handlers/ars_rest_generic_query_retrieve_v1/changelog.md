@@ -1,3 +1,6 @@
+ARS Rest Generic Query Retrieve V1 (2021-10-13)
+    updated name for ease of reference
+	
 ARS 9 Generic Query Retrieve V1 (2021-01-06)
  * Adjusted the escape method to include apostrophes.
  

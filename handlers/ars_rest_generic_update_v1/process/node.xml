@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<taskDefinition id="ars9_generic_update" name="ARS9 Generic Update" schema_version="1.0" version="1">
+<taskDefinition id="ars_rest_generic_update" name="ARS REST Generic Update" schema_version="1.0" version="1">
     <author></author>
     <description>
-        Updates the entry specified in the form specified
+        Updates an entry in the ARS form specified.
     </description>
     <helpurl></helpurl>
     <visible>false</visible>
@@ -13,7 +13,7 @@
       <parameter id="entry_id" tooltip="Entry Id" label="Entry Id" required="true" />
       <parameter id="field_values" tooltip="JSON mapping of field values" label="Field Values" required="true" />
     </parameters>
-    <handler name="ars9_generic_update" version="1">
+    <handler name="ars_rest_generic_update" version="1">
         <infos>
             <info name="api_password">&lt;%= @info['api_password'] %&gt;</info>
             <info name="api_server">&lt;%= @info['api_server'] %&gt;</info>
