@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<taskDefinition id="ars9_generic_query_retrieve" name="ARS9 Generic Query Retrieve" schema_version="1.0" version="1">
+<taskDefinition id="ars_rest_generic_query_retrieve" name="ARS REST Generic Query Retrieve" schema_version="1.0" version="1">
     <author>support@kineticdata.com</author>
     <description>
-	    Retrieves a single ARS v9.x entry related to the Remedy Form specified.
+	    Retrieves a single ARS entry related to the Remedy form specified.
 	</description>
     <helpurl></helpurl>
     <visible>false</visible>
@@ -15,7 +15,7 @@
         <parameter id="request_query" label="Query:" required="true" 
 		  tooltip="Advanced Search Query of the record to retrieve"/>
     </parameters>
-    <handler name="ars9_generic_query_retrieve" version="1">
+    <handler name="ars_rest_generic_query_retrieve" version="1">
         <infos>
             <info name="api_password">&lt;%= @info['api_password'] %&gt;</info>
             <info name="api_server">&lt;%= @info['api_server'] %&gt;</info>

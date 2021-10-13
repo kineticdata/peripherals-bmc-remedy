@@ -1,4 +1,4 @@
-== ARS9 Generic Create
+== ARS REST Generic Create
 Creates a single Remedy entry given the JSON mapping of field values and form name.
 
 === Parameters

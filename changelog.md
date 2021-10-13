@@ -78,3 +78,13 @@ ARS \[handlers\] (2021-08-27)
     * PER-224 cleaned up code formatting
   \[ars_entry_create_attachment_ce_v1\]
     * PER-224 initial create
+	
+ARS \[handlers\] (2021-10-13)
+  \[ars_rest_generic_create_v1\] 
+    * Renamed and updated descriptions
+  \[ars_rest_generic_query retrieve_v1\] 
+    * Renamed and updated descriptions
+  \[ars_rest_generic_update_v1\] 
+    * Renamed and updated descriptions
+  \[ars_rest_generic_create_attachment_ce_v1\] 
+    * Renamed and updated descriptions

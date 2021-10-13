@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<taskDefinition id="ars_entry_create_attachment_ce" name="ARS REST Generic Create With Attachment CE" schema_version="1.0" version="1">
+<taskDefinition id="ars_rest_generic_create_attachment_ce" name="ARS REST Generic Create Attachment CE" schema_version="1.0" version="1">
     <author></author>
     <description>
         Creates an entry in the ARS form specified with attachments from a CE submission.
@@ -30,7 +30,7 @@
         <parameter id="ce_attachment_field_3" label="CE Attachment Field 3 Name:" required="false"
             tooltip="The CE submission field name to retrieve the attachment from."/>
     </parameters>
-    <handler name="ars_entry_create_attachment_ce" version="1">
+    <handler name="ars_rest_generic_create_attachment_ce" version="1">
         <infos>
             <info name="ce_api_password">&lt;%= @info['ce_api_password'] %&gt;</info>
             <info name="ce_api_server">&lt;%= @info['ce_api_server'] %&gt;</info>
