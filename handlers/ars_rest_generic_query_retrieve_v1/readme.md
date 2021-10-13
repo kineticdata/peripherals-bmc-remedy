@@ -1,4 +1,4 @@
-== ARS 9 Generic Query Retrieve
+== ARS REST Generic Query Retrieve
 This handler returns all the fields for the request id provided
 in the form specified. 
 

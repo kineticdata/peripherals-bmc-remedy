@@ -1,7 +1,7 @@
 # Require the dependencies file to load the vendor libraries
 require File.expand_path(File.join(File.dirname(__FILE__), "dependencies"))
 
-class Ars9GenericCreateV1
+class ArsRestGenericCreateV1
   # Prepare for execution by building Hash objects for necessary values,
   # and validating the present state.  This method sets the following instance variables:
   # * @input_document - A REXML::Document object that represents the input Xml.
