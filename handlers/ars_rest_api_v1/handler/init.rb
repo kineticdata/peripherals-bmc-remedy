@@ -25,18 +25,18 @@ class ArsRestApiV1
 
     @api_server = @info_values["api_server"]
     
-	#Remove the / if it exists@api_server
-	@api_server.chomp!("/")
-    
-	@api_username = @info_values["api_username"]
+    #Remove the / if it exists@api_server
+    @api_server.chomp!("/")
+      
+    @api_username = @info_values["api_username"]
     @api_password = @info_values["api_password"]
 
     @body = @parameters["body"].to_s.empty? ? {} : JSON.parse(@parameters["body"])
     @method = (@parameters["method"] || :get).downcase.to_sym
     @path = "#{@api_server}/arsys/v1/entry#{@parameters["path"]}"
     
-	# Add a / to the beginning of the path if it was not provided.
-	@path = "#{@api_server}/arsys/v1/entry/#{@parameters["path"]}" if !@parameters["path"].start_with?("/")
+    # Add a / to the beginning of the path if it was not provided.
+    @url = "#{@api_server}/arsys/v1/entry/#{@parameters["path"]}" if !@parameters["path"].start_with?("/")
 
     @accept = :json
     @content_type = :json
@@ -50,47 +50,47 @@ class ArsRestApiV1
     max_retries = 5
     retries = 0
 
-  begin
-    # get access token
-    token = get_access_token(@api_server, @api_username, @api_password)
-    if token.length == 3  # for example 401 404 500...
-      if @error_handling == "Raise Error"
-        raise "HTTP ERROR #{token}"
-      else  
-        error_message = "HTTP ERROR #{token}"
-        results="Failed"
-      end
-    else
-      api_route = "#{@path}"
-      puts "API ROUTE: #{@method.to_s.upcase} #{api_route}" if @debug_logging_enabled
-      puts "BODY: \n #{@body}" if @debug_logging_enabled
+    begin
+      # get access token
+      token = get_access_token(@api_server, @api_username, @api_password)
+      if token.length == 3  # for example 401 404 500...
+        if @error_handling == "Raise Error"
+          raise "HTTP ERROR #{token}"
+        else  
+          error_message = "HTTP ERROR #{token}"
+          results="Failed"
+        end
+      else
+        api_route = "#{@url}"
+        puts "API ROUTE: #{@method.to_s.upcase} #{api_route}" if @debug_logging_enabled
+        puts "BODY: \n #{@body}" if @debug_logging_enabled
 
-      response = RestClient::Request.execute \
-        method: @method, \
-        url: api_route, \
-        payload: @body.to_json, \
-        headers: {:content_type => 'application/json', :authorization => "AR-JWT "+token, :accept => @accept}
-      response_code = response.code
-	end
-    rescue RestClient::Exception => e
-      
-	  error = nil
-      response_code = e.response.code
+        response = RestClient::Request.execute \
+          method: @method, \
+          url: api_route, \
+          payload: @body.to_json, \
+          headers: {:content_type => 'application/json', :authorization => "AR-JWT "+token, :accept => @accept}
+        response_code = response.code
+    end
+      rescue RestClient::Exception => e
+        
+      error = nil
+        response_code = e.response.code
 
-      # Attempt to parse the JSON error message.
-      begin
-        error = JSON.parse(e.response)
-        error_message = error["error"]
-        error_key = error["errorKey"] || ""
-      rescue Exception
-        puts "There was an error parsing the JSON error response" if @debug_logging_enabled
-        error_message = e.inspect
-      end
+        # Attempt to parse the JSON error message.
+        begin
+          error = JSON.parse(e.response)
+          error_message = error["error"]
+          error_key = error["errorKey"] || ""
+        rescue Exception
+          puts "There was an error parsing the JSON error response" if @debug_logging_enabled
+          error_message = e.inspect
+        end
 
-      # Raise the error if instructed to, otherwise will fall through to
-      # return an error message.
-      raise if @error_handling == "Raise Error"
-  end
+        # Raise the error if instructed to, otherwise will fall through to
+        # return an error message.
+        raise if @error_handling == "Raise Error"
+    end
 	
     # Return (and escape) the results that were defined in the node.xml
     <<-RESULTS
@@ -107,7 +107,7 @@ class ArsRestApiV1
       'username' => @api_username,
       'password' => @api_password
     }
-    puts('Logging in') if @debug_logging_enabled
+    puts('Getting access token') if @debug_logging_enabled
     begin
       #this method will not raise an error if the call does not work.
       response = RestClient::Request.new({
@@ -120,6 +120,7 @@ class ArsRestApiV1
         #if sucessful code will be 200 and the body will be the token for further calls
         #if there is an error response.body will contain the errror in HTML
         if response.code == 200
+          puts('Token successfully retrieved') if @debug_logging_enabled
           return result.body
         else
           return response.code.to_s
@@ -128,9 +129,6 @@ class ArsRestApiV1
     rescue Errno::ECONNREFUSED
       return "408"
     end
-    #this way if there is a problem with the URL or server the command does not fail gracefully
-	  #loginResource = RestClient::Resource.new(api_server+"/jwt/login")
-    #result = loginResource.post(params, :content_type => 'application/x-www-form-urlencoded')
   end
 
   ##############################################################################
