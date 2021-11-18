@@ -33,7 +33,7 @@ class ArsRestApiV1
 
     @body = @parameters["body"].to_s.empty? ? {} : JSON.parse(@parameters["body"])
     @method = (@parameters["method"] || :get).downcase.to_sym
-    @path = "#{@api_server}/arsys/v1/entry#{@parameters["path"]}"
+    @url = "#{@api_server}/arsys/v1/entry#{@parameters["path"]}"
     
     # Add a / to the beginning of the path if it was not provided.
     @url = "#{@api_server}/arsys/v1/entry/#{@parameters["path"]}" if !@parameters["path"].start_with?("/")
