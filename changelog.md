@@ -1,6 +1,6 @@
 ARS \[handlers\] (2019-10-4)
   \[bmc_itsm7_change_work_info_create_ce_v1\] (2019-10-4)
-    * Updated Submitter field to requried
+    * Updated Submitter field to required
     * Removed duplicate handler folders inside handler
 
 ARS \[bridge adapters\] (2019-09-17)
