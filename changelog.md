@@ -88,10 +88,7 @@ ARS \[handlers\] (2021-10-13)
     * Renamed and updated descriptions
   \[ars_rest_generic_create_attachment_ce_v1\] 
     * Renamed and updated descriptions
-<<<<<<< HEAD
-=======
 
 ARS \[handlers\] (2021-11-10)
   \[ars_rest_api_v1\] 
     * PER-239 Initial development of new handler.
->>>>>>> develop

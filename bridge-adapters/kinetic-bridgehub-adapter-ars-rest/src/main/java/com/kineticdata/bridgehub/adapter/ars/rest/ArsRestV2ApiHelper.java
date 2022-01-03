@@ -66,7 +66,7 @@ public class ArsRestV2ApiHelper {
             get.setHeader("Accept", "application/json");
             
             response = client.execute(get);
-            LOGGER.debug("Recieved response from \"{}\" in {}ms.",
+            LOGGER.debug("Received response from \"{}\" in {}ms.",
                 url,
                 System.currentTimeMillis()-start);
 
@@ -75,7 +75,7 @@ public class ArsRestV2ApiHelper {
             
             // First check if token is still valid
             if(responseCode == 401){
-                LOGGER.debug("401 recieved attempting to get new token.");
+                LOGGER.debug("401 received attempting to get new token.");
                 // If token has expired get fresh token
                 getToken();
                 // If count is greater than 2 stop token retry attempts.
@@ -93,7 +93,7 @@ public class ArsRestV2ApiHelper {
             
             // Handle all other faild repsonses
             if (responseCode >= 400 && responseCode != 401) {
-                handleFailedReqeust(responseCode);
+                handleFailedRequest(responseCode);
             } 
         }
         catch (IOException e) {
@@ -131,7 +131,7 @@ public class ArsRestV2ApiHelper {
             
             int responseCode = response.getStatusLine().getStatusCode();
             if (responseCode >= 400) {
-                handleFailedReqeust(responseCode);
+                handleFailedRequest(responseCode);
             }
 
             token = EntityUtils.toString(entity);
@@ -142,12 +142,14 @@ public class ArsRestV2ApiHelper {
         }
     }
     
-    private void handleFailedReqeust (int responseCode) throws BridgeError {
+    private void handleFailedRequest (int responseCode) throws BridgeError {
         switch (responseCode) {
             case 400:
                 throw new BridgeError("400: Bad Reqeust");
             case 401:
                 throw new BridgeError("401: Unauthorized");
+            case 403:
+                throw new BridgeError("403: Forbidden");
             case 404:
                 throw new BridgeError("404: Page not found");
             case 405:
