@@ -1,26 +1,26 @@
 ARS \[handlers\] (2019-10-4)
-  \[bmc_itsm7_change_work_info_create_ce_v1\] (2019-10-4)
+  \[bmc_itsm7_change_work_info_create_ce_v1\] 
     * Updated Submitter field to requried
     * Removed duplicate handler folders inside handler
 
 ARS \[bridge adapters\] (2019-09-17)
-  \[kinetic-bridgehub-adapter-ars-rest\] (2019-09-17)
+  \[kinetic-bridgehub-adapter-ars-rest\] 
     * Initial development of the ARS version 9 bridge adapter.
 
 ARS \[handlers\] (2019-11-06)
-  \[bmc_itsm9_person_create_v1\] (2019-11-06)
+  \[bmc_itsm9_person_create_v1\] 
     * Initial commit
-  \[bmc_itsm9_person_update_v1\] (2019-11-06)
+  \[bmc_itsm9_person_update_v1\] 
     * Initial commit
-  \[bmc_itsm9_support_group_member_add_v1\] (2019-11-06)
+  \[bmc_itsm9_support_group_member_add_v1\] 
     * Initial commit
-  \[bmc_itsm9_support_group_member_functional_role_v1\] (2019-11-06)
+  \[bmc_itsm9_support_group_member_functional_role_v1\] 
     * Initial commit
-  \[bmc_itsm9_support_group_member_remove_v1\] (2019-11-06)
+  \[bmc_itsm9_support_group_member_remove_v1\] 
     * Initial commit
 
 ARS \[handlers\] (2019-12-16)
-  \[ars9_generic_query_retrieve_v1\] (2019-12-16)
+  \[ars9_generic_query_retrieve_v1\]
     * Removed unneeded info values from info.xml file.
 
 ARS \[bridge adapters\] (2019-12-23)
@@ -33,17 +33,17 @@ ARS \[bridge adapters\] (2019-12-27)
     * Removed nexus from the POM.  We're using s3 to store dependencies now.
 
 ARS \[bridge adapters\] (2020-01-22)
-  \[kinetic-bridgehub-adapter-ars-rest\] (2020-01-22)
+  \[kinetic-bridgehub-adapter-ars-rest\] 
     * PER-180 fixed auth bug issue.
     
 ARS \[bridge adapters\] (2020-04-15)
-  \[kinetic-bridgehub-adapter-ars-rest\] (2020-04-15)
+  \[kinetic-bridgehub-adapter-ars-rest\] 
     * fixed auth issue.
 
 ARS \[bridge adapters\] (2020-05-12)
-  \[kinetic-bridgehub-adapter-ars-rest\] (2020-05-12)
+  \[kinetic-bridgehub-adapter-ars-rest\] 
     * PER-188 replace spaces for %20 in path segment of qualification mapping
-  \[kinetic-bridgehub-adapter-ars-rest\] (2020-05-12)
+  \[kinetic-bridgehub-adapter-ars-rest\] 
     * PER-189 return result consistent between retrieve and search
 
 ARS \[bridge adapters\] (2020-07-13)
@@ -55,15 +55,15 @@ ARS \[bridge adapters\] (2020-07-16)
     * PER-193 Added JsonPath library.
 
 ARS \[handlers\] (2020-09-30)
-  \[remedy_generic_query_retrieve_v2\] (2020-09-30)
+  \[remedy_generic_query_retrieve_v2\] 
     * Bug Fix
-  \[remedy_generic_query_retrieve_v3\] (2020-09-30)
+  \[remedy_generic_query_retrieve_v3\] 
     * Bug Fix
-  \[remedy_generic_query_retrieve_v4\] (2020-09-30)
+  \[remedy_generic_query_retrieve_v4\] 
     * Bug Fix
 	
 ARS \[handlers\] (2021-01-06)
-  \[ars9_generic_query_retrieve_v1\] (2021-01-06)
+  \[ars9_generic_query_retrieve_v1\] 
     * Updated escape method.
 
 ARS \[bridge-adapter\] (2021-02-25)
@@ -92,3 +92,7 @@ ARS \[handlers\] (2021-10-13)
 ARS \[handlers\] (2021-11-10)
   \[ars_rest_api_v1\] 
     * PER-239 Initial development of new handler.
+
+ARS \[bridge adapters\] (2022-01-04)
+  \[kinetic-bridgehub-adapter-ars-rest\]
+    * bumped dependencies flagged by debendabot.
