@@ -44,11 +44,11 @@ public class ArsRestV2ApiHelper {
     
     public JSONObject executeRequest (String path) throws BridgeError{
         String url = origin + path;
-        
+
         return executeRequest (url, 0);
     }
     
-    public JSONObject executeRequest (String url, int count) 
+    public JSONObject executeRequest (String url, int tries) 
         throws BridgeError{
         
         JSONObject output;      
@@ -74,17 +74,16 @@ public class ArsRestV2ApiHelper {
             LOGGER.trace("Request response code: " + responseCode);
             
             // First check if token is still valid
-            if(responseCode == 401){
-                LOGGER.debug("401 received attempting to get new token.");
+            if(responseCode == 401 && tries < 2){
+                LOGGER.debug(
+                    String.format(
+                        "Retrying the request with a new authentication token. TRIES: %d", 
+                        tries
+                    )
+                );
                 // If token has expired get fresh token
                 getToken();
-                // If count is greater than 2 stop token retry attempts.
-                if (count < 2) {
-                    output = executeRequest(url, count + 1);
-                } else {
-                    throw new BridgeError(count + " attempts were made to get a"
-                        + "new token without success.");
-                }
+                return executeRequest(url, tries++);                
             }
             
             HttpEntity entity = response.getEntity();
@@ -145,7 +144,7 @@ public class ArsRestV2ApiHelper {
     private void handleFailedRequest (int responseCode) throws BridgeError {
         switch (responseCode) {
             case 400:
-                throw new BridgeError("400: Bad Reqeust");
+                throw new BridgeError("400: Bad Request");
             case 401:
                 throw new BridgeError("401: Unauthorized");
             case 403:

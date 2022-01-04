@@ -17,7 +17,7 @@ Test Request Configuration:
     Structure: "Entry > CTM:People"
     Fields: "id,values"
     Empty Value Query: "q='Remedy Login ID'=\"test_user_x\""
-    Single Value Query: "entry_id=PPL000000000205"
+    Single Value Query: "entry_id=PPL000000000309"
     Multiple Value Query: ""
 
 # Configuration of the various metadata options

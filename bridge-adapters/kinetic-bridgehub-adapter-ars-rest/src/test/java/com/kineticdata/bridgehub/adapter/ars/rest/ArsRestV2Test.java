@@ -63,7 +63,7 @@ public class ArsRestV2Test extends BridgeAdapterTestBase{
         request.setQuery("q='Remedy Login ID'=\"<%=parameter[\"Id\"]%>\"");
         
         request.setParameters(new HashMap<String, String>() {{ 
-            put("Id", "test_user");
+            put("Id", "Joe");
         }});
         
         Count count = null;
@@ -91,7 +91,7 @@ public class ArsRestV2Test extends BridgeAdapterTestBase{
         request.setQuery("q='Remedy Login sID'=\"<%=parameter[\"Id\"]%>\"");
         
         request.setParameters(new HashMap<String, String>() {{ 
-            put("Id", "test_user");
+            put("Id", "Joe");
         }});
         
         error = null;
@@ -127,12 +127,12 @@ public class ArsRestV2Test extends BridgeAdapterTestBase{
         List<String> fields = new ArrayList<String>();
         
         BridgeRequest request = new BridgeRequest();
-        request.setStructure("Entry > CST:CHSAttributes");
+        request.setStructure("Entry > CTM:People");
         request.setFields(fields);
         request.setQuery("entry_id=<%=parameter[\"Id\"]%>");
         
         request.setParameters(new HashMap<String, String>() {{ 
-            put("Id", "000000000003430");
+            put("Id", "PPL000000000309");
         }});
         
         Record record = null;
@@ -161,7 +161,7 @@ public class ArsRestV2Test extends BridgeAdapterTestBase{
         request.setQuery("q='Remedy Login ID'=\"<%=parameter[\"Login ID\"]%>\"");
         
         Map parameters = new HashMap();
-        parameters.put("Login ID", "test_user");
+        parameters.put("Login ID", "Joe");
         request.setParameters(parameters);
         
         Record record = null;
@@ -190,7 +190,7 @@ public class ArsRestV2Test extends BridgeAdapterTestBase{
         request.setQuery("q='Remedy Login ID'=\"<%=parameter[\"Login ID\"]%>\"");
         
         Map parameters = new HashMap();
-        parameters.put("Login ID", "test_user");
+        parameters.put("Login ID", "JOE");
         request.setParameters(parameters);
         
         Record record = null;
@@ -214,6 +214,7 @@ public class ArsRestV2Test extends BridgeAdapterTestBase{
         List<String> fields = new ArrayList<String>();
         fields.add("First Name");
         fields.add("Last Name");
+        fields.add("Remedy Login ID");
         
         BridgeRequest request = new BridgeRequest();
         request.setStructure("Entry > CTM:People");
