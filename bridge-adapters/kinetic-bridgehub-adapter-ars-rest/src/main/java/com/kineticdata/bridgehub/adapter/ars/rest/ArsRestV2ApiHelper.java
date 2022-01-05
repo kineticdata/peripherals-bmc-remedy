@@ -48,24 +48,20 @@ public class ArsRestV2ApiHelper {
         return executeRequest (url, 0);
     }
     
-    public JSONObject executeRequest (String url, int tries) 
-        throws BridgeError{
-        
-        JSONObject output;      
+    public JSONObject executeRequest (String url, int tries) throws BridgeError {
         // System time used to measure the request/response time
         long start = System.currentTimeMillis();
         
         try (
             CloseableHttpClient client = HttpClients.createDefault()
         ) {
-            HttpResponse response;
             HttpGet get = new HttpGet(url);
 
             get.setHeader("Authorization", "AR-JWT " + token);
             get.setHeader("Content-Type", "application/json");
             get.setHeader("Accept", "application/json");
             
-            response = client.execute(get);
+            HttpResponse response = client.execute(get);
             LOGGER.debug("Received response from \"{}\" in {}ms.",
                 url,
                 System.currentTimeMillis()-start);
@@ -73,34 +69,32 @@ public class ArsRestV2ApiHelper {
             int responseCode = response.getStatusLine().getStatusCode();
             LOGGER.trace("Request response code: " + responseCode);
             
-            // First check if token is still valid
-            if(responseCode == 401 && tries < 2){
-                LOGGER.debug(
-                    String.format(
-                        "Retrying the request with a new authentication token. TRIES: %d", 
-                        tries
-                    )
-                );
-                // If token has expired get fresh token
+            // First check if token is still valid and has only attempted retry once.
+            if(responseCode == 401 && tries == 0){
+                LOGGER.debug("Retrying the request with a new authentication token.");
+                // Get a fresh token
                 getToken();
-                return executeRequest(url, tries++);                
+                return executeRequest(url, tries++);
             }
             
             HttpEntity entity = response.getEntity();
-            // Confirm that response is a JSON object
-            output = parseResponse(EntityUtils.toString(entity));
             
-            // Handle all other faild repsonses
-            if (responseCode >= 400 && responseCode != 401) {
+            // Throw bridge error for non 200 responses.
+            if (responseCode >= 400) {
+                // Some errors return JSON.  parseResponse will handle the error. 
+                if (response.getFirstHeader("Content-Type").getValue().equals("application/json")) {
+                    parseResponse(EntityUtils.toString(entity)).toJSONString();
+                }
                 handleFailedRequest(responseCode);
-            } 
+            }
+
+            // Confirm that response is a JSON object
+            return parseResponse(EntityUtils.toString(entity));
         }
         catch (IOException e) {
             throw new BridgeError("Unable to make a connection to the REST"
                 + " Service", e);
         }
-        
-        return output;
     }
     
     // Get a JWT to be used with subsequent requests.
@@ -129,7 +123,10 @@ public class ArsRestV2ApiHelper {
             HttpEntity entity = response.getEntity();
             
             int responseCode = response.getStatusLine().getStatusCode();
-            if (responseCode >= 400) {
+            if (responseCode == 401) {
+                throw new BridgeError("401: Unauthorized. Invalid credentials "
+                    + "provided while trying to obtain an authorization token.");
+            } else if (responseCode  >= 400) {
                 handleFailedRequest(responseCode);
             }
 
@@ -166,9 +163,14 @@ public class ArsRestV2ApiHelper {
             // Parse the response string into a JSONObject
             object = (JSONObject)JSONValue.parse(output);
         } catch (ClassCastException e){
-            JSONArray error = (JSONArray)JSONValue.parse(output);
-            throw new BridgeError("Server responded with: "
-                + ((JSONObject)error.get(0)).get("messageText"));
+            JSONArray errors = (JSONArray)JSONValue.parse(output);
+            
+            // Only display the error for the first object.
+            JSONObject error = (JSONObject)errors.get(0);
+            throw new BridgeError(String.format("%s: %s", 
+                error.get("messageText"), 
+                error.get("messageAppendedText")
+            ));
         } catch (Exception e) {
             throw new BridgeError("An unexpected error has occured " + e);
         }
