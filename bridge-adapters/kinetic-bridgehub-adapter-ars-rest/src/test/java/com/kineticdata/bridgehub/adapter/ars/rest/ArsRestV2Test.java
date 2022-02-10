@@ -418,4 +418,29 @@ public class ArsRestV2Test extends BridgeAdapterTestBase{
         control = "First+Name.desc,Last+Name.desc";
         assertFalse(control.equals(parameters.get("sort")));
     }
+    
+    @Test
+    public void test_error() throws Exception{
+        BridgeError error = null;
+
+        // Create the Bridge Request
+        List<String> fields = new ArrayList<String>();
+        fields.add("First Name");
+        fields.add("Last Name");
+        
+        BridgeRequest request = new BridgeRequest();
+        request.setStructure("Entry > CTM:Peoplex");
+        request.setFields(fields);
+        request.setQuery("");
+        
+        RecordList records = null;
+        try {
+            records = getAdapter().search(request);
+        } catch (BridgeError e) {
+            error = e;
+        }
+        
+        assertNull(error);
+        assertTrue(records.getRecords().size() > 0);
+    }
 }
