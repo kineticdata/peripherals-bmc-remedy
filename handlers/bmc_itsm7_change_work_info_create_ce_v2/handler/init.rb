@@ -3,6 +3,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), 'dependencies'))
 
 require 'rexml/document'
 require 'ars_models'
+require 'securerandom'
 
 class BmcItsm7ChangeWorkInfoCreateCeV1
   # Prepare for execution by pre-loading Ars form definitions, building Hash
@@ -25,12 +26,18 @@ class BmcItsm7ChangeWorkInfoCreateCeV1
     # Set the input document attribute
     @input_document = REXML::Document.new(input)
     
+    # Store the info values in a Hash of info names to values.
+    @info_values = {}
+    REXML::XPath.each(@input_document,"/handler/infos/info") { |item|
+      @info_values[item.attributes['name']] = item.text.to_s.strip
+    }
+
     # Determine if debug logging is enabled.
-    @debug_logging_enabled = get_info_value(@input_document, 'enable_debug_logging') == 'Yes'
+    @debug_logging_enabled = @info_values['enable_debug_logging'] == 'Yes'
     puts("Logging enabled.") if @debug_logging_enabled
 
     # Determine if caching is disabled.
-    @disable_caching = get_info_value(@input_document, 'disable_caching') == 'Yes'
+    @disable_caching = @info_values['disable_caching'] == 'Yes'
     puts("Disable Caching: #{@disable_caching}.") if @debug_logging_enabled
     
     begin
@@ -38,31 +45,26 @@ class BmcItsm7ChangeWorkInfoCreateCeV1
       # variable could be concurrently changed by other threads -- by defining the
       # @config instance variable, the execution of this handler is "locked in" to
       # using that config for the entire execution)
-      @config = preinitialize_on_first_load_remote(
+      preinitialize_on_first_load_remote(
         @input_document,
         ['CHG:WorkLog', 'CHG:Infrastructure Change']
       )
     rescue Exception => error
       @error = error
     end
-
-		# Store the info values in a Hash of info names to values.
-    @info_values = {}
-    REXML::XPath.each(@input_document,"/handler/infos/info") do |item|
-      @info_values[item.attributes['name']] = item.text
-    end
 	 
     # Store parameters in the node.xml in a hash attribute named @parameters.
     @parameters = {}
     REXML::XPath.match(@input_document, '/handler/parameters/parameter').each do |node|
-      @parameters[node.attribute('name').value] = node.text
+      @parameters[node.attribute('name').value] = node.text.to_s.strip
     end
-    puts(format_hash("Handler Parameters:", @parameters)) if @debug_logging_enabled
 	
+    @raise_error = @parameters["error_handling"] == "Raise Error"
+
     # Retrieve the list of field values
     @field_values = {}
     REXML::XPath.match(@input_document, '/handler/fields/field').each do |node|
-      @field_values[node.attribute('name').value] = node.text
+      @field_values[node.attribute('name').value] = node.text.to_s.strip
     end
 
     # Validate the required field values that are set from node parameters
@@ -84,52 +86,92 @@ class BmcItsm7ChangeWorkInfoCreateCeV1
   # ==== Returns
   # An Xml formatted String representing the return variable results.
   def execute
-    error_handling = @parameters["error_handling"]
-    error_message = nil
-    entry_id = nil
-
     space_slug = @parameters["space_slug"].empty? ? @info_values["space_slug"] : @parameters["space_slug"]
     if @info_values['api_server'].include?("${space}")
-      server = @info_values['api_server'].gsub("${space}", space_slug)
+      @server = @info_values['api_server'].gsub("${space}", space_slug)
     elsif !space_slug.to_s.empty?
-      server = @info_values['api_server']+"/"+space_slug
+      @server = @info_values['api_server']+"/"+space_slug
     else
-      server = @info_values['api_server']
+      @server = @info_values['api_server']
     end
-    server = "#{server}/" if !server.end_with?("/")
 
-    if (@error.to_s.empty?)
-      begin
-        # For attachment_question_menu_label 1, 2, and 3: if there is a value, retrieve
-        # the attachment with the get_attachment() method and store the attachment in
-        # @field_values.
-        if @parameters['attachment_input_type'] == "Field"
-          @field_values['z2AF Work Log01'] = create_attachment_from_field(@parameters['attachment_field_1']) if @parameters['attachment_field_1']
-          @field_values['z2AF Work Log02'] = create_attachment_from_field(@parameters['attachment_field_2']) if @parameters['attachment_field_2']
-          @field_values['z2AF Work Log03'] = create_attachment_from_field(@parameters['attachment_field_3']) if @parameters['attachment_field_3']
-        else
-          @field_values['z2AF Work Log01'] = create_attachment_from_json(@parameters['attachment_json_1']) if @parameters['attachment_json_1']
-          @field_values['z2AF Work Log02'] = create_attachment_from_json(@parameters['attachment_json_2']) if @parameters['attachment_json_2']
-          @field_values['z2AF Work Log03'] = create_attachment_from_json(@parameters['attachment_json_3']) if @parameters['attachment_json_3']	
-        end
+    error_message = ""
+
+    #Source Variables
+    @api_username   = @info_values["api_username"]
+    @api_password   = @info_values["api_password"]
+    @submission_id  = @parameters["submission_id"]
+    @submisson_values
+    @field_names = Array.new
+    @field_names.push(@parameters['attachment_field_1']) if !@parameters['attachment_field_1'].empty?
+    @field_names.push(@parameters['attachment_field_2']) if !@parameters['attachment_field_2'].empty?
+    @field_names.push(@parameters['attachment_field_3']) if !@parameters['attachment_field_3'].empty?
+    @source_field_values = Array.new
+    begin
+      @source_field_values.push(JSON.parse(@parameters['attachment_json_1'])) if !@parameters['attachment_json_1'].empty?
+      @source_field_values.push(JSON.parse(@parameters['attachment_json_2'])) if !@parameters['attachment_json_2'].empty?
+      @source_field_values.push(JSON.parse(@parameters['attachment_json_3'])) if !@parameters['attachment_json_3'].empty?
+    rescue Exception => error
+      error_message = error
+      raise error if @raise_error
+    end
+    
+    # Headers for server: Authorization, Accept, Content-Type
+    @headers = http_basic_headers(@api_username, @api_password)
+
+    if @parameters['attachment_input_type'] == "Field"
+      # Make sure the field values array is empty
+      @source_field_values.clear
+      # retrive submission to get field names
+      get_submission_values()
       
-        # If parameter include_review_request is set to "Yes", prepend the review request
-        # URL string to the 'Detailed Description' field, using the review_request_string()
-        # method to build the URL.
-        if @parameters['include_review_request'] == "Yes"
-          @field_values['Detailed Description'].insert(0, review_request_string(
-              @parameters['submission_id'], @space_slug))
-        end
+      # Add field values to array if they are defined
+      @field_names.each do |field_name|
+        @source_field_values.push(@submisson_values[field_name][0])
+      end
+    end
 
-        # If parameter include_question_answers is set to "Yes", prepend the question
-        # answers formatted string to the 'Detailed Description' field, using the
-        # question_answers_string() method to build the question answer pairs string.
-        if @parameters['include_question_answers'] == "Yes"
-          @field_values['Detailed Description'] << question_answers_string(
-            @parameters['submission_id'])
+    if (@error.to_s.empty? && error_message.nil?)
+      if !@source_field_values.empty?
+        begin
+          get_field_values()
+        ensure
+          # Remove the temp directory along with the downloaded attachment
+          FileUtils.rm_rf(@tempdir) if !@tempdir.nil?
+        end
+      else
+        error_message = "No field values were found on submission '#{@submission_id}' or provided as inputs."
+        raise error_message if @raise_error
+      end
+      
+      # If parameter include_review_request is set to "Yes", prepend the review request
+      # URL string to the 'Detailed Description' field.
+      if @parameters['include_review_request'] == "Yes"
+        @field_values['Detailed Description'].insert(0, "#{@server}/submissions/#{@submission_id}?review\n\n")
+      end
+
+      # If parameter include_question_answers is set to "Yes", prepend the question
+      # answers formatted string to the 'Detailed Description' field.
+      if @parameters['include_question_answers'] == "Yes"
+        if @submisson_values.nil?
+          get_submission_values()
         end
         
+        results = "\n\nQuestion Answer Pairs:\n"
+        @submisson_values.each {|question,answer|
+          if answer.nil?
+            results += "    " + question + ":  \n"
+          elsif answer.kind_of?(Array)
+            results += "    " + question + ":  " + escape(answer.join(" , ")) + "\n"
+          else
+            results += "    " + question + ":  " + escape(answer) + "\n"
+          end
+        }
 
+        @field_values['Detailed Description'] << results
+      end
+        
+      begin
         # Retrieve the CHG:Infrastructure Change entry that will be associated with
         # the CHG:WorkLog entry.  This entry is retrieved using the change_number
         # parameter and the request id of the entry is used.
@@ -143,9 +185,6 @@ class BmcItsm7ChangeWorkInfoCreateCeV1
         end
         @field_values['Infra. Change Entry ID'] = change_entry.id
 
-        # Log the final values that will be used to create the CHG:WorkLog record.
-        puts(format_hash("Field Values:", @field_values)) if @debug_logging_enabled
-
         # Create the CHG:WorkLog record using the @field_values hash that was built
         # up.  Pass empty array to the fields argument because no fields are necessary
         # to build the results XML.
@@ -155,23 +194,16 @@ class BmcItsm7ChangeWorkInfoCreateCeV1
         )
       rescue Exception => error
         error_message = error.inspect
-        raise error if error_handling == "Raise Error"
+        raise error if @raise_error
       end
     else
-      error_message = @error
-      raise @error if error_handling == "Raise Error"
+      error_message = @error if !@error.nil?
+      raise @error if @raise_error
     end
-
-    # Build the results xml that will be returned by this handler.
-    results = <<-RESULTS
-    <results>
-      <result name="Entry Id">#{escape(entry.id)}</result>
-    </results>
-    RESULTS
-    puts("Results: \n#{results}") if @debug_logging_enabled
-
-    # Return the results String
-    return results
+    
+    results = handle_results(entry ? entry.id : "", error_message)
+    puts "Returning results: #{results}" if @debug_logging_enabled
+    results
   end
 
   ##############################################################################
@@ -217,165 +249,78 @@ class BmcItsm7ChangeWorkInfoCreateCeV1
   ##############################################################################
   # BMC_ITSM7_ChangeWorkInfo_Create handler utility functions
   ##############################################################################
-  def create_attachment_from_json(json)
-    field_values = JSON.parse(json)
-    puts("Using File URL: \n#{field_values[0]["url"]}") if @debug_logging_enabled
-    puts("Using File Name: \n#{field_values[0]["name"]}") if @debug_logging_enabled
-    attachment = RestClient::Resource.new(field_values[0]["url"],
-      user: @info_values['api_username'],
-      password: @info_values['api_password']).get
-
-    attachment_field = ArsModels::FieldValues::AttachmentFieldValue.new()
-    attachment_field.name = field_values[0]["name"]
-    attachment_field.base64_content = Base64.encode64(attachment.body)
-    attachment_field.size = attachment.body.size()
-
-    return attachment_field
-  end
-  
-  def create_attachment_from_field(field_name)
-    # Call the Kinetic Request CE API
-    begin
-      # Submission API Route including Values
-      # /{spaceSlug}/app/api/v1/submissions/{submissionId}}?include=...
-      submission_api_route = get_info_value(@input_document, 'api_server') +
-        '/' + @space_slug + '/app/api/v1' +
-        '/submissions/' + URI.escape(@parameters['submission_id']) + '/?include=values'
-
-      # Retrieve the Submission Values
-      submission_result = RestClient::Resource.new(
-        submission_api_route,
-        user: get_info_value(@input_document, 'api_username'),
-        password: get_info_value(@input_document, 'api_password')
-      ).get
-
-      # If the submission exists
-      unless submission_result.nil?
-        submission = JSON.parse(submission_result)['submission']
-        field_value = submission['values'][field_name]
-        # If the attachment field value exists
-        unless field_value.nil?
-          files = []
-          # Attachment field values are stored as arrays, one map for each file attachment
-          field_value.each_index do |index|
-            file_info = field_value[index]
-            # The attachment file name is stored in the 'name' property
-            # API route to get the generated attachment download link from Kinetic Request CE.
-            # "/{spaceSlug}/app/api/v1/submissions/{submissionId}/files/{fieldName}/{fileIndex}/{fileName}/url"
-            # attachment_download_api_route = get_info_value(@input_document, 'api_server') +
-            # file_info['link'] + "/url"
-            attachment_download_api_route = get_info_value(@input_document, 'api_server') +
-              '/' + @space_slug + '/app/api/v1' +
-              '/submissions/' + URI.escape(@parameters['submission_id']) +
-              '/files/' + URI.escape(field_name) +
-              '/' + index.to_s +
-              '/' + URI.escape(file_info['name']) +
-              '/url'
-
-            # Retrieve the URL to download the attachment from Kinetic Request CE.
-            # This URL will only be valid for a short amount of time before it expires
-            # (usually about 5 seconds).
-            attachment_download_result = RestClient::Resource.new(
-              attachment_download_api_route,
-              user: get_info_value(@input_document, 'api_username'),
-              password: get_info_value(@input_document, 'api_password')
-            ).get
-
-            unless attachment_download_result.nil?
-              url = JSON.parse(attachment_download_result)['url']
-              file_info["url"] = url
-            end
-            file_info.delete("link")
-            files << file_info
-          end
-        end
-      end
-
-    # If the credentials are invalid
-    rescue RestClient::Unauthorized
-      raise StandardError, "(Unauthorized): You are not authorized."
-    rescue RestClient::ResourceNotFound => error
-      raise StandardError, error.response
+  def get_submission_values()
+    # Submission API Route
+    source_submission_route = "#{@server}/app/api/v1/submissions/#{@submission_id}/?include=values"
+    # Retrieve the submission and values
+    res = http_get(source_submission_route, { "include" => "values" }, @headers)
+    if !res.kind_of?(Net::HTTPSuccess)
+      message = "Failed to retrieve source submission #{@submission_id}"
+      return handle_net_http_exception(message, res)
     end
-	
-	  if files.nil?
-			puts("No File in Field: \n#{field_name}") if @debug_logging_enabled
-      		return nil
-    else
-      puts("Using File URL: \n#{files[0]["url"]}") if @debug_logging_enabled
-      puts("Using File Name: \n#{files[0]["name"]}") if @debug_logging_enabled
-        attachment = RestClient::Resource.new(files[0]["url"]).get
+    submission = JSON.parse(res.body)["submission"]
+    puts "Received source submission #{submission['id']}" if @debug_logging_enabled
 
+    @submisson_values = submission["values"]
+  end 
+
+  def get_field_values() 
+    # Process each attachment file
+    @source_field_values.each_with_index do |attachment_info, index|
+      tempfile = download_file_to_temp(attachment_info, index)
+
+      # ArsModels does not support streaming file upload
+      file = File.open(tempfile).read
       attachment_field = ArsModels::FieldValues::AttachmentFieldValue.new()
-      attachment_field.name = files[0]["name"]
-      attachment_field.base64_content = Base64.encode64(attachment.body)
-      attachment_field.size = attachment.body.size()
+      attachment_field.name = attachment_info['name']
+      attachment_field.base64_content = Base64.encode64(file)
+      attachment_field.size = file.size
 
-		  return attachment_field
-    end 
-  end
-
-  # Returns a String URL for the review request page for the given submission.
-  #
-  # ==== Parameters
-  # * submission_id (String) - The 'instanceId' of the ce request
-  #   record related to this submission.
-  # * space_slug (String) - The value of the slug for the space for
-  #   the submission to create a review request for.
-  #
-  def review_request_string(submission_id, space_slug)
-    reviewLink = "#{@info_values['api_server']}/#{space_slug}/submissions/#{submission_id}?review\n\n"
-	  puts("Using review link: #{reviewLink}") if @debug_logging_enabled
-	  return reviewLink	
-  end
-  
-  # Returns a String of question answer pairs.  The question answer data is retrieved
-  # from KS_SRV_QuestionAnswerJoin using the customer_survey_instance_id parameter.
-  #
-  # ==== Parameters
-  # * customer_survey_instance_id (String) - The 'instanceId' of the KS_SRV_CustomerSurvey_base
-  #   record related to this submission.
-  #
- def question_answers_string(submission_id)
-    begin
-      # API Route
-      api_route = @info_values['api_server'] + '/' + @space_slug + 
-                  '/app/api/v1/submissions/' + submission_id +
-                  '/?include=values'
-      puts "API ROUTE: #{api_route}"
-
-      resource = RestClient::Resource.new(api_route,
-                                          user: @info_values['api_username'],
-                                          password: @info_values['api_password'])
-
-      # Get to the API to retrieve the submission
-      result = resource.get
-
-      # Build values variable
-      submission = JSON.parse(result)
-      values = submission['submission']['values']       
-
-    # If the credentials are invalid
-    rescue RestClient::Unauthorized
-      raise StandardError, "(Unauthorized): You are not authorized."
-    rescue RestClient::ResourceNotFound => error
-      raise StandardError, error.response
+      @field_values["z2AF Work Log0#{index + 1}"] = attachment_field
     end
+  end
 
-    # Build the results to be returned by this handler
-    results = "\n\nQuestion Answer Pairs:\n"
+  def download_file_to_temp(attachment_info, index)
+      # The attachment file name is stored in the 'name' property
+      attachment_name = attachment_info['name']
 
-    values.each {|question,answer|
-      if answer.nil?
-        results += "    " + question + ":  \n"
-      elsif answer.kind_of?(Array)
-        results += "    " + question + ":  " + escape(answer.join(" , ")) + "\n"
-      else
-        results += "    " + question + ":  " + escape(answer) + "\n"
+      # Temporary file to stream contents to
+      @tempdir = "#{Dir.tmpdir}/#{SecureRandom.hex(8)}"
+      tempfile = "#{@tempdir}/#{attachment_name}"
+      FileUtils.mkdir_p(@tempdir)
+
+
+      # Retrieve the attachment download link from the server
+      puts "Retrieving attachment download link from source submission: #{attachment_name} for field #{@field_names[index]}" if @debug_logging_enabled
+
+      # API route to get the generated attachment download link from Kinetic Request CE.
+      download_link_api_route = "#{@server}/app/api/v1/#{attachment_info["link"].split("/", 3)[2]}/url"
+
+      # Retrieve the URL to download the attachment from Kinetic Request CE.
+      res = http_get(download_link_api_route, {}, @headers)
+      if !res.kind_of?(Net::HTTPSuccess)
+        message = "Failed to retrieve link for attachment #{attachment_name} from source submission"
+        return handle_net_http_exception(message, res)
       end
-    }
-	  # Return the results String
-    return results
+      file_download_url = JSON.parse(res.body)['url']
+      puts "Received link for attachment #{attachment_name} from source submission"  if @debug_logging_enabled
+
+
+      # Inspect the attachment URL to determine if using FileHub or Agent
+      attachment_uri = URI(file_download_url)
+      query_params = CGI::parse(attachment_uri.query || "")
+      # If url contains a signature query parameter, using FileHub (no authorization header)
+      filestore_headers = query_params.has_key?("signature") && !query_params["signature"].empty? ? {} : @headers
+
+      # Download the attachment from the source submission
+      puts "Downloading attachment #{attachment_name} from #{file_download_url}" if @debug_logging_enabled
+      res = stream_file_download(tempfile, file_download_url, {}, filestore_headers)
+      if !res.kind_of?(Net::HTTPSuccess)
+        message = "Failed to download attachment #{attachment_name} from the filestore server"
+        return handle_net_http_exception(message, res)
+      end
+
+      return tempfile
   end
 
   ##############################################################################
@@ -397,13 +342,15 @@ class BmcItsm7ChangeWorkInfoCreateCeV1
   end
 
   def preinitialize_on_first_load_remote(input_document, form_names)
+    puts "Preinitializing ARS Models" if @debug_logging_enabled
+
     remedy_context = ArsModels::Context.new(
-      :server         => get_info_value(input_document, 'ars_server'),
-      :username       => get_info_value(input_document, 'ars_username'),
-      :password       => get_info_value(input_document, 'ars_password'),
-      :port           => get_info_value(input_document, 'ars_port'),
-      :prognum        => get_info_value(input_document, 'ars_prognum'),
-      :authentication => get_info_value(input_document, 'ars_authentication')
+      :server         => @info_values['ars_server'],
+      :username       => @info_values['ars_username'],
+      :password       => @info_values['ars_password'],
+      :port           => @info_values['ars_port'],
+      :prognum        => @info_values['ars_prognum'],
+      :authentication => @info_values['ars_authentication']
     )
 
     # Build up a new configuration
@@ -424,6 +371,8 @@ class BmcItsm7ChangeWorkInfoCreateCeV1
         end
       }
     end
+
+    puts "Models Initialized" if @debug_logging_enabled
   end
   
   # This is a template method that is used to escape results values (returned in
@@ -439,36 +388,125 @@ class BmcItsm7ChangeWorkInfoCreateCeV1
   # This is a ruby constant that is used by the escape method
   ESCAPE_CHARACTERS = {'&'=>'&amp;', '>'=>'&gt;', '<'=>'&lt;', '"' => '&quot;'}
 
-  # Builds a string that is formatted specifically for the Kinetic Task log file
-  # by concatenating the provided header String with each of the provided hash
-  # name/value pairs.  The String format looks like:
-  #   HEADER
-  #       KEY1: VAL1
-  #       KEY2: VAL2
-  # For example, given:
-  #   field_values = {'Field 1' => "Value 1", 'Field 2' => "Value 2"}
-  #   format_hash("Field Values:", field_values)
-  # would produce:
-  #   Field Values:
-  #       Field 1: Value 1
-  #       Field 2: Value 2
-  def format_hash(header, hash)
-    # Starting with the "header" parameter string, concatenate each of the
-    # parameter name/value pairs with a prefix intended to better display the
-    # results within the Kinetic Task log.
-    hash.inject(header) do |result, (key, value)|
-      result << "\n    #{key}: #{value}"
+  def handle_results(entryId, error_msg)
+    <<-RESULTS
+    <results>
+      <result name="Entry Id">#{ERB::Util.html_escape(entryId)}</result>
+      <result name="Handler Error Message">#{ERB::Util.html_escape(error_msg)}</result>
+    </results>
+    RESULTS
+  end
+  
+  def handle_net_http_exception(message, error)
+    case error
+    when Net::HTTPResponse
+      begin
+        content = JSON.parse(error.body)
+        error_key = content["errorKey"] || error.code
+        error_msg = content["error"] || ""
+        error_message = "#{message}:\n\tError Key: #{error_key}\n\tError: #{error_msg}"
+      rescue StandardError => e
+        error_key = error.code
+        error_message = "#{message}:\n\tError Code: #{error_key}\n\tError: #{error.body}"
+      end
+    when NilClass
+      error_message = "0: No response from server"
+    else
+      error_message = "Unexpected error: #{error.inspect}"
+    end
+    raise error_message if @raise_error
+    handle_results(nil, error_message, nil)
+  end
+
+
+
+  #-----------------------------------------------------------------------------
+  # The following Http helper methods are provided within this handler because
+  # task currently doesn't have a common http client module that handlers can
+  # use. If these methods were packaged as a module within the dependencies.rb
+  # file or within a gem/library, they would be under the same constraints as
+  # other vendor gems, such as RestClient, where any handler that uses
+  # RestClient is currently stuck using v1.6.7. Adding these methods
+  # directly to the handler class gives the freedom to add/modify as needed
+  # without affecting other handlers.
+  #-----------------------------------------------------------------------------
+
+
+  #-----------------------------------------------------------------------------
+  # HTTP HEADERS
+  #-----------------------------------------------------------------------------
+
+  def http_json_headers
+    {
+      "Accept" => "application/json",
+      "Content-Type" => "application/json"
+    }
+  end
+  
+  
+  def http_basic_headers(username, password)
+    http_json_headers.merge({
+      "Authorization" => "Basic #{Base64.strict_encode64("#{username}:#{password}")}"
+    })
+  end
+
+
+  #-----------------------------------------------------------------------------
+  # REST ACTIONS
+  #-----------------------------------------------------------------------------
+  
+  def http_get(url, parameters, headers, http_options={})
+    uri = URI.parse(url)
+    uri.query = URI.encode_www_form(parameters) unless parameters.empty?
+    request = Net::HTTP::Get.new(uri, headers)
+    send_request(request, http_options)
+  end
+
+  #-----------------------------------------------------------------------------
+  # ATTACHMENT METHODS
+  #-----------------------------------------------------------------------------
+
+  def stream_file_download(file, url, parameters, headers, http_options={})
+    uri = URI.parse(url)
+    uri.query = URI.encode_www_form(parameters) unless parameters.empty?
+
+    http = build_http(uri, http_options)
+    request = Net::HTTP::Get.new(uri, headers)
+
+    http.request(request) do |response|
+      open(file, 'w') do |io|
+        response.read_body do |chunk|
+          io.write chunk
+        end
+      end
     end
   end
 
-  # This is a sample helper method that illustrates one method for retrieving
-  # values from the input document.  As long as your node.xml document follows
-  # a consistent format, these type of methods can be copied and reused between
-  # handlers.
-  def get_info_value(document, name)
-    # Retrieve the XML node representing the desird info value
-    info_element = REXML::XPath.first(document, "/handler/infos/info[@name='#{name}']")
-    # If the desired element is nil, return nil; otherwise return the text value of the element
-    info_element.nil? ? nil : info_element.text
+  #-----------------------------------------------------------------------------
+  # LOWER LEVEL METHODS
+  #-----------------------------------------------------------------------------
+
+  def send_request(request, http_options={})
+    uri = request.uri
+    Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
+      configure_http(http, http_options)
+      http.request(request)
+    end
+  end
+  
+  
+  def build_http(uri, http_options={})
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl= true if (uri.scheme == 'https')
+    configure_http(http, http_options)
+    http
+  end
+
+
+  def configure_http(http, http_options={})
+    http_options_sym = (http_options || {}).inject({}) { |h, (k,v)| h[k.to_sym] = v; h }
+    http.verify_mode = http_options_sym[:ssl_verify] || OpenSSL::SSL::VERIFY_PEER if http.use_ssl?
+    http.read_timeout= http_options_sym[:read_timeout] unless http_options_sym[:read_timeout].nil?
+    http.open_timeout= http_options_sym[:open_timeout] unless http_options_sym[:open_timeout].nil?
   end
 end

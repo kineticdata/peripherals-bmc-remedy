@@ -9,6 +9,7 @@
     <visible>false</visible>
     <deferrable>false</deferrable>
     <parameters>
+        <parameter id="error_handling" label="Error Handling" required="true" tooltip="Determine what to return if an error is encountered." menu="Error Message,Raise Error">Error Message</parameter>
         <parameter id="change_number" required="true" label="Change Number:" tooltip="The change number of the Change to associate the Change Work Info entry with." />
         <parameter id="include_review_request" required="true" label="Include Review Request:" tooltip="Option to prepend the review request URL to the Notes of the Change Work Info entry." menu="Yes,No" />
         <parameter id="include_question_answers" required="true" label="Include Question Answers:" tooltip="Option to append the question answer pairs to the Notes of the Change Work Info entry." menu="Yes,No" />
@@ -45,6 +46,8 @@
             <info name="ars_authentication">&lt;%= @info['ars_authentication'] %&gt;</info>
         </infos>
         <parameters>
+            <parameter name="error_handling">&lt;%= @parameters.has_key?("error_handling") ?
+            @parameters["error_handling"] : "Raise Error" %&gt;</parameter>
             <parameter name='submission_id'>&lt;%= @parameters['submission_id'] %&gt;</parameter>
             <parameter name='space_slug'>&lt;%= @parameters['space_slug'] %&gt;</parameter>
             <parameter name='change_number'>&lt;%= @parameters['change_number'] %&gt;</parameter>
@@ -77,6 +80,7 @@
         </fields>
     </handler>
     <results format="xml">
+        <result name="Handler Error Message" />
         <result name="Entry Id" />
     </results>
 </taskDefinition>

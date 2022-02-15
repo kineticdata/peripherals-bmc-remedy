@@ -1,3 +1,4 @@
 <results>
     <result name="Entry Id" type="Regexp">.+</result>
+    <result name="Handler Error Message" />
 </results>
