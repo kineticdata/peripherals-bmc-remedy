@@ -3,9 +3,11 @@ require File.expand_path(File.join(File.dirname(__FILE__), 'dependencies'))
 
 require 'rexml/document'
 require 'ars_models'
+require 'net/https'
 require 'securerandom'
+require 'tmpdir'
 
-class BmcItsm7ChangeWorkInfoCreateCeV1
+class BmcItsm7ChangeWorkInfoCreateCeV2
   # Prepare for execution by pre-loading Ars form definitions, building Hash
   # objects for necessary values, and validating the present state.  This method
   # sets the following instance variables:
@@ -34,7 +36,6 @@ class BmcItsm7ChangeWorkInfoCreateCeV1
 
     # Determine if debug logging is enabled.
     @debug_logging_enabled = @info_values['enable_debug_logging'] == 'Yes'
-    puts("Logging enabled.") if @debug_logging_enabled
 
     # Determine if caching is disabled.
     @disable_caching = @info_values['disable_caching'] == 'Yes'
@@ -124,17 +125,23 @@ class BmcItsm7ChangeWorkInfoCreateCeV1
       @source_field_values.clear
       # retrive submission to get field names
       get_submission_values()
-      
+
+      # results will not be nil if an error occured calling for submission
+      return @results unless @results.nil?
+
       # Add field values to array if they are defined
       @field_names.each do |field_name|
         @source_field_values.push(@submisson_values[field_name][0])
       end
     end
-
-    if (@error.to_s.empty? && error_message.nil?)
+    
+    if (@error.to_s.empty? && error_message.empty?)
       if !@source_field_values.empty?
         begin
           get_field_values()
+
+          # results will not be nil if an error occured getting field values
+          return @results unless @results.nil?
         ensure
           # Remove the temp directory along with the downloaded attachment
           FileUtils.rm_rf(@tempdir) if !@tempdir.nil?
@@ -155,6 +162,9 @@ class BmcItsm7ChangeWorkInfoCreateCeV1
       if @parameters['include_question_answers'] == "Yes"
         if @submisson_values.nil?
           get_submission_values()
+
+          # results will not be nil if an error occured calling for submission
+          return @results unless @results.nil?
         end
         
         results = "\n\nQuestion Answer Pairs:\n"
@@ -201,9 +211,9 @@ class BmcItsm7ChangeWorkInfoCreateCeV1
       raise @error if @raise_error
     end
     
-    results = handle_results(entry ? entry.id : "", error_message)
-    puts "Returning results: #{results}" if @debug_logging_enabled
-    results
+    handle_results(entry ? entry.id : "", error_message)
+    puts "Returning results: #{@results}" if @debug_logging_enabled
+    @results
   end
 
   ##############################################################################
@@ -265,9 +275,14 @@ class BmcItsm7ChangeWorkInfoCreateCeV1
   end 
 
   def get_field_values() 
+    puts "Getting field values." if @debug_logging_enabled
+
     # Process each attachment file
     @source_field_values.each_with_index do |attachment_info, index|
       tempfile = download_file_to_temp(attachment_info, index)
+
+      # results will not be nil if an error occured calling for submission
+      return @results unless @results.nil?
 
       # ArsModels does not support streaming file upload
       file = File.open(tempfile).read
@@ -389,10 +404,10 @@ class BmcItsm7ChangeWorkInfoCreateCeV1
   ESCAPE_CHARACTERS = {'&'=>'&amp;', '>'=>'&gt;', '<'=>'&lt;', '"' => '&quot;'}
 
   def handle_results(entryId, error_msg)
-    <<-RESULTS
+    @results = <<-RESULTS
     <results>
-      <result name="Entry Id">#{ERB::Util.html_escape(entryId)}</result>
-      <result name="Handler Error Message">#{ERB::Util.html_escape(error_msg)}</result>
+      <result name="Entry Id">#{escape(entryId)}</result>
+      <result name="Handler Error Message">#{escape(error_msg)}</result>
     </results>
     RESULTS
   end
@@ -415,7 +430,7 @@ class BmcItsm7ChangeWorkInfoCreateCeV1
       error_message = "Unexpected error: #{error.inspect}"
     end
     raise error_message if @raise_error
-    handle_results(nil, error_message, nil)
+    handle_results(nil, error_message)
   end
 
 
