@@ -1,4 +1,4 @@
-== BMC_ITSM7_ChangeWorkInfo_Create_Remote_ARS
+# BMC_ITSM7_ChangeWorkInfo_Create_Remote_ARS
 Creates a BMC ITSM7 Infrastructure Change Work Info record based upon the
 parameters provided.
 
@@ -14,79 +14,114 @@ Infrastructure Change worklog by submitting the processed information to the
 
 For more information, see the Detailed Description section below.
 
-=== Parameters
+## Parameters
 [Change Number]
   The change number of the Change to associate the Change Work Info entry with.
-[[Include Review Request]
+
+[Include Review Request]
   Option to prepend the review request URL to the Notes of the Change Work
   Info entry. Options: Yes, No
+
 [Include Question Answers]
   Option to append the question answer pairs to the Notes of the Change Work
   Info entry.  Options: Yes, No
+
 [Work Info Summary]
   Sets the Summary of the Change Work Info entry.
+
 [Work Info Notes]
   Sets the Notes of the Change Work Info entry.
+
 [Work Info Submit Date]
   Sets the Date of the Change Work Info entry.
+
 [Attachment Input Type]
   Choose Field if the input for the attachment info as a Field Name or choose JSON if the input is 
   a (single) attachment's JSON from the Get Attachment Info handler. Note that if Field is specified, the 
   fields entered should only allow one attachment. Options: Field, JSON (Default: Field)
+
 [Attachment Field 1]
   The field name of an attachment question to retrieve an attachment from. Displayed if Attachment Input Type is Field.
+
 [Attachment Field 2]
   The field name of an attachment question to retrieve an attachment from. Displayed if Attachment Input Type is Field.
+
 [Attachment Field 3]
   The field name of an attachment question to retrieve an attachment from. Displayed if Attachment Input Type is Field.
+
 [Attachment JSON 1]
   The JSON of an attachment question to retrieve an attachment from. Displayed if Attachment Input Type is JSON.
+
 [Attachment JSON 2]
   The JSON of an attachment question to retrieve an attachment from. Displayed if Attachment Input Type is JSON.
+
 [Attachment JSON 3]
   The JSON of an attachment question to retrieve an attachment from. Displayed if Attachment Input Type is JSON.
+
 [Submitter]
   Sets the Submitter of the Change Work Info entry.
+
 [Locked]
 	Sets the Change Work Info entry Locked status. Valid choices:Yes,No				   
+
 [View Access]
 	Sets the Change Work Info entry to Public or Internal. Valid choices: Public,Internal
+
 [Work Info Source]
 	Sets the Change Work Info Communication Source value.  Options include: 
 	Email, Fax, Phone, Voice Mail, Walk In, Pager, System Assignment, Web, and Other. Defaults to Web
+
 [Work Info Type]
 	Sets the Change Work Info Type value.  Many options exist for this field.  
 	The most commonly used is 'General Information'. Defaults to General Information
+
 [Submission ID]
 	The instance id of the submission you want data returned from.  Typically the 
 	originating service item in a parent/child scenario.
+
 [Space Slug]
 	Space this is being used in. Can override provided info parameter.
 
-==== Sample Configuration
+### Sample Configuration
 Change ID::                     <%= @results['Create Change']['Change ID'] %>
+
 Include Review Request::              No
+
 Include Question Answers::            No
+
 Work Info Summary::                   <%= @inputs['Summary'] %>
+
 Work Info Notes::                     <%= @inputs['Notes'] %>
+
 Work Info Submit Date::               <%= @inputs['Date'] %>
+
 Attachment Input Type::	Field
+
 Attachment Field 1::    Attachment Question A
+
 Attachment Field 2::    Attachment Question B
+
 Attachment Field 3::    Attachment Question C
+
 Submitter::                           <%= @inputs['Login Id'] %>
+
 Locked::							  Yes
+
 View Access::						  Public
+
 Work Info Source::					  Web
+
 Work Info Type::					  General Information
+
 Submission ID::				  <%= @inputs['Submission Id'] %>
+
 Space Slug::				  
 
-=== Results
+## Results
 [Entry Id]
   The Request Id of the generated Change Work Info entry.
 
-=== Detailed Description
+## Detailed Description
 Creates Work Info entries related to a Change Request.  The relationship is
 established by placing the Change Number in the Infrastructure Change ID field 
 on the CHG:Work Log form.

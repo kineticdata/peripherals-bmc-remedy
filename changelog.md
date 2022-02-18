@@ -93,6 +93,14 @@ ARS \[handlers\] (2021-11-10)
   \[ars_rest_api_v1\] 
     * PER-239 Initial development of new handler.
 
+ARS \[bridge adapters\] (2022-01-05)
+  \[kinetic-bridgehub-adapter-ars-rest\]
+    * PER-248 fixed bug in rest v2 adapter with refresh token
+
 ARS \[bridge adapters\] (2022-01-04)
   \[kinetic-bridgehub-adapter-ars-rest\]
     * bumped dependencies flagged by debendabot.
+
+ARS \[handlers\] (2022-02-16)
+  \[bmc_itsm7_change_work_info_create_ce_v2\] 
+    * PER-256 Initial development of new handler.
