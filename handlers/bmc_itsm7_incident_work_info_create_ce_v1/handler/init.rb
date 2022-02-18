@@ -51,7 +51,7 @@ class BmcItsm7IncidentWorkInfoCreateCeV1
     REXML::XPath.each(@input_document,"/handler/infos/info") do |item|
       @info_values[item.attributes['name']] = item.text
     end
-    puts(format_hash("Handler Info Values:", @info_values)) if @debug_logging_enabled
+    
 
     # Store parameters in the node.xml in a hash attribute named @parameters.
     @parameters = {}
