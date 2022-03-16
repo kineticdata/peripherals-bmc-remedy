@@ -9,12 +9,12 @@ A Kinetic Bridgehub adapter for the BMC Remedy ARS platform.  This adapter lever
 | Port      | Remedy TCP Port | 3000 |
 | Prognum   | Remedy RPC Prognum | 0 |
 
-Supported Structures
+## Supported Structures
 | Name                    | Description | Example Values
 | :---------| :------------------- | :------------------- |
 | {Table Name} | A table name is the supported structures | CTM:People
 
-Attributes and Fields
+## Attributes and Fields
 Only fields configured in the Attribute mapping will be returned.
 
 ## Notes
