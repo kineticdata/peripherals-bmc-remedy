@@ -3,14 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.kineticdata.filehub.adapters.ars</groupId>
     <artifactId>kinetic-filehub-adapter-ars</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
-    
+
     <scm>
         <connection>scm:git:https://github.com/kineticcommunity/kinetic-bridgehub-adapter-ars.git</connection>
         <developerConnection>scm:git:https://github.com/kineticcommunity/kinetic-bridgehub-adapter-ars.git</developerConnection>
     </scm>
-    
+
     <distributionManagement>
         <repository>
             <id>com.kineticdata.public</id>
@@ -21,7 +21,7 @@
             <url>s3://maven-repo-public-kineticdata.com/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
-    
+
     <repositories>
         <repository>
             <id>z1_com.kineticdata.public</id>
@@ -40,7 +40,7 @@
             <url>s3://maven-repo-private-kineticdata.com/snapshots</url>
         </repository>
     </repositories>
-    
+
     <dependencies>
         <dependency>
             <groupId>com.kineticdata.filehub</groupId>
