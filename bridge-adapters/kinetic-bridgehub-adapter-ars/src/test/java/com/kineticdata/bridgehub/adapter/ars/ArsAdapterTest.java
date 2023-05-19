@@ -143,4 +143,47 @@ public class ArsAdapterTest extends BridgeAdapterTestBase {
         
         assertNull(error);
     }
+
+    @Test
+    public void test_pagination () {
+        RuntimeException error = null;
+
+        BridgeRequest request = new BridgeRequest();
+        request.setStructure("HPD:Help Desk");
+        request.setFields(new ArrayList<String>(){{
+            add("Status");
+            add("Description");
+        }});
+        request.setQuery("1=1");
+
+        Map<String, String> metadata = new HashMap();
+
+        metadata.put("pageSize", "2");
+        metadata.put("offset", "0");
+        request.setMetadata(metadata);
+
+        RecordList rl = null;
+        try {
+            rl = getAdapter().search(request);
+        } catch (RuntimeException e) {
+            error = e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        assertNull(error);
+
+        metadata.put("offset", "3");
+        request.setMetadata(metadata);
+
+        try {
+            rl = getAdapter().search(request);
+        } catch (RuntimeException e) {
+            error = e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        assertNull(error);
+    }
 }
