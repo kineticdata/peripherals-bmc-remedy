@@ -48,13 +48,23 @@ repositories {
   }
 
   group = "com.kineticdata.filehub.adapters.ars"
-  version = "1.0.2"
+  version = "1.0.3-SNAPSHOT"
   description = "kinetic-filehub-adapter-ars"
   java.sourceCompatibility = JavaVersion.VERSION_1_8
 
   publishing {
     publications.create<MavenPublication>("maven") {
       from(components["java"])
+    }
+    repositories {
+      maven {
+        val releasesUrl = uri("s3://maven-repo-private-kineticdata.com/releases")
+        val snapshotsUrl = uri("s3://maven-repo-private-kineticdata.com/snapshots")
+        url = if (version.toString().endsWith("SNAPSHOT")) snapshotsUrl else releasesUrl
+        authentication {
+          create<AwsImAuthentication>("awsIm")
+        }
+      }
     }
   }
 
