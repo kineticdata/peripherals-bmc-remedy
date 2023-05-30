@@ -5,4 +5,5 @@ categories:
 - DevOps
 - Ticketing
 display-name: BMC Remedy
-manufacture: BMC
+manufacturer: BMC
+description: BMC Remedy ITSM is a service management tool that automates the ITIL process in the modern era. They support various forms of service tickets by which users can create requests that flow to other systems within an organization.
