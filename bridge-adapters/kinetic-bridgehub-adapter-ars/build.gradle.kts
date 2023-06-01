@@ -43,7 +43,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.kineticdata.bridges.adapter:kinetic-bridgehub-adapter:1.2.1-SNAPSHOT")
+    implementation("com.kineticdata.bridges:kinetic-agent-adapter:1.1.3")
     implementation(files("lib/arapi80-build001.jar"))
     implementation("com.kineticdata:ars-helpers:3.0.0"){
       exclude(group="com.bmc", module="arsys")
