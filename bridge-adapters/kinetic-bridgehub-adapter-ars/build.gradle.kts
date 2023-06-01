@@ -52,7 +52,7 @@ dependencies {
 }
 
 group = "com.kineticdata.bridgehub.adapter"
-version = "1.0.5-SNAPSHOT"
+version = "1.0.5"
 description = "kinetic-bridgehub-adapter-ars"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
