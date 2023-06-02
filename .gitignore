@@ -1,5 +1,6 @@
-/bridge-adapters/*/target/
-/file-adapters/*/target/
+/bridge-adapters/*/build/
+.gradle
+/file-adapters/*/build/
 **/nb-configuration.xml
 **/.classpath
 **/.project
