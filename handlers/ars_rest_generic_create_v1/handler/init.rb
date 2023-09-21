@@ -168,12 +168,11 @@ class ArsRestGenericCreateV1
         payload: params,
         headers: { :content_type => :'application/x-www-form-urlencoded' }
       }).execute do |response, request, result|
-        results = response.code
         #if sucessful code will be 200 and the body will be the token for further calls
         #if there is an error response.body will contain the errror in HTML
         if response.code == 200
           puts(result.body) if @debug_logging_enabled
-          return result.body
+          return response.body
         else
           return response.code.to_s
         end
