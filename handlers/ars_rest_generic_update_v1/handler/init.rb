@@ -88,8 +88,8 @@ class ArsRestGenericUpdateV1
 		  results="Failed"
 		end
 	else
-      # format the headers with the token
-  	  headers = {:content_type => 'application/json', :authorization => "AR-JWT "+token}
+    # format the headers with the token
+    headers = {:content_type => 'application/json', :authorization => "AR-JWT "+token, :accept => @accept}
 	  puts(format_hash("Headers: ", headers)) if @debug_logging_enabled
 
 	  if error_message==""
@@ -156,32 +156,30 @@ class ArsRestGenericUpdateV1
       'username' => username,
       'password' => password
     }
-	puts('Logging in') if @debug_logging_enabled
-	begin
-	#this method will not raise an error if the call does not work.
-    response = RestClient::Request.new({
-      method: :post,
-      url: "#{api_server}/jwt/login",
-      payload: params,
-	  headers: { :content_type => :'application/x-www-form-urlencoded' }
-    }).execute do |response, request, result|
-      results = response.code
-	  #if sucessful code will be 200 and the body will be the token for further calls
-	  #if there is an error response.body will contain the errror in HTML
-	  if response.code == 200
-        puts(result.body) if @debug_logging_enabled
-        return result.body
-	  else
-	    return response.code.to_s
+    puts('Logging in') if @debug_logging_enabled
+    begin
+      #this method will not raise an error if the call does not work.
+      response = RestClient::Request.new({
+        method: :post,
+        url: "#{api_server}/jwt/login",
+        payload: params,
+        headers: { :content_type => :'application/x-www-form-urlencoded' }
+      }).execute do |response, request, result|
+        #if sucessful code will be 200 and the body will be the token for further calls
+        #if there is an error response.body will contain the errror in HTML
+        if response.code == 200
+          puts(result.body) if @debug_logging_enabled
+          return response.body
+        else
+          return response.code.to_s
+        end
       end
+    rescue Errno::ECONNREFUSED
+      return "408"
     end
-	rescue Errno::ECONNREFUSED
-	  return "408"
-	end
     #this way if there is a problem with the URL or server the command does not fail gracefully
-	#loginResource = RestClient::Resource.new(api_server+"/jwt/login")
+	  #loginResource = RestClient::Resource.new(api_server+"/jwt/login")
     #result = loginResource.post(params, :content_type => 'application/x-www-form-urlencoded')
-	#
   end
 
 
