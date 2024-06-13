@@ -2,11 +2,11 @@
 # ie. For the property with a label of Username, the configuration will be Username: "test.user"
 # Do this for all of the configuration values
 Bridge Configuration:
-    Username: ""
-    Password: ""
-    Server: ""
-    Port: ""
-    Prognum: ""
+    Username: "Demo"
+    Password: "hWgbQJhifq6DobMQ"
+    Server: "ars.kineticdata.com"
+    Port: "3000"
+    Prognum: "0"
 
 # Setting the different request configurations for the Standard Bridgehub tests
     # Structure: Structure string
