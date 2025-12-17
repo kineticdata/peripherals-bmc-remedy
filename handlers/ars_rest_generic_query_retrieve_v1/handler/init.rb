@@ -45,11 +45,11 @@ class ArsRestGenericQueryRetrieveV1
     error_message    = ""
     values          = ""
     @error_handling  = @parameters["error_handling"]
-	  api_username     = URI.encode(@info_values["api_username"])
+	  api_username     = CGI.escape(@info_values["api_username"])
     api_password     = @info_values["api_password"]
     api_server       = @info_values["api_server"]
 	  query            = @parameters["request_query"]
-    form             = URI.encode(@parameters["form"])
+    form             = CGI.escape(@parameters["form"])
 
     # get access token
     token = get_access_token(api_server, api_username, api_password)
@@ -64,7 +64,7 @@ class ArsRestGenericQueryRetrieveV1
       headers = {:content_type => 'application/json', :authorization => "AR-JWT "+token, :accept => @accept}
       puts(format_hash("Headers: ", headers)) if @debug_logging_enabled
             
-      create_route = "#{api_server}/arsys/v1/entry/#{form}?q="+URI.encode(query)
+      create_route = "#{api_server}/arsys/v1/entry/#{form}?q="+CGI.escape(query)
       puts("CREATE ROUTE: #{create_route}") if @debug_logging_enabled
     
       response = RestClient::Request.new({

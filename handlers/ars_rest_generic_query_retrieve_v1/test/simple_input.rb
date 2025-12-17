@@ -7,7 +7,7 @@
   },
   'parameters' => {
 	    'error_handling' => "Error Message",
-      'form'          => "CTM:People",
+      'form'          => "User",
       'request_query' => "1=1"
   }
 }
