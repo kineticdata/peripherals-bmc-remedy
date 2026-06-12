@@ -6,6 +6,7 @@ Name | Description | Example Values
 Username | Username of user with privilege on the AR System | user@acme.com
 Password | Privileged user's password | secret-password
 URL Origin | Web address to AR System server | https://foo.bar.com
+Max Records | Optional.  Hard ceiling on total records returned per request when the limit parameter exceeds 1000 (default 10000) | 10000
 
 ## Supported structures
 Name | Description | Example Values
@@ -27,7 +28,10 @@ If no fields were provided the adapter will return all fields.  This can be usef
 ## Notes
 * [JsonPath](https://github.com/json-path/JsonPath#path-examples) can be used to access nested values. The root of the path is values.
 * Fields used in queries to Remedy are case sensitive.
-* The Bridge Adapter limits the number of records returned to 1000.  This can be overridden to return fewer records.
+* A limit parameter of 1000 or less behaves as a single request page size.  A limit parameter greater than 1000 is treated as the total records desired and the v2 adapter aggregates paged requests internally in chunks of 1000, up to the Max Records configurable property (default 10000).
+  * When the Max Records ceiling cuts results short a `truncated` indicator is set on the response metadata.
+  * An explicit sort is recommended when aggregating (ex: `sort=Request ID.asc`).  Paging without a sort relies on the ARS server's default ordering.
+  * Raising Max Records increases agent memory usage; size the agent JVM accordingly.
 * In reference the Adhoc structure:
   * The Adhoc qualification mapping is split into two segments
     * ex: path?query

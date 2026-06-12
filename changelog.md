@@ -109,3 +109,19 @@ ARS [handlers] (2022-02-16)
 ARS [bridge-adapters] (2024-02-20)
   * [kinetic-bridgehub-adapter-ars-rest] v2.0.3
     * updated snakeyaml version due to vulnerability
+
+ARS [bridge-adapters] (2026-06-12)
+  * [kinetic-bridgehub-adapter-ars-rest] v2.1.0
+    * Added request aggregation to the v2 adapter.  A limit parameter greater
+    than 1000 is treated as the total records desired and the adapter loops
+    paged requests internally in chunks of 1000.
+    * Added optional Max Records configurable property (default 10000) as a
+    ceiling on aggregated results.  A truncated metadata indicator is set when
+    the ceiling cuts results short.
+    * count() now pages through results to return a true count bounded by Max
+    Records.
+    * Fixed infinite 401 retry recursion in the v2 api helper.
+    * Fixed sort-by-order metadata that was unreachable in the v2 adapter
+    search method.
+    * Fixed pagination offset off by one that skipped a record per page.
+    * Fixed a spurious adapterPath query parameter sent on Adhoc requests.
