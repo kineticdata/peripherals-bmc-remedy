@@ -79,6 +79,7 @@ public class ArsRestV2Adapter implements BridgeAdapter {
         public static final String PROPERTY_USERNAME = "Username";
         public static final String PROPERTY_PASSWORD = "Password";
         public static final String PROPERTY_ORIGIN = "URL Origin";
+        public static final String PROPERTY_MAX_RECORDS = "Max Records";
 
     }
 
@@ -86,7 +87,11 @@ public class ArsRestV2Adapter implements BridgeAdapter {
         new ConfigurableProperty(Properties.PROPERTY_USERNAME).setIsRequired(true),
         new ConfigurableProperty(Properties.PROPERTY_PASSWORD).setIsSensitive(true),
         new ConfigurableProperty(Properties.PROPERTY_ORIGIN).setIsRequired(true)
-            .setDescription("The scheme://hostname:port of the Ars Server")
+            .setDescription("The scheme://hostname:port of the Ars Server"),
+        new ConfigurableProperty(Properties.PROPERTY_MAX_RECORDS).setIsRequired(false)
+            .setDescription("Hard ceiling on total records returned per request "
+                + "when the limit parameter exceeds 1000 (default 10000)")
+            .setValue(Integer.toString(DEFAULT_MAX_RECORDS))
     );
 
     // Local variables to store the property values in
@@ -94,10 +99,15 @@ public class ArsRestV2Adapter implements BridgeAdapter {
     private String password;
     private String origin;
     private ArsRestV2QualificationParser parser;
-    private ArsRestV2ApiHelper apiHelper;
-    
+    ArsRestV2ApiHelper apiHelper; // package-private for unit testing
+    int maxRecords = DEFAULT_MAX_RECORDS; // package-private for unit testing
+
     // constant variables
     private final String API_PATH = "/api/arsys/v1";
+    /** Maximum records the ARS REST api will return from a single request. */
+    private static final int PAGE_SIZE = 1000;
+    /** Default value for the Max Records configurable property. */
+    private static final int DEFAULT_MAX_RECORDS = 10000;
     
     /*---------------------------------------------------------------------------------------------
      * SETUP METHODS
@@ -110,9 +120,25 @@ public class ArsRestV2Adapter implements BridgeAdapter {
         username = properties.getValue(Properties.PROPERTY_USERNAME);
         password = properties.getValue(Properties.PROPERTY_PASSWORD);
         origin = properties.getValue(Properties.PROPERTY_ORIGIN);
-        
+
+        // Parse the optional Max Records property.  Fail on bridge save when
+        // the property is not a positive number.
+        String maxRecordsValue = properties.getValue(Properties.PROPERTY_MAX_RECORDS);
+        if (maxRecordsValue != null && !maxRecordsValue.trim().isEmpty()) {
+            try {
+                maxRecords = Integer.parseInt(maxRecordsValue.trim());
+            } catch (NumberFormatException e) {
+                throw new BridgeError("The Max Records property must be a number.", e);
+            }
+            if (maxRecords < 1) {
+                throw new BridgeError("The Max Records property must be greater than 0.");
+            }
+        } else {
+            maxRecords = DEFAULT_MAX_RECORDS;
+        }
+
         apiHelper = new ArsRestV2ApiHelper(origin, username, password);
-        
+
         apiHelper.getToken();
     }
 
@@ -159,29 +185,23 @@ public class ArsRestV2Adapter implements BridgeAdapter {
         
         Map<String, String> parameters = getParameters(
             parser.parse(request.getQuery(),request.getParameters()), mapping);
-        
+
+        // A limit in the qualification caps the count; otherwise count all
+        // matching records up to the Max Records ceiling.
+        int requestedLimit = parameters.containsKey("limit")
+            ? getRequestedLimit(parameters) : maxRecords;
+
+        Map<String, String> metadata = new HashMap<>();
+
         // Path builder functions may mutate the parameters Map;
         String path = mapping.getPathbuilder().apply(structureList, parameters);
-        
+
         // Retrieve the objects based on the structure from the source
-        JSONObject object = apiHelper.executeRequest(getUrl(path, 
-            parameters));
-        
-        // Get domain specific data.
-        JSONArray entries = (JSONArray)object.get("entries");
-        
-        Integer count;
-        // If entries null check for single value.
-        // TODO: consider using mapper for single/multiple similar to kinetic core
-        if (entries == null &&  object.get("values") != null) {
-           count = 1;
-        } else {
-            // Get the number of elements in the returned array
-            count = entries.size();
-        }
-        
+        JSONArray entries = aggregateEntries(apiHelper, path, parameters,
+            requestedLimit, metadata);
+
         // Create and return a count object that contains the count
-        return new Count(count);
+        return new Count(entries.size(), metadata);
     }
 
     @Override
@@ -256,13 +276,17 @@ public class ArsRestV2Adapter implements BridgeAdapter {
 
         Map<String, String> parameters = getParameters(
             parser.parse(request.getQuery(),request.getParameters()), mapping);
-        addLimit(parameters);
-        
+
+        int requestedLimit = getRequestedLimit(parameters);
+
         Map<String, String> metadata = request.getMetadata() != null ?
                 request.getMetadata() : new HashMap<>();
 
-        // If offest exists in metadata add it to the parameters for use with 
-        // reqeust.  
+        // Capture order prior to clearing metadata for reuse in response.
+        String order = metadata.get("order");
+
+        // If offest exists in metadata add it to the parameters for use with
+        // reqeust.
         if (metadata.get("offset") != null) {
             // Offset in parameters takes precedence.
             parameters.putIfAbsent("offset", metadata.get("offset"));
@@ -271,31 +295,38 @@ public class ArsRestV2Adapter implements BridgeAdapter {
         metadata.clear();
 
         // Add a sorting order to be used with the request if order was defined,
-        // but sort was not included in the qualification mapping.        
-        if (metadata.get("order") != null && !parameters.containsKey("sort")) {
-            addSort(metadata.get("order"), parameters);
+        // but sort was not included in the qualification mapping.
+        if (order != null && !parameters.containsKey("sort")) {
+            addSort(order, parameters);
+        }
+
+        // Paging without an explicit sort relies on the ARS server's default
+        // ordering.  A sort field is not injected because field names vary by
+        // form.
+        if (requestedLimit > PAGE_SIZE && !parameters.containsKey("sort")) {
+            LOGGER.warn("Aggregating paged requests without an explicit sort. "
+                + "Paging relies on the ARS server's default ordering; records "
+                + "may be skipped or duplicated if that ordering is not stable.");
         }
 
         // Path builder functions may mutate the parameters Map;
         String path = mapping.getPathbuilder().apply(structureList, parameters);
-        
-        // Retrieve the objects based on the structure from the source
-        JSONObject object = apiHelper.executeRequest(getUrl(path, parameters));
 
-        // Get domain specific data.
-        JSONArray entries = (JSONArray)object.get("entries");
+        // Retrieve the objects based on the structure from the source
+        JSONArray entries = aggregateEntries(apiHelper, path, parameters,
+            requestedLimit, metadata);
 
         // Create a List of records that will be used to make a RecordList object
         List<Record> recordList = new ArrayList<Record>();
-        List<String> fields = request.getFields() == null ? new ArrayList() : 
+        List<String> fields = request.getFields() == null ? new ArrayList() :
             request.getFields();
         if(entries.isEmpty() != true){
-            fields = getFields(fields, 
+            fields = getFields(fields,
                 (JSONObject)((JSONObject)entries.get(0)).get("values"));
             // Iterate through the response objects and make a new Record for each.
             for (Object o : entries) {
                 JSONObject obj = (JSONObject)((JSONObject)o).get("values");
-                
+
                 Record record;
                 if (obj != null) {
                     record = buildRecord(fields, obj);
@@ -305,10 +336,8 @@ public class ArsRestV2Adapter implements BridgeAdapter {
                 // Add the created record to the list of records
                 recordList.add(record);
             }
-            
-            setOffset(metadata, parameters);
         }
-        
+
         // Return the RecordList object
         return new RecordList(fields, recordList, metadata);
     }
@@ -357,55 +386,147 @@ public class ArsRestV2Adapter implements BridgeAdapter {
 
     /**
      * Set the offset that will be used in subsequent requests for pagination.
-     * This method mutates the parameters Map.
-     * 
+     * The next offset advances by the number of records actually returned.
+     *
      * @param metadata
-     * @param parameters
+     * @param offset
+     * @param returnedCount
      */
-    protected void setOffset(Map<String, String> metadata, 
-        Map<String, String> parameters) {
-     
-        try {
-            int offset = 0;
-            int limit = Integer.parseInt(parameters.get("limit"));
-            
-            if (parameters.containsKey("offset")) {
-                offset = Integer.parseInt(parameters.get("offset").trim());
-            } else if (metadata.containsKey("offset")) {
-                offset = Integer.parseInt(metadata.get("offset").trim());
-            }   
-            metadata.put("offset", Integer.toString((limit + 1) + offset));
-        
-        } catch (NumberFormatException e) {
-            LOGGER.error("Error parsing int: ", e);
-        }
+    protected void setOffset(Map<String, String> metadata, int offset,
+        int returnedCount) {
+
+        metadata.put("offset", Integer.toString(offset + returnedCount));
     }
 
     /**
-     * Set limit if none exists or ensure that limit is in acceptable range.
-     * This method mutates the parameters Map.
-     * 
+     * Get the total number of records requested.  A limit greater than 1000
+     * signals that the adapter should aggregate paged requests.  Defaults to
+     * 1000 when limit is absent, negative, or not a number.  This method does
+     * not mutate the parameters Map; the per request limit is set by
+     * aggregateEntries.
+     *
      * @param parameters
+     * @return int
      */
     // TODO: consider if limit is on metadata.
-    protected void addLimit(Map<String, String> parameters) {
-        int limit = 1000;
+    protected int getRequestedLimit(Map<String, String> parameters) {
+        int limit = PAGE_SIZE;
         try {
             if (parameters.containsKey("limit")) {
                 limit = Integer.parseInt(parameters.get("limit").trim());
-                if (limit < 0 || limit > 1000) {
-                    limit = 1000;
+                if (limit < 0) {
+                    limit = PAGE_SIZE;
                     LOGGER.debug("limit was outside standard values. Limit set "
                         + "to 1000 default.");
                 }
-                parameters.replace("limit", Integer.toString(limit));
-            } else {
-                parameters.put("limit", "1000");
             }
         } catch (NumberFormatException e) {
+            limit = PAGE_SIZE;
             LOGGER.error("limit parmaeter must be a number.  limit set to 1000 "
                 + "default. ", e);
         }
+        return limit;
+    }
+
+    /**
+     * Fetch entries from the ARS server.  When the requested limit exceeds the
+     * single request maximum of 1000 the adapter loops requests in chunks,
+     * advancing offset by the number of entries actually returned, and
+     * concatenates the results.  Total results are capped by the Max Records
+     * property.  This method mutates the limit and offset keys of the
+     * parameters Map.  On completion the metadata Map is populated with the
+     * next offset and, when the Max Records ceiling cut results short, a
+     * truncated indicator.
+     *
+     * @param apiHelper
+     * @param path
+     * @param parameters
+     * @param requestedLimit
+     * @param metadata
+     * @return JSONArray
+     * @throws BridgeError
+     */
+    protected JSONArray aggregateEntries(ArsRestV2ApiHelper apiHelper,
+        String path, Map<String, String> parameters, int requestedLimit,
+        Map<String, String> metadata) throws BridgeError {
+
+        int totalLimit = Math.min(requestedLimit, maxRecords);
+        if (requestedLimit > maxRecords) {
+            LOGGER.warn("The requested limit of " + requestedLimit + " exceeds "
+                + "the Max Records property.  Results will be capped at "
+                + maxRecords + ".");
+        }
+        boolean aggregating = requestedLimit > PAGE_SIZE;
+
+        // Parse the initial offset if one was provided with the request.
+        int initialOffset = 0;
+        if (parameters.containsKey("offset")) {
+            try {
+                initialOffset = Integer.parseInt(parameters.get("offset").trim());
+            } catch (NumberFormatException e) {
+                LOGGER.error("Error parsing int: ", e);
+            }
+        }
+        int offset = initialOffset;
+
+        JSONArray allEntries = new JSONArray();
+        boolean exhausted = false;
+        boolean firstPage = true;
+
+        do {
+            int chunk = Math.min(PAGE_SIZE, totalLimit - allEntries.size());
+            parameters.put("limit", Integer.toString(chunk));
+            // Leave offset untouched on the first request so single page
+            // request urls are unchanged from prior adapter versions.
+            if (!firstPage) {
+                parameters.put("offset", Integer.toString(offset));
+            }
+            firstPage = false;
+
+            // Retrieve the objects based on the structure from the source
+            JSONObject object = apiHelper.executeRequest(getUrl(path, parameters));
+
+            // Get domain specific data.
+            JSONArray entries = (JSONArray)object.get("entries");
+
+            if (entries == null) {
+                // Single entry responses (entry_id requests) return a values
+                // object instead of an entries array.
+                // TODO: consider using mapper for single/multiple similar to
+                // kinetic core
+                if (object.get("values") != null) {
+                    allEntries.add(object);
+                }
+                exhausted = true;
+                break;
+            }
+
+            allEntries.addAll(entries);
+            offset += entries.size();
+
+            if (entries.size() == 0) {
+                // No more results on the server.
+                exhausted = true;
+            } else if (entries.size() < chunk && !aggregating) {
+                // Single request mode never issues a follow up request.  While
+                // aggregating a partial page is NOT treated as exhausted
+                // because the ARS server may be configured to return fewer
+                // records than requested.
+                exhausted = true;
+            }
+        } while (!exhausted && allEntries.size() < totalLimit);
+
+        if (!allEntries.isEmpty()) {
+            setOffset(metadata, initialOffset, allEntries.size());
+        }
+        if (!exhausted && allEntries.size() >= maxRecords) {
+            metadata.put("truncated", "true");
+            LOGGER.warn("Results were truncated at the Max Records ceiling of "
+                + maxRecords + ". Additional matching records may exist on the "
+                + "server.");
+        }
+
+        return allEntries;
     }
     
     private LinkedHashMap<String, String> 
@@ -581,10 +702,11 @@ public class ArsRestV2Adapter implements BridgeAdapter {
      * @return
      * @throws BridgeError 
      */
-    protected static String pathAdhoc(List<String> structureList, 
+    protected static String pathAdhoc(List<String> structureList,
         Map<String, String> parameters) throws BridgeError {
-        
-        return parameters.get("adapterPath");
+
+        // Remove adapterPath so it is not serialized as a query parameter.
+        return parameters.remove("adapterPath");
     }
 
     /**

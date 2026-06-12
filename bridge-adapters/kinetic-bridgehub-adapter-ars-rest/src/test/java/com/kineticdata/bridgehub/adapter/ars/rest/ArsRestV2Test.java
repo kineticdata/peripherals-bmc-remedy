@@ -375,27 +375,16 @@ public class ArsRestV2Test extends BridgeAdapterTestBase{
     @Test
     public void test_setOffset() {
         ArsRestV2Adapter adapter = new ArsRestV2Adapter();
-        
+
         Map<String, String> metadata = new HashMap<>();
-        Map<String, String> parameters = new HashMap<>();
-        
-        // It is expected that limit is already set.
-        parameters.put("limit", "1000");
-        
-        // Test that metadata and parameters don't have offset.
-        adapter.setOffset(metadata, parameters);
-        assertTrue(Integer.parseInt(metadata.get("offset")) == 1001);
-        
-        // Test that offset in metadata adjust results by limit (1000).
-        metadata.put("offset", "1001");
-        adapter.setOffset(metadata, parameters);
-        assertTrue(Integer.parseInt(metadata.get("offset")) == 2002);
-        
-        // Test that parameters have precedence over metadata and that offset
-        // adjust results by limit (1000)
-        parameters.put("offset", "1001");
-        adapter.setOffset(metadata, parameters);
-        assertTrue(Integer.parseInt(metadata.get("offset")) == 2002);        
+
+        // Test that the next offset advances by the records returned.
+        adapter.setOffset(metadata, 0, 1000);
+        assertTrue(Integer.parseInt(metadata.get("offset")) == 1000);
+
+        // Test that the initial offset is included in the next offset.
+        adapter.setOffset(metadata, 1000, 250);
+        assertTrue(Integer.parseInt(metadata.get("offset")) == 1250);
     }
     
     @Test

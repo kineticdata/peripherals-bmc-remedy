@@ -74,7 +74,7 @@ public class ArsRestV2ApiHelper {
                 LOGGER.debug("Retrying the request with a new authentication token.");
                 // Get a fresh token
                 getToken();
-                return executeRequest(url, tries++);
+                return executeRequest(url, tries + 1);
             }
             
             HttpEntity entity = response.getEntity();
